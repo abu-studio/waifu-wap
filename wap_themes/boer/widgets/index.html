@@ -1,0 +1,519 @@
+<div class="full-screen">
+    <header class="header_bar">
+        <div class="header_bar_left">
+            <div>
+                <span>SR-C</span>
+                <p>品牌代理</p>
+                <a href="javascript:;"></a>
+            </div>
+        </div>
+        
+        <div class="a-name header_bar_center">个人中心</div>
+        <div class="header_bar_right">
+            <div>
+                <a href="<{link app=b2c ctl=wap_search}>"></a>
+                <p>连续签到<span>5</span>天</p>
+            </div>
+        </div>
+    </header>
+    <!-- 会员等级 -->
+    <div class="member_level"></div>
+    <!-- 我的特权 -->
+    <div class="member_power">
+        <div class="mem_tit">
+            <h5>我的特权</h5>
+        </div>
+        <a href="javascript:;">查看全部 ></a>
+        <div class="mem_power_con"></div>
+    </div>
+    <!-- 我的资产 -->
+    <div class="my_assets">
+        <div class="mem_tit">
+            <h5>我的资产</h5>
+        </div>
+        <div class="coupon_bobi">
+            <div class="coupon">
+                <a href="<{link app=b2c ctl='wap_member' full='1' act='coupon'}>">
+                    优惠券
+                </a>
+                <span></span>
+            </div>
+            <div class="bobi_his"><a href="<{link app=b2c ctl='wap_member'  act='point_history'}>">玻币历史</a></div>
+        </div>
+        <div class="mem_balance">
+            <p>账户总额（¥RMB 41000元）</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>直</th>
+                        <th>次</th>
+                        <th>间次</th>
+                        <th>总计</th>
+                        <th>累计</th>
+                        <th>可提</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>货款余额</th>
+                        <td>10000</td>
+                        <td>－</td>
+                        <td>－</td>
+                        <td>10000</td>
+                        <td>13600</td>
+                        <td>－</td>
+                    </tr>
+                    <tr>
+                        <th>销售金 </th>
+                        <td> 498</td>
+                        <td>51.05</td>
+                        <td>27.05</td>
+                        <td>576</td>
+                        <td>1396</td>
+                        <td>204.5</td>
+                    </tr>
+                    <tr>                                                           
+                        <th>邀请金</th>
+                        <td> 900</td>
+                        <td>288</td>
+                        <td>－</td>
+                        <td>1188</td>
+                        <td>3688</td>
+                        <td>1188</td>
+                    </tr>
+                </tbody>
+            </table>
+            <a href="javascript:;">详细<i class="icon_pic"></i></a>
+        </div>
+        <div class="mem_menu">
+            <ul class="clearfix">
+                <li>
+                    <a href="<{link app=b2c ctl='wap_member' full='1' act='setting'}>">我的<br />资料</a>
+                </li>
+                <li>
+                    <a href="javascript:;">我的<br />会员</a>
+                </li>
+                <li>
+                    <a href="javascript:;">代理<br />中心</a>
+                </li>
+                <li>
+                    <a href="javascript:;">下属<br />订单</a>
+                </li>
+                <li>
+                    <a href="javascript:;">防伪<br />验证</a>
+                </li>
+                <li>
+                    <a href="javascript:;">地址<br />管理</a>
+                </li>
+                <li>
+                    <a href="<{link app=b2c ctl=wap_member act=favorite}>">我的<br />收藏</a>
+                </li>
+                <li>
+                    <a href="javascript:;">我的<br />订单</a>
+                </li>
+                <li>
+                    <a href="javascript:;">服务<br />中心</a>
+                </li>
+            </ul>
+        </div>
+        <!-- <div class="mem_line"></div> -->
+    </div>
+    <!-- 推广二维码 -->
+    <div class="recommend_code">
+        <p>我的推广二维码</p>
+        <img src="<{$env.base_url}>/wap_themes/boer/images/code.png" alt="">
+        <a href="javascript:;" class="share">分享</a>
+    </div>
+    <!-- 玻币任务 -->
+    <div class="bobi_task">
+        <div class="mem_tit"><h5>玻币任务</h5></div>
+        <div class="task_list">
+            <ul>
+                <li>
+                    <div class="task_name">邮箱验证<span>＋5玻币</span></div>
+                    <a href="javascript:;" class="task_btn"><i class="go_pic"></i>去验证</a>
+                </li>
+                <li>
+                    <div class="task_name">商品分享<span>＋0.1玻币/个</span></div>
+                    <a href="javascript:;" class="task_btn"><i class="go_pic"></i>去分享</a>
+                </li>
+                <li>
+                    <div class="task_name">“不许无聊文章分享”<span>＋0.1玻币/个</span></div>
+                    <a href="javascript:;" class="task_btn"><i class="go_pic"></i>去验证</a>
+                </li>
+                <li>
+                    <div class="task_name">生日玻币奖励<span>＋50玻币</span></div>
+                    <a href="javascript:;" class="task_btn"><i class="go_pic"></i>去设置</a>
+                </li>
+                <li>
+                    <div class="task_name">商品评论<span>＋5玻币/次</span></div>
+                    <a href="javascript:;" class="task_btn"><i class="go_pic"></i>去评论</a>
+                </li>
+            </ul>
+        </div>  
+    </div>
+    <!-- <div class="section">
+        <div class="mem-info c-fix">
+            <div class="mem-avatar">
+                <{if $member.lv_logo!=''}>
+                    <img src="<{$member.lv_logo|storager:'s'}>">
+                <{else}>
+                    <{img src="sprites/default-avatar.png" alt=""}>
+                <{/if}>
+            </div>
+            <div class="mem-base c-fix">
+                <div class="fix-f">
+                    <div class="d-line c-fix">
+                        <div class="mem-name">
+                            <{$member.uname}>
+                        </div>
+                        <div class="mem-experience">
+                          <{if !$is_wechat_login }>
+                            <a href="<{link app=b2c ctl=wap_member act=security}>">修改密码</a>
+                          <{/if}>
+                        </div>
+                    </div>
+                    <div class="mem-level">
+                        <span class="icon orange">
+                             <{$member.levelname}>
+                        </span>
+                        <div class="mem-experience">
+                            经验值：<{$member.experience}>
+                        </div>
+                    </div>
+                    <div class="d-line">
+                    <{if $switch_lv.switch_type == 0 && $switch_lv.show eq 'YES'}>
+                        玻币累积至
+                        <span class="f-red"><{$switch_lv.lv_data}></span>
+                        可成为
+                        <{$switch_lv.lv_name}>
+                        <{else}>
+                      <br>
+                      <{/if}>
+                    </div>
+                        Wap端签到 //@Author:  panbiaophp@163.com @DateTime:  2017-05-09 15:33:22
+                        <{}>
+                        <{if $login_point_open == "true" && $point_usaged == 'true'}>
+                        <{if $signin_status == false}>
+                        <span id='wap-signin' class="icon orange">
+                             签到
+                        </span>
+                        <{else}>
+                         <span class="icon orange" style="color:#b5b8bd;">
+                             已签到
+                        </span>
+                        <{/if}>
+                        <{/if}>
+                        <script type="text/javascript">
+                            $('#wap-signin').bind('click',function(e){
+                                var url='<{link app=b2c ctl=wap_member act=doSignin}>';
+                                $.post(url,'memId=<{$member.member_id}>',function(re){
+                                    _re=$.parseJSON(re);
+                                    if (_re.status=='error') {
+                                       setTimeout(function(){location.reload(true)},2000);
+                                       popup(_re.msg);
+                                       return; 
+                                    }else{
+                                      setTimeout(function(){location.reload(true)},2000);
+                                      popup('签到成功'); 
+                                    } 
+                                });
+                            });  
+                        </script>
+                  <{if $member.novice_gift == '0'}>
+                  <a href="<{link app=b2c ctl=wap_verification act=novice_gift}>" class="icon orange">新手礼</a>
+                  <{/if}>
+                  <{if $member.member_type=='normal' && $isupgrade=='true'}>
+                   <a href="<{link app=b2c ctl='wap_member'  act='upgradeLv'}>" class="icon orange">
+                  升级等级
+                </a>
+                  <{/if}>
+    
+                  <{if $member.member_type == 'bamem'}>
+                  <span class="verify" style="float:right"><a class="icon orange">明码验证</a></span>
+                  <script type="text/javascript">
+                      $('.verify').bind('click',function(e){
+                          var url='<{link app=b2c ctl=wap_member act=plain_code_verify}>';
+                          $.post(url,'memId=<{$member.member_id}>',function(re){
+                              _re=$.parseJSON(re);
+                            //  console.log(re);return;
+                              if (_re.status=='error') {
+                                  popup(_re.msg);return;
+                              }else{
+                                  window.location.href = "<{link app=b2c ctl=wap_member act=plain_code_verify_view}>";
+                              }
+                          });
+                      });
+                  </script>
+                  <{/if}>
+                </div>
+            </div>
+    
+                      <{if $deposit_status == true}>
+            <div class="gb mem-deposit">
+                <div class="d-line box">
+                    <div class="col">
+                        预存款余额：
+                        <span class="f-red"><{$member.advance|cur_odr}></span>
+                    </div>
+                    <div class="col">
+                        <a href="<{link app=b2c ctl='wap_member' act='deposit'}>">
+                            充值
+                            <i class="arr right"></i>
+                        </a>
+                        <a href="<{link app=b2c ctl='wap_member'  act='balance'}>">
+                            交易记录
+                            <i class="arr right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+                      <{/if}>
+                      
+            <div class="col">
+                   <a href="tel:05576424444">电话号码</a>
+              </div>
+    
+    
+          <{if $member.member_type == 'bamem' || $member.member_type == 'kfuser'}>
+          <div class="gb mem-deposit">
+            <div class="d-line box">
+              <{if $member.member_type == 'bamem'}>
+              <div class="col">
+                奖金总额：
+                <span class="f-red"><{$can_withdraw_money|cur_odr}></span>
+              </div>
+              <div class="col">
+                <a href="<{link app=b2c ctl='wap_member' act='withdraw'}>">
+                  提现
+                  <i class="arr right"></i>
+                </a>
+                <a href="<{link app=b2c ctl='wap_member' act='withdraw_record'}>">
+                  提现记录
+                  <i class="arr right"></i>
+                </a>
+              </div>
+              <{/if}>
+              <{if $member.member_type == 'kfuser'}>
+              <div class="col">
+                佣金总额：
+                <span class="f-red"><{$can_withdraw_money|cur_odr}></span>
+              </div>
+              <div class="col">
+                <a href="<{link app=b2c ctl='wap_cpsuser' act='withdraw'}>">
+                  提现
+                  <i class="arr right"></i>
+                </a>
+                <a href="<{link app=b2c ctl='wap_cpsuser' act='withdraw_record'}>">
+                  提现记录
+                  <i class="arr right"></i>
+                </a>
+              </div>
+              <{/if}>
+            </div>
+            <div class="d-line box">
+              <{if $member.member_type == 'bamem'}>
+              <div class="col">
+                未提现奖金：
+                <span class="f-red"><{$can_withdraw_money_not|cur_odr}></span>
+              </div>
+              <div class="col">
+                提现中奖金：
+                <span class="f-red"><{$can_withdraw_money_ing|cur_odr}></span>
+              </div>
+              <div class="col">
+                已提现奖金：
+                <span class="f-red"><{$can_withdraw_money_yes|cur_odr}></span>
+              </div>
+              <{/if}>
+              <{if $member.member_type == 'kfuser'}>
+              <div class="col">
+                未提现佣金：
+                <span class="f-red"><{$can_withdraw_money_not|cur_odr}></span>
+              </div>
+              <div class="col">
+                提现中佣金：
+                <span class="f-red"><{$can_withdraw_money_ing|cur_odr}></span>
+              </div>
+              <div class="col">
+                已提现佣金：
+                <span class="f-red"><{$can_withdraw_money_yes|cur_odr}></span>
+              </div>
+              <{/if}>
+            </div>
+          </div>
+          <{/if}>
+            <div class="gb integration">
+                <div class="d-line box">
+                    <div class="col">
+                        账户总玻币：<{$member.point}>
+                        <br />
+                        <{if $extend_point_html}>
+                        <{$extend_point_html}>
+                        <{/if}>
+                    </div>
+                    <div class="col">
+                        <a href="<{link app=b2c ctl='wap_member'  act='point_history'}>">
+                            查看历史玻币
+                            <i class="arr right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+          <{if defined('POPULAR') && POPULAR}>
+          <div class="mem-menu">
+            <div class="col2" style="width:90%;margin:0 auto;margin-top;padding:.5rem 0;box-sizing:border-box;">
+              <div class="col" hidden>
+                <{if $inbox_num > 0}>
+                  <a href="<{link app=b2c ctl='wap_member' act='inbox' arg0='unreadmsg'}>" class="btn">
+                <{else}>
+                  <a href="<{link app=b2c ctl='wap_member'  act='inbox' arg0='readed'}>" class="btn">
+                <{/if}>
+                  站内信
+                </a>
+                    <i id="inboxNum" class="icon red">
+                      <{$inbox_num}>
+                    </i>
+              </div>
+              <div class="col" hidden>
+                <a href="<{link app=b2c ctl='wap_member' full='1' act='orders'}>" class="btn">
+                  我的订单
+                </a>
+              </div>
+              <div class="col" hidden>
+                <a href="<{link app=b2c ctl='wap_cart' full='1' act='index'}>" class="btn">
+                  购物车
+                </a>
+                <i id="cartNum" class="icon red"></i>
+              </div>
+    
+              <div class="col">
+                   <a href="<{link app=b2c ctl='wap_member' act='inbox'}>" class="btn">站内信
+                </a>
+                    <i id="inboxNum" class="icon red">
+                      <{$inbox_num}>
+                    </i>
+              </div>
+    
+              <div class="col">
+                <a href="<{link app=b2c ctl='wap_member' full='1' act='receiver'}>" class="btn">
+                  地址管理
+                </a>
+              </div>
+    
+    
+    
+              <div class="col">
+                <a href="<{link app=b2c ctl='wap_member' full='1' act='setting'}>" class="btn">
+                  个人信息
+                </a>
+              </div>
+              <{if $comment_switch_discuss == 'on'}>
+              <div class="col">
+                <a href="<{link app=b2c ctl='wap_member' full='1' act='nodiscuss'}>" class="btn">
+                    未评价商品
+                </a>
+              </div>
+              <{/if}>
+            </div>
+            <div class="col2" style="width:90%;margin:0 auto;margin-top;padding:.5rem 0;box-sizing:border-box;">
+              <div class="col">
+                <a href="<{link app=b2c ctl='wap_member' full='1' act='coupon'}>" class="btn">
+                  优惠券
+                </a>
+              </div>
+              <div class="col">
+                <a href="<{link app=b2c ctl='wap_member'  act='mysendgifts'}>" class="btn">
+                送礼物
+                </a>
+              </div>
+              <div class="col">
+                <a href="<{link app=b2c ctl='wap_member'  act='mygetgifts'}>" class="btn">
+                收礼物
+                </a>
+              </div>
+              <{if $member.member_type=='cpsuser' || $member.member_type=='normal' || $member.member_type=='kfuser'}>
+              <div class="col">
+                <a href="<{link app=b2c ctl='wap_cpsuser' full='1' act='index'}>" class="btn">
+                  推广中心
+                </a>
+              </div>
+              <{/if}>
+            </div>
+    
+            <{if $open_aftersales == 'true' || $point_usaged}>
+            <div class="col2" style="width:90%;margin:0 auto;margin-top;padding:.5rem 0;box-sizing:border-box;">
+              <{if $open_aftersales == 'true'}>
+              <div class="col">
+                <a href="<{link app=b2c ctl='wap_member' full='1' act='refundlist'}>" class="btn">
+                  申请退款
+                </a>
+              </div>
+              <div class="col">
+                <a href="<{link app=b2c ctl='wap_member' full='1' act='afterlist'}>" class="btn">
+                  申请退换货
+                </a>
+              </div>
+              <div class="col">
+                <a href="<{link app=b2c ctl='wap_member' full='1' act='afterrec'}>" class="btn">
+                  退换货记录
+                </a>
+              </div>
+              <{/if}>
+            </div>
+            <{/if}>
+    
+            <div class="col2" style="width:90%;margin:0 auto;margin-top;padding:.5rem 0;box-sizing:border-box;">
+              <{if $sjcashred=='true'}>
+              <div class="col">
+                <a href="<{link app=b2c ctl='wap_verification' act='suiJicashRed' arg0=$member.member_id}>" class="btn">
+                  随机红包
+                </a>
+              </div>
+              <{/if}>
+              <{if $open_aftersales == 'true'}>
+              <div class="col" hidden>
+                <a href="<{link app=b2c ctl='wap_member' full='1' act='aftersales'}>" class="btn">
+                  后悔药记录
+                </a>
+              </div>
+              <{/if}>
+              <{if $point_usaged}>
+              <div class="col">
+                <a href="<{link app=b2c ctl='wap_member' full='1' act='coupon_exchange'}>" class="btn">
+                  玻币兑换优惠券</a>
+              </div>
+              <{/if}>
+            </div>
+    
+          </div>
+          <{/if}>
+        </div>
+    </div>
+    <div class="section">
+        <div class="mem-fav-list">
+            <a class="title" href="<{link app=b2c ctl=wap_member act=favorite}>">
+                我的收藏
+                <i class="arr right"></i>
+            </a>
+            <{if $favorite}>
+            <div class="box">
+            <{foreach from=$favorite item="favorite" name="favorite"}>
+                <a class="mem-fav-item" href="<{link app=b2c ctl=wap_product act=index arg0=$favorite.spec_desc_info.0.product_id}>">
+                <img style="width:116px; height:120px;overflow:hidden;" src="<{if $favorite.udfimg == 'true'}><{$favorite.thumbnail_pic|default:$defaultImage|storager:'s'}><{else}><{$favorite.image_default_id|default:$defaultImage|storager:'s'}><{/if}>" alt="<{$favorite.name}>" />
+                </a>
+            <{/foreach}>
+            </div>
+            <{else}>
+            <div class="box">暂无收藏</div>
+            <{/if}>
+        </div>
+    </div> -->
+</div>
+
+<script>
+    var e = $.fn.cookie('S[CART_NUMBER]')?$.fn.cookie('S[CART_NUMBER]'):'';
+    if(e) $("#cartNum").text(e);
+</script>
+

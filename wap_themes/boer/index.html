@@ -1,0 +1,108 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <{wapheader}>
+    <{script src="flexible.min.js" app="wap" pdir="js_mini"}>
+    <{css src="swiper.min.css" app="wap" pdir="css_mini"}>
+    <{script src="swiper.jquery.min.js" app="wap" pdir="js_mini"}>
+    <link rel="stylesheet" href="images/style.css" />
+</head>
+<body class="index">
+    
+    <div class="full_page">
+        <{wap_require file="block/header.html"}>
+        <div id="scroll_wrapper">
+            <div id="inner_scroll">
+                <!-- 搜索 -->
+                <section>
+                    <{wap_widgets id="search"}>
+                </section>
+                <!-- banner -->
+                <section>
+                    <{wap_widgets id="main_slide"}>
+                </section>
+                <!-- 活动 -->
+                <section>
+                    <{wap_widgets id="activity"}>
+                </section>
+                <!-- 产品 -->
+                <section>
+                    <{wap_widgets id="goods"}>
+                </section>
+                <!-- 不许无聊 -->
+                <section>
+                    <{wap_widgets id="boring"}>
+                </section>
+                <!-- 产品 -->
+                <section class="goods_two">
+                    <{wap_widgets id="goods2"}>
+                </section>
+            </div>
+        </div>
+        <{wap_require file="block/footer.html"}>
+    </div>
+    <div class="go_top"><i class="iconfont icon-up"></i></div>
+    <script type="text/javascript" src="images/iscroll.js"></script>
+    <script type="text/javascript">
+        (function(){
+            function loaded () {
+            var myScroll = new IScroll('#scroll_wrapper', {
+                click: true,
+                scrollbars: true,
+                mouseWheel: true,
+                interactiveScrollbars: true,
+                shrinkScrollbars: 'scale',
+                fadeScrollbars: true
+            });
+        }
+        function isPassive() {
+            var supportsPassiveOption = false;
+            try {
+                addEventListener("test", null, Object.defineProperty({}, 'passive', {
+                    get: function () {
+                        supportsPassiveOption = true;
+                    }
+                }));
+            } catch(e) {}
+            return supportsPassiveOption;
+        }
+        document.addEventListener('touchmove', function (e) { e.preventDefault(); }, isPassive() ? {
+            capture: false,
+            passive: false
+        } : false);
+        $(function(){
+            loaded();
+        })
+    })();
+        
+        (function(){
+            $(window).on('scroll',function(){
+                var st = $(window).scrollTop();
+                if (st>200) {
+                    $('.go_top').show();
+                }else{
+                    $('.go_top').hide();
+                }
+            })
+            
+            $('.go_top').on('touchend',function(){
+                var st = $(window).scrollTop();
+                clearInterval(timer)
+                var timer = setInterval(function(){
+                    st-=100;
+                    if (st<=0) {
+                        st=0;
+                        clearInterval(timer)
+                    };
+                    $(window).scrollTop(st)
+                }, 10)
+                return false;
+            })
+        })()
+        
+
+        
+        
+    </script>
+</body>
+</html>

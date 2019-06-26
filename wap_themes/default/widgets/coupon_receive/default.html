@@ -1,0 +1,113 @@
+<div class="sys-widget coupon-widget">
+  <div class="coupon-content">
+  <input type='hidden' id='coupons_status_url' value='<{$data.coupons_status_url}>' />
+    <{if $setting.showtype=='1'}>
+      <ul class="act-coupons coupons-list-type1">
+      <{else}>
+      <ul class="act-coupons coupons-list-type2">
+    <{/if}>
+      <{foreach from=$data.coupons item=coupon name="coupon"}>
+      <{if $coupon.receiveStatus == '1'}>
+        <li class="cp-item " data-cid="<{$coupon.cpns_id}>">
+      <{else}>
+        <li class="cp-item act" data-cid="<{$coupon.cpns_id}>">
+      <{/if}>
+          <div class="cp-left">
+            <h3 class="title"><{$coupon.cpns_name}></h3>
+            <{if $setting.showtype=='2'}>
+            <p class="name"><{$env.conf.wap.wap.shopname}></p>
+            <{/if}>
+          </div>
+          <div class="cp-right">
+            <a class="cp-btn J-getCoupon"><{$coupon.receiveStatusName}></a>
+          </div>
+        </li>
+        <{/foreach}>
+    </ul>
+  </div>
+</div>
+<script>
+Zepto(function(){
+  /** 初始化  **/
+  (function cardInit(){
+    var $cards = $('.cp-item');
+    var cardlists={};
+    $.each($cards,function(index,item){
+      var cid = $(item).data('cid');
+      cardlists[cid] = $(item);
+    });
+    var url = $("#coupons_status_url").val();
+    $.post(url,function(re){
+      var coupons,obj;
+      re = $.parseJSON(re);
+      if(re.status==="success"){
+        coupons = re.coupon;
+        for(var key in coupons){
+          var arrcoupon = function(key){
+            if(!cardlists[key]) return;
+            obj = cardlists[key];
+            if(obj.hasClass('act')){
+              obj.addClass('act');
+              $(obj.find('.J-getCoupon')).text(coupons[key].receiveStatusName);
+            };
+          }
+          arrcoupon(key)
+        }
+      }else if(re.status === "fail"){
+        coupons = re.coupon;
+        for(var key in coupons){
+          var arrcoupon = function(key){
+            if(!cardlists[key]) return;
+            obj = cardlists[key];
+            if(obj.hasClass('act')){
+              obj.removeClass('act');
+              //$(obj.find('.J-getCoupon')).text(coupons[key].receiveStatusName);
+            };
+          }
+          arrcoupon(key)
+        }
+      }
+    });
+  })();
+
+  $(".J-getCoupon").on("tap",function(){
+    //领取前验证是否登陆
+    var that = $(this);
+    $.post('<{link app=b2c ctl=wap_passport act=ajax_check_login}>',function(re) {
+      re = $.parseJSON(re);
+      if( re.status ){
+        var card = that.parents(".cp-item");
+        if(card.hasClass('act')) return;
+        var cid = card.data("cid");
+        var postdata = "cpns_id="+cid;
+        var url = "<{link app=b2c ctl=wap_member act='coupon_receive'}>";
+        $.post(url,postdata,function(re) {
+          /*optional stuff to do after success */
+          re = $.parseJSON(re);
+          if(re.status==="success"){
+            popup("领取成功",1000,"sm-pop",function(){
+              card.addClass('act');
+              that.text("已领");
+            });
+          }else if(re.status === "fail"){
+            popup(re.msg,1000,"sm-pop",function(){
+              console.log(re.msg)
+                card.removeClass('act');
+              that.text("立即领取");
+              // location.href = "<{link app=b2c ctl='wap_passport'}>";
+            });
+          }else{
+            popup(re.msg,1000,"sm-pop",function(){
+
+            });
+          }
+        });
+      }else{
+        popup("您还没有登录",1000,"sm-pop",function(){
+          location.href = re.url;
+        });
+      }
+    });
+  });
+});
+</script>
