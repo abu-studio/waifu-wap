@@ -1,0 +1,30 @@
+<div container='true'>
+	<div class="tableform">
+		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="gridlist">
+			<thead>
+			<tr>
+			  <th><{t}>卡券名称<{/t}></th>
+			  <th><{t}>卡券编号<{/t}></th>
+			  <th><{t}>类型<{/t}></th>
+			  <th><{t}>开始时间<{/t}></th>
+			  <th><{t}>结束时间<{/t}></th>
+			  <th><{t}>有效性<{/t}></th>
+			  <th><{t}>状态<{/t}></th>
+			</tr>
+			</thead>
+			<tbody>
+			<{foreach from=$pass_list item=item key=key}>
+			<tr>
+			   <td><{$item.card_name}></td>
+			   <td><{$item.card_no}></td>
+			   <td><{$type_arr[$item.type]}></td>
+			   <td><{$item.from_time|cdate:FDATE_FTIME}></td>
+			   <td><{$item.to_time|cdate:FDATE_FTIME}></td>
+			   <td><{$disabled_arr[$item.disabled]}></td>
+			   <td><{$status_arr[$item.status]}></td>
+			</tr>
+			<{/foreach}>
+			</tbody>
+		</table>
+	</div>
+</div>

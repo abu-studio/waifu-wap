@@ -1,0 +1,41 @@
+ 
+<form action="index.php?app=b2c&ctl=admin_goods&act=prices_allow_all" method="post" id="form01">
+<input type="hidden" value="prices_allow_all" name='prices_allow_all'/>
+<textarea name="filter" style="display:none"><{$filter}></textarea>
+<div class="division">
+<div class="notice"><{t}>正在编辑<{/t}><strong><{$count}></strong><{t}>条数据。<{/t}>
+</div>
+  <div>
+    <table id="marketablereply" class="gridlist bbn" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+      <th><{t}>审核状态<{/t}></th>
+      <td>
+        <input type="radio" name="status" value="4" checked><{t}>审核通过<{/t}>
+        <input type="radio" name="status" value="1"><{t}>审核不通过<{/t}>
+      </td>
+    </tr>
+    <tr>
+      <th><{t}>审核备注<{/t}></th>
+      <td>
+        <input type="hidden" value="<{$goods_id}>" name='goods_id'>
+        <{input type="textarea" class="x-input" value="" name="memo" required="true" vtype="required" style="resize:none;" cols="50" rows="5" maxth="255" }>
+      </td>
+    </tr>
+    </table>
+  </div>
+  <div class="mainFoot">
+    <div class="table-action">
+      <{button label=$___b2c="审核"|t:'b2c' type="button" id="btn01" class="btn-primary"}>
+    </div>
+  </div>
+</form>    
+<script>
+  $('btn01').addEvent('click',function(){
+      $('form01').store('target',{onComplete:function(re){
+           re = JSON.decode(re);
+           if(re.error)return;
+           $('form01').getParent('.dialog').retrieve('instance').close();
+      }});
+      $('form01').fireEvent('submit',{stop:$empty});
+  });
+</script>

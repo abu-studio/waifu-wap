@@ -1,0 +1,3 @@
+<desktop>
+    <adminpanel group="desktop_other" permission="other" controller='admin_default' order='99999' action='index' display='true'>中国银联(Unionpay)数据交互</adminpanel>
+</desktop>

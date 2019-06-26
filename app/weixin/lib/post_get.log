@@ -1,0 +1,1440 @@
+2018-10-18 16:21:12 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 321
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:21:24 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:21:24 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:21:26 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 231
+            [puid] => 11597
+            [from] => singlemessage
+            [code] => 021Wrw2Q0nRR6a2DFz2Q02Pl2Q0Wrw2k
+            [state] => 123
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:21:29 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 224
+            [puid] => 11597
+            [from] => singlemessage
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:21:31 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:21:32 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 229
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:21:36 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 226
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:21:48 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 284
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:21:48 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:21:50 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 226
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:21:51 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 252
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:21:53 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [id] => 1474
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:21:54 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [bid] => 14
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:22:08 Array
+(
+    [postData] => Array
+        (
+            [type] => ShareAppMessage
+            [action] => /Blue/Goods
+            [data] => Array
+                (
+                    [title] => 产品推荐 - 西蒙电气
+                    [desc] => 专注开关100年，新百年 新起点！
+                    [link] => http://wchat.simon.com.cn/blue/goods/info/id/1474.html?puid=11597
+                    [imgUrl] => http://wchat.simon.com.cn/Public/images/wxlogo.jpg
+                )
+
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => type=ShareAppMessage&action=%2FBlue%2FGoods&data%5Btitle%5D=%E4%BA%A7%E5%93%81%E6%8E%A8%E8%8D%90+-+%E8%A5%BF%E8%92%99%E7%94%B5%E6%B0%94&data%5Bdesc%5D=%E4%B8%93%E6%B3%A8%E5%BC%80%E5%85%B3100%E5%B9%B4%EF%BC%8C%E6%96%B0%E7%99%BE%E5%B9%B4+%E6%96%B0%E8%B5%B7%E7%82%B9%EF%BC%81&data%5Blink%5D=http%3A%2F%2Fwchat.simon.com.cn%2Fblue%2Fgoods%2Finfo%2Fid%2F1474.html%3Fpuid%3D11597&data%5BimgUrl%5D=http%3A%2F%2Fwchat.simon.com.cn%2FPublic%2Fimages%2Fwxlogo.jpg
+)
+
+2018-10-18 16:22:13 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 285
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:22:19 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [id] => 1473
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:22:26 Array
+(
+    [postData] => Array
+        (
+            [type] => ShareAppMessage
+            [action] => /Blue/Goods
+            [data] => Array
+                (
+                    [title] => 产品推荐 - 西蒙电气
+                    [desc] => 专注开关100年，新百年 新起点！
+                    [link] => http://wchat.simon.com.cn/blue/goods/info/id/1473.html?puid=11597
+                    [imgUrl] => http://wchat.simon.com.cn/Public/images/wxlogo.jpg
+                )
+
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => type=ShareAppMessage&action=%2FBlue%2FGoods&data%5Btitle%5D=%E4%BA%A7%E5%93%81%E6%8E%A8%E8%8D%90+-+%E8%A5%BF%E8%92%99%E7%94%B5%E6%B0%94&data%5Bdesc%5D=%E4%B8%93%E6%B3%A8%E5%BC%80%E5%85%B3100%E5%B9%B4%EF%BC%8C%E6%96%B0%E7%99%BE%E5%B9%B4+%E6%96%B0%E8%B5%B7%E7%82%B9%EF%BC%81&data%5Blink%5D=http%3A%2F%2Fwchat.simon.com.cn%2Fblue%2Fgoods%2Finfo%2Fid%2F1473.html%3Fpuid%3D11597&data%5BimgUrl%5D=http%3A%2F%2Fwchat.simon.com.cn%2FPublic%2Fimages%2Fwxlogo.jpg
+)
+
+2018-10-18 16:23:44 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [code] => 011CpFV30Zd9LC1GGoX30GCLV30CpFVq
+            [state] => 123
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:23:52 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 250
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:23:57 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 249
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:24:19 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:24:20 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 250
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:24:22 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 249
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:24:27 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:24:28 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 250
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:24:30 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 243
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:24:35 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [id] => 1764
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:25:23 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [code] => 071rolCu07Je5c1wXaEu0hXiCu0rolCG
+            [state] => 123
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:25:41 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [bid] => 6
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:25:59 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:26:10 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [bid] => 40
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:26:14 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [id] => 964
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:26:48 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:27:09 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:27:10 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:27:14 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:27:23 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:27:37 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [id] => 1217
+            [code] => 001RE8wN0X1zx32mu1uN0Ju9wN0RE8wv
+            [state] => 123
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:28:07 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [id] => 1532
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:28:40 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:28:42 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [id] => 1532
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:28:45 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 250
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:30:03 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:30:11 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 226
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:37:25 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [code] => 081HZ9h32fdpKN0mwxg32kJ7h32HZ9hC
+            [state] => 123
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:37:27 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 224
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:37:33 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 241
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:37:39 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 241
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:37:42 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 308
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:37:55 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [code] => 011ZDu2h0eJQgy1qeU3h03KO2h0ZDu2q
+            [state] => 123
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:38:00 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 250
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:38:03 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [id] => 1688
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:38:04 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 245
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:38:20 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [id] => 808
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:38:34 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 245
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:38:42 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [id] => 795
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:43:07 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [id] => 1473
+            [puid] => 11597
+            [from] => singlemessage
+            [isappinstalled] => 0
+            [code] => 071HRzcL0McZP52P0cfL0tiucL0HRzcX
+            [state] => 123
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:43:44 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [id] => 255
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:45:51 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:45:51 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:46:26 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [code] => 061cfrKG06Bjyj2GkBKG0y3rKG0cfrKE
+            [state] => 123
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:46:29 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 250
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:46:31 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 243
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:46:35 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [id] => 1769
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:52:25 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [code] => 061PVVz00m9AEF1O1cC00wrbA00PVVzK
+            [state] => 123
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:53:10 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [code] => 071akEvH0cuNBi2oZYvH0q0QvH0akEvJ
+            [state] => 123
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:53:17 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 250
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:53:20 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 243
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:53:44 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [code] => 021QVQ7o1ZQsfi0XoZ4o1Fi58o1QVQ7j
+            [state] => 123
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:56:59 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:57:01 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:57:07 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:57:11 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 224
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:57:16 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 316
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:57:28 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:57:31 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [code] => 001APTf20Ay2qE14fxc203NQf20APTfC
+            [state] => 123
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:57:33 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 224
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:57:36 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 229
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:57:37 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 283
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:57:46 Array
+(
+    [postData] => Array
+        (
+            [type] => ShareAppMessage
+            [action] => /Blue/Goods
+            [data] => Array
+                (
+                    [title] => 产品推荐 - 西蒙电气
+                    [desc] => 专注开关100年，新百年 新起点！
+                    [link] => http://wchat.simon.com.cn/blue/goods/index/cid/283.html?puid=11885
+                    [imgUrl] => http://wchat.simon.com.cn/Public/images/wxlogo.jpg
+                )
+
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => type=ShareAppMessage&action=%2FBlue%2FGoods&data%5Btitle%5D=%E4%BA%A7%E5%93%81%E6%8E%A8%E8%8D%90+-+%E8%A5%BF%E8%92%99%E7%94%B5%E6%B0%94&data%5Bdesc%5D=%E4%B8%93%E6%B3%A8%E5%BC%80%E5%85%B3100%E5%B9%B4%EF%BC%8C%E6%96%B0%E7%99%BE%E5%B9%B4+%E6%96%B0%E8%B5%B7%E7%82%B9%EF%BC%81&data%5Blink%5D=http%3A%2F%2Fwchat.simon.com.cn%2Fblue%2Fgoods%2Findex%2Fcid%2F283.html%3Fpuid%3D11885&data%5BimgUrl%5D=http%3A%2F%2Fwchat.simon.com.cn%2FPublic%2Fimages%2Fwxlogo.jpg
+)
+
+2018-10-18 16:57:53 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 283
+            [puid] => 11885
+            [code] => 001TvbAe0EGUQA16WvBe0OPkAe0TvbAj
+            [state] => 123
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:57:57 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:57:58 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:57:59 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 283
+            [puid] => 11885
+            [from] => groupmessage
+            [code] => 0719lIk90r92jx1kaGl909x3l909lIkf
+            [state] => 123
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:58:43 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 283
+            [puid] => 11885
+            [from] => groupmessage
+            [isappinstalled] => 0
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:58:50 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 283
+            [puid] => 11885
+            [from] => groupmessage
+            [isappinstalled] => 0
+            [code] => 0814weVI0ekobh2brvVI00UmVI04weVE
+            [state] => 123
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 16:59:50 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 283
+            [puid] => 11885
+            [from] => groupmessage
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 17:01:33 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 17:03:43 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 17:03:46 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 224
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 17:04:04 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 230
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 17:04:13 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 17:04:15 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 224
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 17:04:17 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 316
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 17:04:39 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 224
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 17:04:41 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 230
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 17:04:52 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 17:04:55 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 224
+        )
+
+    [xmldata] => 
+)
+
+2018-10-18 17:04:57 Array
+(
+    [postData] => Array
+        (
+        )
+
+    [getData] => Array
+        (
+            [cid] => 229
+        )
+
+    [xmldata] => 
+)
+

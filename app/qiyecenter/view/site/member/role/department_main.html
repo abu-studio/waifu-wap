@@ -1,0 +1,254 @@
+<div class="fafuli_con">
+    <div class="fafuli_tit">
+        <p class="fafuli_titf">部门管理</p>
+    </div>
+    <div style="height:500px">
+        <div class="left_tree">
+            <{$qiyemenu}>
+        </div>
+        <div class="zzright_list"  id="zzright_list">
+            <input type="hidden" id="customer_no" value="<{$customer_no}>">
+            <div class="title">
+                <div class="sel_tit" id="totab_getUnspecifyEmployees" onclick="totab_qiye(this.id)">未指定</div>
+                <div class="unsel_tit" id="totab_getSpecifyEmployees" onclick="totab_qiye(this.id)">已指定</div>
+            </div>
+            <div class="list" style="height: 82%;" id="list">
+                <form action="<{link app=qiyecenter ctl=site_member act=getSearchEmployeesByConds}>" method="post" id="getyuangongsearch_id">
+                <div class="fd_ye">
+                    <div class="fd_one" style="width: 35px;">姓名</div>
+                    <div class="fd_one" style="width: 11%;">
+                        <input  type="text" name="NAME" style="width: 80px; border: 1px solid #000000;"/>
+                    </div>
+                    <div class="fd_one" style="width: 35px;">性别</div>
+                    <div class="fd_one" style="width: 10%;" >
+                        <select  name="SEX" style="width:80px;font-family: 微软雅黑,宋体;font-size: 14px;">
+                            <option value="">请选择</option>
+                            <option value="1">男</option>
+                            <option value="0">女</option>
+                        </select>
+                    </div>
+                    <div class="fd_one" style="width: 55px;">证件号</div>
+                    <div class="fd_one" style="width: 23%;">
+                        <input type="text" name="ID" style="border: 1px solid #000000; width:160px"/>
+                    </div>
+                    <div class="fd_one" style="width: 35px;">职位</div>
+                    <div class="fd_one" style="width: 13%;">
+                        <input type="text" name="POSITION" style="border: 1px solid #000000; width:80px"/>
+                    </div>
+                    <div class="fd_one" style="margin-left:20px">
+                        <input type="button" value="搜索" style="font-family: 微软雅黑,宋体;font-size: 14px;" id="getyuangongsearch" onclick='getSearchEmployeesByConds(this);'/>
+                    </div>
+                </div>
+                </form>
+
+                <div class="show_list" id="show_list">
+
+                    <div class="list_head" style="width: 93%;margin-left: 26px">
+                    	<div class="head_font" style="width: 9%;"><input type="checkbox" name="selectAll"  onclick="selectAll2(this);"/> 全选</div>
+				        <div class="head_font" style="width: 9%;">姓名</div>
+				        <div class="head_font" style="width: 9%;">性别</div>
+				        <div class="head_font" style="width: 9%;">生日</div>
+				        <div class="head_font" style="width: 9%;">证件号</div>
+				        <div class="head_font" style="width: 9%;">企业</div>
+				        <div class="head_font" style="width: 9%;">部门级别</div>
+				        <div class="head_font" style="width: 9%;">职位</div>
+				        <div class="head_font" style="width: 9%;">发放福点</div>
+				    </div>
+				    <{foreach from=$employeeList item=item}>
+				    <div class="list_con" style="width: 93%;margin-left: 26px">
+				    	<div class="head_font" style="width: 9%;"><input type="checkbox" name="selectItem" lang="<{$item.COMPANY_NO}>" id="<{$item.HUMBAS_NO}>"/></div>
+				        <div class="head_font" style="width: 9%;"><{$item.NAME}></div>
+				        <div class="head_font" style="width: 9%;">
+				            <{if $item.SEX==1}>
+				            男
+				            <{else}>
+				            女
+				            <{/if}>
+				        </div>
+				        <div class="head_font" style="width: 9%;"><{$item.BIRTHDAY.time}></div>
+				        <div class="head_font" style="width: 9%;"><{$item.ID}></div>
+				        <div class="head_font" style="width: 9%;"><{$item.COMPANY_NO}></div>
+				        <div class="head_font" style="width: 9%;"><{$item.NODE_TYPE_NAME}></div>
+				        <div class="head_font" style="width: 9%;"><{$item.NODE_TYPE_NAME}></div>
+				        <div class="head_font" style="width: 9%;"><input type="text" name='fudian'  id='<{$item.HUMBAS_NO}>inpt' value=''/></div>
+				    </div>
+				    <{/foreach}>
+				    <div class="list_con" style="width: 93%;margin-left: 26px; border-bottom:0px;">
+					    <div class="head_font" style="width: 16%; color:#6896C0;" onclick="saveEmployees(this);">指定</div>
+					    <div class="head_font" style="width: 16%; color:#6896C0;">导出名单</div>
+					    <div class="head_font" style="width: 16%; color:#6896C0;">导入</div>
+					</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ <script type="text/javascript">
+ //按照条件查询
+function getSearchEmployeesByConds(obj){
+	var getyuangongsearch_id_action = $('getyuangongsearch_id').action;
+    var frmIdObj = document.getElementById('frmId');
+	var dataObj = {};
+  	//企业
+  	var rdoObj = document.getElementsByName('bumen_id');
+  	for(var i=0; i<rdoObj.length; i++){
+		if(rdoObj[i].checked){
+			dataObj.NODE_TYPE = rdoObj[i].lang;
+	       	dataObj.NODE_ID = rdoObj[i].id;
+	       	break;
+		}
+     }
+   	dataObj.ORDER_ID = frmIdObj.ORDER_ID.value;//订单Id
+  //0未指定， 1指定
+   	if($("totab_getUnspecifyEmployees").hasClass("sel_tit")){
+    	dataObj.IS_NULL = '0';
+    }else{
+    	dataObj.IS_NULL = '1';
+    } 
+
+   	var frmIdObj = document.getElementById('getyuangongsearch_id');
+   	dataObj.NAME = frmIdObj.NAME.value;
+   	dataObj.SEX = frmIdObj.SEX.value;
+   	dataObj.ID = frmIdObj.ID.value;
+   	dataObj.POSITION = frmIdObj.POSITION.value;
+   	new Request.HTML({
+        url:getyuangongsearch_id_action,
+        update:$('show_list'),
+        method:'POST',
+        data:dataObj,
+        onComplete:function(res){
+            $('show_list').show();
+        }
+    }).send();
+}
+//指定员工
+ function saveEmployees(obj){
+ 	if(!confirm("您确定要指定这些人")){
+ 		return false;
+ 	}
+ 	
+ 	var url="<{link app=qiyecenter ctl=site_member act=createItemUser}>";
+ 	var frmIdObj = document.getElementById('frmId');
+ 	var dataObj = {};
+ 	//企业保存员工
+ 	dataObj.ORDER_ID = frmIdObj.ORDER_ID.value;//订单Id
+ 	dataObj.REC_ACT_TYPE = frmIdObj.REC_ACT_TYPE.value;
+ 	dataObj.PAY_ACT_TYPE = frmIdObj.PAY_ACT_TYPE.value;
+ 	
+ 	var itemArray = new Array();
+ 	var chkInput = document.getElementsByName("selectItem");
+ 	for(var i=0; i<chkInput.length;i++){
+ 		if(chkInput[i].checked){
+ 			var itemList = {};
+ 			var chkId = chkInput[i].id;
+ 			itemList.REC_ID = chkId;
+ 			itemList.PRICE = document.getElementById(chkId+'inpt').value;;
+ 			itemList.CUSTOMER_ID = chkInput[i].lang;
+ 			itemArray.push(itemList);
+ 		}
+ 	}
+ 	dataObj.ITEM_LIST = itemArray;
+ 	itemArray = [];
+ 	new Request({
+ 		url:url,
+ 		method:'post',
+ 		data:dataObj,
+ 		onComplete: function(rs){
+ 			//隐藏数据
+ 			for(var i=0; i<chkInput.length;i++){
+ 				if(chkInput[i].checked){
+ 					var chkId = chkInput[i].id;
+ 					var divsObj = $(chkId).getParent('div').getParent('div');
+ 					divsObj.setStyle('display', 'none');
+ 				}
+ 			}
+ 			
+ 		}
+ 	}).send();
+ }
+
+ //全选反选
+ function selectAll2(obj){
+ 	//var chkInput = document.getElementsByTagName('input');
+ 	var chkInput = document.getElementsByName("selectItem");
+ 	if(obj.checked){
+ 		for(var i=0; i<chkInput.length;i++){
+ 			if(!chkInput[i].checked){
+ 				chkInput[i].checked = true;
+ 			}
+ 		}
+ 	}else{
+ 		for(var i=0; i<chkInput.length;i++){
+ 			if(chkInput[i].checked){
+ 				chkInput[i].checked = false;
+ 			}
+ 		}
+ 	}
+ 	
+ }
+
+
+ 
+     function totab_qiye(id){
+         $(id).getParent('div').getElements("div").each(function(el){
+            if(el.hasClass("sel_tit")){
+                el.removeClass("sel_tit");
+                el.addClass("unsel_tit");
+            }
+         });
+         $(id).addClass('sel_tit');
+         
+        var frmIdObj = document.getElementById('frmId');
+    	var dataObj = {};
+      	//企业
+      	var rdoObj = document.getElementsByName('bumen_id');
+      	for(var i=0; i<rdoObj.length; i++){
+			if(rdoObj[i].checked){
+				dataObj.NODE_TYPE = rdoObj[i].lang;
+		       	dataObj.NODE_ID = rdoObj[i].id;
+		       	break;
+			}
+         }
+       	dataObj.ORDER_ID = frmIdObj.ORDER_ID.value;//订单Id
+       	if(id=='totab_getUnspecifyEmployees'){
+       		dataObj.IS_NULL = 0; //0未指定， 1指定
+       	}else{
+       		dataObj.IS_NULL = 1; //0未指定， 1指定
+        }
+		dataObj.type = id;
+
+        new Request.HTML({
+             url:'<{link app=qiyecenter ctl=site_member act=getqiyetable}>',
+             update:$('show_list'),
+             method:'POST',
+             data:dataObj,
+             onComplete:function(res){
+                 $('show_list').show();
+             }
+         }).send();
+     }
+
+
+</script>
+<script>
+//全选反选
+function selectAll2(obj){
+	//var chkInput = document.getElementsByTagName('input');
+	var chkInput = document.getElementsByName("selectItem");
+	if(obj.checked){
+		for(var i=0; i<chkInput.length;i++){
+			if(!chkInput[i].checked){
+				chkInput[i].checked = true;
+			}
+		}
+	}else{
+		for(var i=0; i<chkInput.length;i++){
+			if(chkInput[i].checked){
+				chkInput[i].checked = false;
+			}
+		}
+	}
+	
+}
+</script>

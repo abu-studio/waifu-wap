@@ -1,0 +1,60 @@
+
+<form method="POST" id='settlement-edit-form' action="index.php?app=business&ctl=admin_settlement&act=create" class="tableform">
+    <div class="division">
+        <input type="hidden" id="store_ids" name="store_ids" value="<{$store_ids}>"/>
+        <input type="hidden" id="order_count" name="order_count" value="<{$order_count}>"/>
+        <input type="hidden" id="start" name="start" value="<{$start}>"/>
+        <input type="hidden" id="end" name="end" value="<{$end}>"/>
+        <input type="hidden" id="order_kind" name="order_kind" value="<{$order_kind}>"/>
+        <input type="hidden" id="card_id" name="card_id" value="<{$card_id}>"/>
+        <span style="color: red;">选择了<{$store_count}>个店铺，一共<{$order_count}>张订单，点击创建开始结算！</span>
+    </div>
+</form>
+
+<{area inject='.mainFoot'}>
+<div class="table-action"><{button type="submit"  label=$___b2c="创建"|t:'b2c' id='settlement-edit-form-submit'}></div>
+<{/area}>
+
+
+<script>
+    (function(){
+        var _form = $('settlement-edit-form');
+        var btn =$('settlement-edit-form-submit');
+        //var finder = finderGroup['<{$env.get.finder_id}>'];
+
+        _form.store('target',{
+            onComplete:function(){
+
+            },
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                        //finder.refresh.delay(400,finder);
+                    }
+                }
+                else
+                {
+                    //alert(hash_res_obj.error);
+                }
+            }
+        });
+
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+
+
+
+        });
+
+    })();
+</script>
+
+

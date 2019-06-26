@@ -1,0 +1,21 @@
+<form action="index.php?app=b2c&ctl=admin_member_attr&act=updateService" method="post" name="return_save" id='x-return-form'>
+    <div class="goods-detail tableform"> 
+        <h3><{t}>平台客服设置<{/t}></h3>
+        <div class="division">
+            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+              <tr>
+                <th><{t}>QQ账号：<{/t}></th>
+                <td><input type="text" id="ServiceQQ" name="ServiceQQ" value="<{$ServiceQQ}>" size="25"></td>
+              </tr>
+              <tr>
+                <th><{t}>客服电话：<{/t}></th>
+                <td><input type="tel" id="ServiceTel" name="ServiceTel" value="<{$ServiceTel}>" size="25"></td>
+              </tr>
+            </table>
+            <div class="table-action">
+                <{button label="保存" type="submit" id="groupactivity-btn" }>
+                <{button label="取消" id="groupactivity-cancel"}>
+            </div>
+        </div>
+    </div>
+</form>

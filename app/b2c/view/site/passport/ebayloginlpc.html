@@ -1,0 +1,57 @@
+<div class="register-wrap">
+    <div class="loginbox_left">
+        <div class="tableform">
+            <link href="login.css" rel="stylesheet" type="text/css">
+                <h3>
+                    EBAY登录悠福
+                </h3>
+                <form action="http://local.yoofuu.com/index.php/passport-ebayLogin.html" id="loginBar" method="post">
+                    <input id="ebayimg" type="hidden" value="<{$ebayimg}>"/>
+                    <div class="loginbox login_body" style="border:0px;">
+                        <div>
+                            <ul class="login_ul">
+                                <li>
+                                    <div class="login-v aling_left">
+                                        <input autocomplete="off" class="x-input user_name" id="uname" name="name" placeholder="用户名 User Name" tabindex="1" type="text" value="" vtype="required">
+                                        </input>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="login-v">
+                                        <input autocomplete="off" class="x-input inputstyle password" id="password" name="password" placeholder="密码 Password" tabindex="2" type="password" vtype="required"/>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="login-v login-w">
+                                        <button class="btn login_button " rel="_request" tabindex="4" type="submit">
+                                            <span>
+                                                <span>
+                                                    登录LOGIN
+                                                </span>
+                                            </span>
+                                        </button>
+                                        <input name="forward" type="hidden" value="">
+                                        </input>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </form>
+            </link>
+        </div>
+    </div>
+    <div class="loginbox-right">
+    </div>
+</div>
+<!-- lpc 使用的是一个登陆模板，在这换上ebay登陆页面图片 -->
+<script type="text/javascript">
+    window.onload=function (){
+	var login_ad = document.getElementsByClassName("login_ad");
+	var eimg = login_ad[0].children[0];
+
+	var ebayimg = document.getElementById("ebayimg");
+	eimg.setAttribute('src',ebayimg.getAttribute('value'));
+}
+</script>
+

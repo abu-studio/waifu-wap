@@ -1,0 +1,16 @@
+<app version="1.0">
+  <name>企业中心</name>
+  <description>企业中心</description>
+  <author>
+	  <name>BBC 开发团队</name>
+	  <email></email>
+	  <url></url>
+  </author>
+  <version>0.1</version>
+  <license>Commercial</license>
+  <depends>
+	<app>b2c</app>
+	<app>desktop</app>
+  </depends>
+
+</app>

@@ -1,0 +1,19 @@
+<app>
+    <name>体检预约系统</name>
+    <description>体检预约系统</description>
+
+    <author>
+        <name>开发团队</name>
+        <email></email>
+        <url></url>
+    </author>
+
+    <version>4.9</version>
+    <license>license</license>
+	<depends>
+		<app>desktop</app>
+		<app>content</app>
+		<app>ectools</app>
+		<app>site</app>
+	</depends>
+</app>

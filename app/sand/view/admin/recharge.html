@@ -1,0 +1,63 @@
+<div class="tableform">
+  <div class="division">
+	<table width="100%" cellspacing="0" cellpadding="0">
+	  <tr>
+		<th><label><{t}>订单号：<{/t}></label></th>
+		 <td><a target='_blank' style="color:#3367ac;" href='index.php?app=b2c&ctl=admin_order&act=index&action=detail&id=<{$data.order_id}>&singlepage=true&finderview=detail_basic'><{t}><{$data.order_id}><{/t}></a></td>                                                  
+		<th><label><{t}>会员用户名：<{/t}></label></th>
+		<td> <{$data.member_name}></td>
+		<th><label><{t}>创建时间：<{/t}></label></th>
+		<td> <{$data.createtime|date_format:'%Y-%m-%d %H:%M:%S'}></td>
+		<th><label><{t}>操作人：<{/t}></label></th>
+		<td> <{$data.operator}></td>
+		<th><label><{t}>杉德开户账号：<{/t}></label></th>
+		<td> <{$data.sandopen_mobile}></td>
+	  </tr>
+	  <tr>
+		<th><label><{t}>订单金额：<{/t}></label></th>
+		<td><{$data.pay_amount|cur}></td>
+		<th><label><{t}>充值金额：<{/t}></label></th>
+		<td><{$data.amount|cur}></td>
+		<th><label><{t}>充值时间：<{/t}></label></th>
+		<td ><{$data.recharge_time|date_format:'%Y-%m-%d %H:%M:%S'}></td>
+		<th><label>充值状态：</label></th>
+		<td>
+		<{if $data.status == '0'}>
+			未充值
+		<{elseif $data.status == '1'}>
+			已充值
+		<{else}>
+			充值失败
+		<{/if}>
+		</td>
+	  </tr>
+	</table>
+  </div>
+</div>
+<div class="tableform">
+  <div class="division">
+		订单备注： <{$data.mark_text}>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

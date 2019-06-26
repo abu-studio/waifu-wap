@@ -1,0 +1,85 @@
+<h3><{t}>卡密设置<{/t}></h3>
+<div class="tableform">
+	<table>
+		<tr>
+			<th>卡密方式：</th>
+			<td>
+				<input type="radio" name="cards[passset]" onclick="pass_create('manual')" value='manual' <{if $cards.passset != 'auto'}>checked<{/if}> />
+				<label ><{t}>手动输入<{/t}></label>
+				<input  type="radio" name="cards[passset]" onclick="pass_create('ftp')" value='ftp' <{if $cards.passset == 'ftp'}>checked<{/if}> />
+				<label  ><{t}>上传文件<{/t}></label>
+				<input  type="radio" name="cards[passset]" onclick="pass_create('auto')" value='auto' <{if $cards.passset == 'auto'}>checked<{/if}> />
+				<label  ><{t}>自动生成<{/t}></label>
+			</td>
+		</tr>
+		<tr id="manual_tr">
+			<td><a href="javascript:void(0);" class="addimage" id="FormWrap_table_a">添加一组</a></td>
+			<td id="manual_td"></td>
+		</tr>
+		<tr id="ftp_tr" style="display:none;"><td>选择文件:</td><td><input type="file" name="cards"/></td></tr>
+		<tr id="auto_tr" style="display:none;"><td colspan='2'>亲，您选择了自动生成卡号密码，我们将会根据库存生成相应的卡号和密码供您使用。</td></tr>
+		<{if !cards.card_id}>
+		<tr>
+			<th>初始有效期</th>
+			<td>开始：<{input type="time" required="required" name="cards[from_time]" value=$cards.from_time}>结束：<{input type="time" required="required" name="cards[to_time]" value=$cards.to_time}></td>
+		</tr>
+		<{/if}>
+	</table>
+</div>
+<script>
+	function pass_create(id){
+		var set=new Array('manual','ftp','auto');
+		for(var i=0;i<set.length;i++){
+			if(id==set[i]){
+				$(set[i]+'_tr').setStyle('display','');
+			}else{
+				$(set[i]+'_tr').setStyle('display','none');
+			}
+		}
+	}
+	document.getElement(".addimage").addEvent('click',function(){
+      var i=new Date().getTime();
+
+      var tpl='\
+        <div><{t app="b2c"}>卡号:<{/t}><input type="text" name="cards[pass]['+i+'][card_no]" maxlength="25" vtype="required">\
+        <{t app="b2c"}>密码:<{/t}><input type="text" name="cards[pass]['+i+'][card_pass]" maxlength="25">\
+        <{t app="b2c"}>删除该组:<{/t}><span onclick="del($(this));"><{img src="bundle/delete.gif" style="cursor:pointer;" alt=$___b2c="删除"|t:'b2c' title=$___b2c="删除"|t:'b2c'}></span>';
+      var store = parseInt($('g_store').value);
+	  if(store>0){
+		
+		}else{
+			store=0;
+		}
+	  $('g_store').value = parseInt(store+1);
+	  
+      $('manual_td').adopt(new Element('tr',{'html':tpl,'width':'100%'}));
+});
+function del(tr){
+    var store = parseInt($('g_store').value);
+	if(store>0){
+		
+	}else{
+		store=1;
+	}
+
+    $('g_store').value = parseInt(store-1);
+    $(tr).getParent('tr').destroy();
+}
+
+
+    window.addEvent('domready', function(){
+        $('card_type').addEvent('change',function(){
+            var Selectedvalue = this.getSelected();
+            new Request.HTML({
+                url:'index.php?app=cardcoupons&ctl=admin_cards&act=get_type',
+                method:'POST',
+                update:$('card_type_data'),
+                data:'card_type='+Selectedvalue[0].value,
+                onComplete:function(siteInfo){
+                    $('card_type_data').show();
+                }
+            }).send();
+        });
+    });
+
+</script>

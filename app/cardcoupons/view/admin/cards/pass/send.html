@@ -1,0 +1,95 @@
+<form action="index.php?app=cardcoupons&ctl=admin_cards_pass&act=send" method="post" id="form01">
+<div class="notice">短信发送会因网络及其他原因造成延迟或者发送失败，操作后请耐心等待。。。
+
+<!--<br/>警告：同一卡密短信发送间隔大于120s。-->
+</div>
+<div class="tableform">
+	   <input type="hidden"name="send" value="send">
+	   <input type="hidden"name="card_pass_id" value="<{$cards_pass.card_pass_id}>">
+	   <input type="hidden"name="ship_name" value="<{$cards_pass.ship_name}>">
+	   <input type="hidden"name="order_id" value="<{$cards_pass.order_id}>">
+	   <input type="hidden"name="card_pass" value="<{$cards_pass.card_pass}>">
+     <input type="hidden"name="card_pass_ori" value="<{$cards_pass.card_pass_ori}>">
+	   <input type="hidden"name="card_no" value="<{$cards_pass.card_no}>">
+	    <div class="division" style="border:none;">
+
+<table class="forform" width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr class="row">
+		<th>卡号：</th>
+		<td><{$cards_pass.card_no}><{$card_pass.send_time}></td>
+	</tr>
+	<tr class="row">
+		<th>卡密：</th>
+		<td><span ><{$cards_pass.ycard_pass}></span>&nbsp;&nbsp;<span style="display:none;"><{$cards_pass.card_pass}></span></td>
+	</tr>
+	<tr class="row">
+		<th>手机号：</th>
+		<td><{input  type="mobile" vtype="required&&mobile" name="mobile" value=$cards_pass.ship_mobile}></td>
+	</tr>
+	<tr class="row">
+		<th>备注：</th>
+		<td><{input type="textarea" required="required" name="memo"}></td>
+	</tr>
+    
+</table>
+</div>
+</div>
+</div>
+<div class="mainFoot">
+<table cellspacing="0" cellpadding="0" border="0" align="center" class="table-action">
+  <tr>
+  <td> 
+    </td>
+  </tr>
+</table></div>
+
+</form>
+<{area inject=".mainFoot"}>
+   <div class="table-action">
+        <{button label=$___b2c="发送"|t:'b2c' type="button" id="btn01" class="btn-primary"}>
+        <{button label=$___b2c="取消"|t:'b2c' isCloseDialogBtn="true"}>
+   </div>
+<{/area}>
+<{if $send_time >0}>
+<script type="text/javascript">
+    var test = {
+       node:null,
+       count:"<{$send_time}>",
+       start:function(){
+          //console.log(this.count);
+          if(this.count > 0){
+             this.node.innerHTML = this.count-- +'s';
+             var _this = this;
+             setTimeout(function(){
+                 _this.start();
+             },1000);
+          }else{
+             this.node.removeAttribute("disabled");
+             this.node.innerHTML = "发送";
+             this.count ="<{$send_time}>";
+          }
+       },
+       //初始化
+       init:function(node){
+          this.node = node;
+          this.node.setAttribute("disabled",true);
+          this.start();
+       }
+    };
+    var btn = document.getElementById("btn01");
+    test.init(btn);
+</script>
+<{/if}>
+<script>
+  $('btn01').addEvent('click',function(){
+
+      $('form01').store('target',{onComplete:function(re){
+           re = JSON.decode(re);
+
+           if(re.error)return;
+           $('form01').getParent('.dialog').retrieve('instance').close();
+      }});
+      $('form01').fireEvent('submit',{stop:$empty});
+  
+  });
+</script>

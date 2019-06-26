@@ -1,0 +1,162 @@
+<style type="text/css">
+        .suoshuqiye{float: left; margin-right: 13px;font-family: 微软雅黑,宋体; font-size:line-height: 53px;height: 53px;}
+        .search_bott{background: #c40001;padding: 0 15px;border: none;display: inline-block;zoom: 1;overflow: visible;color: #FFFFFF;font-size: 12px;font-family: 微软雅黑; text-decoration: none;cursor: pointer;vertical-align: middle;height: 24px;line-height: 24px;border-radius: 5px;}
+       
+</style>
+<div style="width: 100%; height: auto;">
+    <div style="float: left; width: 100%; height: 50px; line-height:50px; text-align: center; font-size: 16px; font-weight: bold;">员工管理</div>
+        <!-- <div style="width: 80%; float: left; height: 50px; line-height: 50px; margin-left: 55px;">
+            <div style="width: 100px; float: left; height: 50px; line-height: 50px; display: none;">雇员姓名</div>
+            <div style="width:150px; float: left; height: 50px; line-height: 50px; display: none;">
+                <input style="height: 25px;" id="humbas_name" type="text" name="" />
+            </div>
+        </div> -->
+       <div style="height: 60px;">
+            <div class="suoshuqiye">雇员编号</div>
+            <div class="suoshuqiye">
+                <input type="text" name="EMP_HUMBAS_NO" id="EMP_HUMBAS_NO"  value="" style="border: 1px solid;width: 100px;"/>
+            </div>
+            <div class="suoshuqiye">姓名</div>
+            <div class="suoshuqiye">
+                <input type="text" name="EMP_NAME"  id="EMP_NAME" value="" style="border: 1px solid;width: 100px;"/>
+                 <input type="hidden" id="GROUP_ID" value="<{$GROUP_ID}>">
+                 <input type="hidden" id="COMPANY_NO" value="<{$COMPANY_NO}>">
+            </div>
+            <div class="suoshuqiye">证件号</div>
+            <div class="suoshuqiye" style="width: 100px; ">
+                 <input type="text" name="EMP_ID"  id="EMP_ID" style="border: 1px solid; width: 100px;"/></div>
+           
+            <div class="suoshuqiye" ><input type="submit" value="搜索" id="search_humbas_qunzu" class="search_bott"/></div>
+        </div>
+    <div class="r_list" id="EXCEPT_HUMBAS_LIST">
+        <div class="list_head">
+            <div class="head_font" style="width: 10%;">操作</div>
+            <div class="head_font" style="width: 15%;">雇员编号</div>
+            <div class="head_font" style="width: 15%;">雇员姓名</div>
+            <div class="head_font" style="width: 40%;">身份证</div>
+            <div class="head_font" style="width: 10%;">性别</div>
+        </div>
+        <{foreach from=$sfscdata item=item}>
+            <div class="list_con">
+                <div class="head_font" style="width: 10%;"><input type="checkbox" name="HUMBAS_NO" value="<{$item.HUMBAS_NO}>" /></div>
+                <div class="head_font" style="width: 15%;"><{$item.HUMBAS_NO}></div>
+                <div class="head_font" style="width: 15%;"><{$item.NAME}></div>
+                <div class="head_font" style="width: 40%;"><{$item.ID}></div>
+                <div class="head_font" style="width: 10%;"><{if $item.SEX == '1'}>男<{elseif $item.SEX == '2'}>女<{else}>--<{/if}></div>
+            </div>
+        <{/foreach}>
+    </div>
+    <input type='hidden' id='current_page_bak' value='0' />
+    <div class="show_fenye">
+        <div class="feny" id="page_navigation_bak">
+        </div>
+    </div>
+    <div style="width:200px; float: left; height: 50px; line-height: 50px;">
+        <input type="button" value="确定" id="confirm_humbas"  style="margin-left: 10px; display: inline-block;zoom: 1;color: rgb(255, 255, 255);font-size: 12px;font-family: 微软雅黑;cursor: pointer;vertical-align: middle;height: 24px;line-height: 24px;background: rgb(196, 0, 1);padding: 0px 15px;border-width: initial;border-style: none;border-color: initial;border-image: initial;overflow: visible;text-decoration: none;border-radius: 5px;">
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    var per_page = 10;
+    var items = document.getElementsByClassName("list_con");
+    var pages = Math.ceil(items.length/per_page);
+    gotopage(0);
+
+    function gotopage(page){
+        for(var i=0;i<items.length;i++){
+            items[i].style.display='none';
+        }
+        for(var i=page*per_page;i<(page+1)*per_page;i++){
+            if(i<items.length){
+                items[i].style.display='block';
+            }
+        }
+        var navigation_html = '<a class="page_link" title="上一页" href="javascript:prepage();">&lt;</a>';
+
+        for(var current_link = 0; current_link < pages; current_link++){
+            if(pages<=10){
+                current_link == page?navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>':navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+            }else{
+                if(current_link == page){
+                    navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+                }
+                if(current_link <= (page+4)&&current_link >= (page-4)&&current_link != page){
+                    navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+                }
+            }
+        }
+        navigation_html += '<a class="page_link" title="下一页" href="javascript:nextpage();">&gt;</a>';
+        document.getElementById("page_navigation_bak").innerHTML= navigation_html;
+        document.getElementById("current_page_bak").value= page;
+
+    }
+    function nextpage(){
+        var page = parseInt(document.getElementById("current_page_bak").value);
+        if(page < pages - 1){
+            gotopage((page+1));
+            document.getElementById("current_page_bak").value= page+1;
+        }
+    }
+    function prepage(){
+        var page = parseInt(document.getElementById("current_page_bak").value);
+        if(page > 0){
+            gotopage((page - 1));
+            document.getElementById("current_page_bak").value= page - 1;
+        }
+    }
+
+    //确认信息
+    window.addEvent('domready',function(){
+        $('confirm_humbas').addEvent('click',function(){
+            var HUMBAS_NO = "";
+            var DEPT_ID = $("DEPT_ID").getValue();
+            $$('#EXCEPT_HUMBAS_LIST').getElements('input[name="HUMBAS_NO"]').each(function(item){
+                item.each(function(key){
+                    if(key.get('checked')){
+                        if(key.getValue() != ""){
+                            HUMBAS_NO += key.getValue() + '_'
+                        }
+                    }
+                });
+
+            });
+
+            if(HUMBAS_NO == ""){
+                MessageBox.show("选择要新增的数据！");
+                return false;
+            }
+
+
+
+            new Request.JSON({
+                url:'<{link app=qiyecenter ctl=site_member act=add_organization_save}>',
+                method:'post',
+                data:"HUMBAS_NO="+HUMBAS_NO+"&DEPT_ID="+DEPT_ID,
+                onComplete:function(res){
+                    if (res.error){
+                        MessageBox.error(res.error);
+                        location.reload();
+                    }else{
+                        MessageBox.success("添加成功！");
+                        location.reload();
+                    }
+                }
+            }).send();
+        });
+
+         //部门员工数据查询
+        var url = '<{link app=qiyecenter ctl=site_member act=get_bumen_guyuan_gyselect}>';
+        $('search_humbas_qunzu').addEvent('click',function(){
+            new Request.HTML({
+                url:url,
+                method:'get',
+                data:'HUMBAS_NO='+$('EMP_HUMBAS_NO').getValue()+'&EMPLOYEE_NAME='+$('EMP_NAME').getValue()+'&ID='+$('EMP_ID').getValue()+'&COMPANY_NO='+$('COMPANY_NO').getValue(),
+                update:$('EXCEPT_HUMBAS_LIST')
+            }).send();
+
+        });
+
+    });
+
+</script>

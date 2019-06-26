@@ -1,0 +1,26 @@
+<div container='true'>
+	<div class="tableform">
+		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="gridlist">
+			<thead>
+			<tr>
+			  <th><{t}>日期<{/t}></th>
+			  <th><{t}>操作管理员<{/t}></th>
+			  <th><{t}>操作记录<{/t}></th>
+			  <th><{t}>备注<{/t}></th>
+			</tr>
+			</thead>
+			<tbody>
+			<{foreach from=$log_list item=item key=key}>
+			<tr>
+			   <td><{$item.alttime|cdate:FDATE_FTIME}></td>
+			   <td><{$item.op_name}></td>
+			   <td style="text-align: left;"><{$item.record}></td>
+			   <td style="text-align: left;"><{$item.remarks}></td>
+			</tr>
+
+			<{/foreach}>
+			</tbody>
+		</table>
+		<{$pager}>
+	</div>
+</div>

@@ -1,0 +1,77 @@
+<div class='buyinfo clearfix'>
+  <label><{t}>数量：&nbsp;
+				<font style="color:#CDCDCD">
+					Quantity
+				</font>
+  <{/t}></label>
+  <ul style="float: left;">
+    <li>
+    <div class="Numinput numinputModi">
+       	<span class="substract"></span>
+        <span class="plus"></span>
+        <input type="text" value="1" size="5" name="goods[num]" min="0" class="Num" id="Num">
+        <div style="display:none;" class="numadjust-arr"><span class="numadjust increase"></span> <span class="numadjust decrease"></span></div>
+      </div>
+
+    </li>
+    
+  </ul>
+</div>
+<!--================================== 购买 按钮 ==============================-->
+
+<input type='hidden' name='goods[product_id]' updatespec="updatepid" value='<{$product0id}>'/>
+ <div class="btnBar clearfix" <{if count($goods.product)<0}>style="visibility:hidden"<{/if}>></div>
+
+<script>
+   var keyCodeFix=[48,49,50,51,52,53,54,55,56,57,96,97,98,99,100,101,102,103,104,105,8,9,46,37,39<{if $goods.type.floatstore}>,110,190<{/if}>];
+
+
+/*购买数量调节*/
+
+     var getStore=function(){
+        return  $('goods-viewer').getElement('.buy-limit-storess')?$('goods-viewer').getElement('.buy-limit-storess').get('text').toInt():$('goods-viewer').getElement('.buyinfo .store').get('text').toInt();
+     };
+
+     $$('#goods-viewer .buyinfo .numadjust').addEvent('click',function(e){
+          var countText=$('goods-viewer').getElement('.buyinfo input[name^=goods[num]');
+          if(this.hasClass('increase')){
+             countText.set('value',(countText.value.toInt()+1).limit(1,getStore()));
+          }else{
+             countText.set('value',(countText.value.toInt()-1).limit(1,getStore()));
+          }
+          this.blur();
+     });
+
+     $('goods-viewer').getElement('.buyinfo input[name="goods[num]"]').addEvents({
+        'keydown': function(e){
+            if(!keyCodeFix.contains(e.code)){
+               e.stop();
+            }
+        },
+        'keyup': function(e){
+            this.value=getStore();
+            if (!this.value || <{if $goods.type.floatstore==='1'}>this.value.toFloat() < 0<{else}>this.value.toInt() < 1<{/if}>) this.value = 1;
+        },
+        'blur': function(e) {
+            if (<{if $goods.type.floatstore==='1'}>this.value.toFloat() <= 0<{else}>this.value.toInt() < 1<{/if}>) this.value = 1;
+            <{if $goods.type.floatstore==='1'}>else this.value = this.value.toFloat();<{/if}>
+        }
+     });
+     
+      $('goods-viewer').getElement('.substract').addEvent('click',function(e){
+         var val=$('goods-viewer').getElement('.Num').get('value');
+         if(val!=1)
+             {
+                 var vals=parseInt(val)-1;
+                 
+                $('goods-viewer').getElement('.Num').set('value',vals);
+             }
+	 });
+       $('goods-viewer').getElement('.plus').addEvent('click',function(e){
+          var val=$('goods-viewer').getElement('.Num').get('value');     
+		  if(val<9999){
+		    var vals=parseInt(val)+1;
+		    $('goods-viewer').getElement('.Num').set('value',vals);
+		  } 
+      });
+</script>

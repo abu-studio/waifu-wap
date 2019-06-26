@@ -1,0 +1,102 @@
+<{if $type == "qiye_setting"}>
+<form action="<{link app='qiyecenter' ctl='site_member' act='updateSingleCustomerExt'}>" method="post">
+    <div class="fd_ye" style="height: auto;">
+        <div style="padding-top: 15px; font-size: 14px;">
+            企业名称
+        </div>
+        <div style="padding-top: 15px; font-size: 12px;">
+			<input type="hidden" name="customer_id" value="<{$customer_id}>" />
+            <input type="text"  disabled='disabled' style="width: 160px; border: 1px solid #000000;" name="" value="<{$customer_name}>">
+        </div>
+    </div>
+    <div class="fd_ye" style="height: auto;">
+        <div style="padding-top: 15px; font-size: 14px;">
+            前台显示名称
+        </div>
+        <div style="padding-top: 15px; font-size: 12px;">
+            <input type="text" style="width: 160px; border: 1px solid #000000;" name="company_name" value="<{$company_name}>">
+            <span style="margin-left: 30px;">为空显示以上默认企业信息</span>
+        </div>
+		<div style="text-align:center;">
+		<input type="submit" style="margin-top: 20px; margin-bottom: 10px; width: 100px; background: #c40001; font-size:14px; font-weight: bold; color: #ffffff; height: 30px;border-radius: 5px;" rel="_request" value="提交">
+		</div>
+    </div>
+	</form>
+
+<!--     <div class="show_list" style="margin-top: 20px;">
+        <div class="list_head" style="width: 93%;margin-left: 26px">
+            <div class="head_font" style="width: 16%;">帐号名称</div>
+            <div class="head_font" style="width: 16%;">姓名</div>
+            <div class="head_font" style="width: 16%;">手机号</div>
+            <div class="head_font" style="width: 16%;">角色</div>
+            <div class="head_font" style="width: 16%;">备注</div>
+            <div class="head_font" style="width: 16%;">操作</div>
+        </div>
+        <div class="list_con" style="width: 93%;margin-left: 26px">
+            <div class="head_font" style="width: 16%;">收入</div>
+            <div class="head_font" style="width: 16%;">企业账户</div>
+            <div class="head_font" style="width: 16%;">15/04/10</div>
+            <div class="head_font" style="width: 16%;">充值</div>
+            <div class="head_font" style="width: 16%;">1000</div>
+            <div class="head_font" style="width: 16%;">
+                <span class="edit">编辑</span> <span class="edit">撤销</span>
+            </div>
+        </div>
+        <div class="list_con" style="width: 93%;margin-left: 26px; border-bottom:0px;">
+            <div class="head_font" style="width: 16%; color:#6896C0;">添加</div>
+        </div>
+    </div> -->
+
+<{elseif  $type == "qiye_stylesetting"}>
+        <div class="fd_ye" style="height: auto;">
+            <form action="<{link app='qiyecenter' ctl='site_member' act='updateSingleCustomerExt'}>" method="post">
+				<input type="hidden" name="customer_id" value="<{$customer_id}>" />
+                <table style="width: 100%;">
+                    <colgroup>
+                        <col style="width: 110px;">
+                        <col style="width: auto;">
+                    </colgroup>
+                    <tr>
+                        <td>员工中心logo</td>
+                        <td>
+                            <{include file="site/member/upload/domfile.html" app=qiyecenter}>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>员工中心背景</td>
+                        <td>
+                            <{include file="site/member/upload/domfile1.html" app=qiyecenter}>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: center;">
+                            <input type="submit" style="margin-top: 10px; margin-bottom: 10px; width: 100px; background: #c40001; font-size:14px; font-weight: bold; color: #ffffff; height: 30px;border-radius: 5px;" rel="_request" value="提交">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+
+<{else}>
+
+<!--     <form action="" method="post">
+        <div class="fd_ye" style="height: auto; margin-bottom: 10px;">
+            <div style="padding-top: 15px; margin-bottom: 15px;">
+                <div style="height: 50px; line-height: 50px; color: #FF6600;font-size:14px">设置以下频道是否允许员工访问</div>
+                <div>
+                    <ul>
+                        <li style="font-size: 13px;font-weight:bold; height: 30px; line-height: 30px;"><input name="" type="checkbox" value="" />生活服务</li>
+                        <li style="height: 30px; line-height: 30px;"><label style="width: 20px;"></label><input name="" type="checkbox" value="" />体检</li>
+                        <li style="height: 30px; line-height: 30px;"><label style="width: 20px;"></label><input name="" type="checkbox" value="" />便捷支付</li>
+                        <li style="height: 30px; line-height: 30px;"><label style="width: 20px;"></label><input name="" type="checkbox" value="" />健身</li>
+                        <li style="font-size: 13px;font-weight:bold; height: 30px; line-height: 30px;"><input name="" type="checkbox" value="" />商城</li>
+                        <li style="font-size: 13px;font-weight:bold; height: 30px; line-height: 30px;"><input name="" type="checkbox" value="" />休闲活动</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="fd_ye" style="height: auto; border-bottom: 0px;">
+            <input type="submit" style="width: 100px; background: #c40001; font-size:14px; font-weight: bold; color: #ffffff; height: 30px;border-radius: 5px;" rel="_request" value="提交">
+        </div>
+    </form> -->
+<{/if}>

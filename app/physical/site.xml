@@ -1,0 +1,19 @@
+<site>
+    <module id='physical' controller='site_index' >
+        <name>physical</name>
+        <title>体检首页</title>
+        <disable>false</disable>
+		<allow_menu act='index'>体检首页</allow_menu>
+		<allow_menu act='goodslist'>体检产品列表</allow_menu>
+		<allow_menu act='storelist'>体检门店列表</allow_menu>
+		<allow_menu act='goodsdetail'>体检产品详情</allow_menu>
+		<allow_menu act='storedetail'>体检门店详情</allow_menu>
+    </module>
+
+	<module id='physical' controller='site_exchange' >
+        <name>exchange</name>
+        <title>体检兑换流程</title>
+        <disable>false</disable>
+		<allow_menu act='index'>体检兑换流程</allow_menu>
+    </module>
+</site>

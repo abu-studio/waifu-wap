@@ -1,0 +1,77 @@
+<form id="organization_status_form" class="tableform" action="index.php?app=physical&ctl=admin_organization_status&act=save"  method="POST" >
+    <input type="hidden" name="id" value="<{$organization_status_info.id}>">
+    <div class="division">
+        <table width="100%" >
+			<tr>
+                <th><em class="red">*</em><{t}>机构：<{/t}></th>
+                <td><{input type='select' name='organization_id' vtype="required" required="true" options=$organization_list value=$organization_status_info.organization_id}></td>
+            </tr>
+			<tr>
+                <th><em class="red">*</em><{t}>开始时间：<{/t}></th>
+                <td>
+					<{input type="date" name='start_date' vtype="required" value=$organization_status_info.start_date}>
+				</td>
+            </tr>
+			<tr>
+                <th><em class="red">*</em><{t}>结束时间：<{/t}></th>
+                <td>
+					<{input type="date" name='end_date' vtype="required" value=$organization_status_info.end_date}>
+				</td>
+            </tr>
+			<tr>
+                <th><em class="red">*</em><{t}>状态：<{/t}></th>
+                <td><{input type='select' name='status' vtype="required" required="true" options=$_status value=$organization_status_info.status}></td>
+            </tr>
+			<tr>
+                <th><{t}>备注：<{/t}></th>
+                <td><{input type='textarea' name='mome' value=$organization_status_info.mome}></td>
+            </tr>
+        </table>
+    </div>
+
+</form>
+
+<{area inject='.mainFoot'}>
+<div class="table-action"><{button type="submit"  label=$___physical="保存"|t:'physical' id='organization_status_form_submit'}></div>
+<{/area}>
+
+<script>
+    (function(){
+        var _form = $('organization_status_form');
+        var btn =$('organization_status_form_submit');
+        var finder = finderGroup['<{$env.get._finder.finder_id}>'];
+
+        _form.store('target',{
+            onComplete:function(){
+
+            },
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                        finder.refresh.delay(400,finder);
+                    }
+                }
+                else
+                {
+                    //alert(hash_res_obj.error);
+                }
+            }
+        });
+
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+
+
+
+        });
+
+    })();
+</script>

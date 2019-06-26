@@ -1,0 +1,99 @@
+<div class="tijian_main_leftSd clb">
+	<div class="one clb">
+		<div class="addr">
+			<img src="<{$res_url}>/image/tjlb_01.png"/>  
+			<span>您所在的位置：</span>
+			<a href="<{link app=physical ctl=site_index act=index}>">体检首页</a>
+			<span>></span>
+			<a href="<{link app=physical ctl=site_index act=storelist}>">体检门店</a>
+			<span>></span>
+			<span style="color: black;"><{$info.store_name}></span>                
+		</div>
+	</div>
+	<div class="two clb">
+		<div class="two_top clb">
+			<div class="pic">
+				<img src="<{$info.image|storager:'s'}>"/>
+			</div>
+			<div class="right">
+				<div class="info">
+					<span class="name"><{$info.store_name}></span><br />
+					<span class="lb">所在地区：</span><{$info.area|region}><br />
+					<span class="lb">门店地址：</span><{$info.address}><br />
+					<span class="lb">营业时间：</span><{$info.open}>-<{$info.close}>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<span class="lb">休息时间：</span><{$info.restday_html}><br />
+					<span class="lb">门店电话：</span><{$info.phone}><br />
+					<span class="lb">公交线路：</span><{$info.bus_lines}><br />
+					<span class="lb">地铁线路：</span><{$info.subway_lines}><br />
+					<div class="organization">
+						<a href="<{$info.org_url}>"><{$info.organization_name}>>></a>
+					</div>
+				</div>
+				<div class="remind">	
+					<span class="title">温馨提示：</span>
+					该套餐所支持的门店9-12月为高峰期,请大家预约时,尽量避开！
+					<a class="close">X</a>
+				</div>
+			</div>
+		</div><!--上半部分-->
+		<div class="tijian_title_bar clb">
+			<div class="title on" rel="t1">
+			   详细介绍
+			</div>
+			<div class="title" rel="t2">
+			   适用套餐
+			</div>
+		</div>
+		<div id="t1_cont" class="tijian_content t_cont clb">
+			   <{$info.introduction}>
+		</div>
+		<div id="t2_cont" class="tijian_content t_cont clb" style="display:none;">
+			<{foreach from=$package_list item=item key=key}>
+			<a title="<{$item.package_name}>">
+				<{$item.package_name|cut:16}>
+			</a>
+			<{/foreach}>
+		</div>
+		<div class="tijian_title_bar clb">
+			<div class="title on">
+			   地图查询
+			</div>
+		</div>
+		<div class="tijian_content clb">
+				<div id="baiduMap"></div>
+		</div>
+	</div>
+</div>
+
+<script>
+window.addEvent('domready', function(){
+	$$(".tijian_wrap1").setStyle('background-color','#F8F8F8');
+	$$('.remind .close').addEvent('click',function(){
+		this.getParent().setStyle('visibility','hidden');;
+	});
+
+	$$('.tijian_title_bar .title').addEvent('click',function(){
+		var rel = this.getProperty('rel');
+		this.addClass('on'); 
+		this.getSiblings().removeClass('on');
+		$$(".t_cont").setStyles({'display':'none'});
+		$(rel+"_cont").setStyles({'display':'block'});
+	}); 
+});
+</script>
+
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.5&ak=754612ca636347f314fb7dbe312fe8f1"></script>
+<script>
+function loadMap(){
+	//根据IP解析位置
+	var map = new BMap.Map("baiduMap");
+	var point = new BMap.Point("<{$info.longitude}>","<{$info.latitude}>");
+	map.centerAndZoom(point,16);
+	//滚轮缩放
+	map.enableScrollWheelZoom();
+	var marker = new BMap.Marker(point);  // 创建标注
+	map.addOverlay(marker); // 将标注添加到地图中
+}
+loadMap();
+</script>

@@ -1,0 +1,40 @@
+<div class="division">
+  <div  class="table-grid">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="gridlist">
+	<col style="width:19%"/>
+	<col style="width:45%"/>
+	<col style="width:10%"/>
+	
+      <thead>
+        <th><{t}>编号<{/t}></th>
+        <th><{t}>商品名称<{/t}></th>
+        <th><{t}>单价<{/t}></th>
+        
+      </tr>
+      </thead>
+      <{if count($data) > 0}>
+      <{foreach from=$data item=aGoods name="item"}>
+        <tr>
+          <td width="19%"><{$aGoods.bn}></td>
+
+          <td class="textleft" width="30%"><{$aGoods.name}>
+			<{if $aGoods.image}> <a style='text-decoration:none;' class='x-view-img' href='javascript:void(0);' imgsrc='<{$aGoods.image|default:$env.conf.site.default_thumbnail_pic|storager:'s'}>'  title='<{$aGoods.name}>'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a> <{/if}> </td>
+
+          <td class="Colamount" ><{$aGoods.price}></td>
+
+        </tr>
+	  <{/if}>
+     
+      <{/foreach}>
+	 
+	  
+    </table>
+
+    </div>
+</div> 
+<script> 
+$$('.x-view-img').each(function(item){
+		 item.store('tip:text','<div style="width:220px;height:220px;overflow:hidden;"><img  src="'+item.get('imgsrc')+'" onload="$(this).zoomImg(220,220);" /></div>');
+	     Xtip.attach(item);
+});
+</script>

@@ -1,0 +1,29 @@
+<table class="gridlist border-all" width="100%" border="0" cellspacing="0" cellpadding="0">
+    <col class="span-8"></col >
+    <col class="span-2"></col >
+    <col class="span-3"></col >
+    <tr>
+	<th><{t}>杉德卡编号<{/t}></th>
+    <th><{t}>订单ID<{/t}></th>
+    <th><{t}>充值金额<{/t}></th>
+    <th><{t}>订单金额<{/t}></th>
+	<th><{t}>充值状态<{/t}></th>
+	<th><{t}>充值时间<{/t}></th>
+    </tr>
+	<{foreach from=$data item=item}>
+    <tr class="itemsList">
+	  <td align="center" width="200px" class="horizontal-m no_bk"><{$item.sand_name}></td>
+	  <td style="white-space:normal;" align="center" width="180px"><{$item.order_id}></td>
+	  <td class='price-button' align="center"><{$item.amount|cur}></td>
+      <td align="center" style="vertical-align:top" class="member-fav"><{$item.pay_amount|cur}></td>
+	  <td align="center" class="member-fav">
+		<{if $item.status == '0'}>
+			未充值
+		<{elseif $item.status == '1'}>
+			已充值
+		<{/if}>
+	  </td>
+	   <td class='price-button' align="center"><{$item.recharge_time|date_format:'%Y-%m-%d %H:%M:%S'}></td>
+	</tr>
+	<{/foreach}>
+ </table>

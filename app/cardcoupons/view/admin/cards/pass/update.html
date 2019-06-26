@@ -1,0 +1,76 @@
+<form action="index.php?app=cardcoupons&ctl=admin_cards_pass&act=update" method="post" id="form01">
+<textarea name="filter" style="display:none"><{$filter}></textarea>
+<div >
+<div class="notice"><{t}>正在编辑<{/t}><strong><{$count}></strong><{t}>条数据。只可编辑未发放的卡密<{/t}>
+
+<br/>警告：本操作可强制修改所选卡号卡密信息，请谨慎操作。
+</div>
+<table>
+    <tr class="row">
+      <th style="width:100px;height:40px;">
+		卡券：
+      </th>
+      <td><{input type="object" filter=$source object="cards" textcol="name" name="card_id"}></td>  
+    </tr>
+	<tr class="row">
+		<th style="width:100px;height:40px;">是否启用：</th>
+		<td>
+			<input type="radio" name="disabled" value="false"/>
+			<label ><{t}>是<{/t}></label>
+			<input type="radio" name="disabled" value="true" />
+			<label ><{t}>否<{/t}></label>
+		</td>
+	</tr >
+	<tr class="row">
+		<th style="width:100px;height:40px;">有效期：</th>
+		<td>
+			开始时间:<{input type="time" name="from_time"}>
+			结束时间:<{input type="time" name="to_time" }>
+		</td>
+	</tr>
+	<tr class="row">
+		<th style="width:100px;height:40px;">发放形式：</th>
+		<td>
+			<input type="radio" name="type" value="entity"/>
+			<label ><{t}>实体卡<{/t}></label>
+			<input type="radio" name="type" value="virtual" />
+			<label ><{t}>电子券<{/t}></label>
+		</td>
+	</tr>
+	<tr>
+		<th>备注：</th>
+		<td><{input type="textarea" name="memo"}></td>
+	</tr>
+    
+</table>
+<input type="hidden" name="updatepass" value="updatepass"/>
+</div>
+<div class="mainFoot">
+<table cellspacing="0" cellpadding="0" border="0" align="center" class="table-action">
+  <tr>
+  <td> 
+    </td>
+  </tr>
+</table></div>
+
+</form>
+<{area inject=".mainFoot"}>
+   <div class="table-action">
+        <{button label=$___b2c="保存"|t:'b2c' type="button" id="btn01" class="btn-primary"}>
+        <{button label=$___b2c="取消"|t:'b2c' isCloseDialogBtn="true"}>
+   </div>
+<{/area}>
+
+<script>
+  $('btn01').addEvent('click',function(){
+
+      $('form01').store('target',{onComplete:function(re){
+           re = JSON.decode(re);
+
+           if(re.error)return;
+           $('form01').getParent('.dialog').retrieve('instance').close();
+      }});
+      $('form01').fireEvent('submit',{stop:$empty});
+  
+  });
+</script>

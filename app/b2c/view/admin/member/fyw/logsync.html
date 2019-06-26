@@ -1,0 +1,78 @@
+<div class="action-bar">
+
+    <h3><{t}>基本信息<{/t}></h3>
+  <script>
+    $$('.order-ctls button[act]').each(function(btn){
+
+      var flow = btn.getPrevious('input[name="flow"]'),
+        disabled = btn.getPrevious('input[name="disabled"]'),
+        cfm_str = btn.get('confirm'),
+        _dialog = null,
+        _app	= btn.get('app'),
+        act_url = "index.php?app="+_app+"&ctl=admin_order&act={action}&p[0]=<{$order.order_id}>";
+      if(disabled){
+        return btn.set({'opacity':.5,styles:{'cursor':'not-allowed'}});
+      }
+
+      btn.addEvent('click',function(){
+        if(cfm_str&&!confirm(cfm_str)){ return;  }
+        if(flow){
+          _dialog = new Dialog( act_url.substitute({'action':'go'+btn.get('act')}),
+            {title:btn.get('text')+":<{$order.order_id}>",width:.7,height:.8,onLoad:function(){
+
+              var _dialog_form = this.dialog;
+              this.dialog.getElement('form').store('target',{
+                onRequest:function(){
+                  _dialog_form.getElement('.table-action .order-action').set('disabled','disabled');
+                },
+                onComplete:function(){
+
+                  <{if !$env.get.singlepage}>
+                  <{if $env.get.finder_id}>
+                  finderGroup['<{$env.get.finder_id}>'].request({
+                    method:'post',
+                    onComplete:function(){
+                      _dialog.close();
+                      this.loadPacket();//refersh finder packet(tabs);
+                    }});
+                  <{/if}>
+                  <{else}>
+                  _dialog.close();
+                  if (opener.finderGroup&&opener.finderGroup['<{$env.get.finder_id}>'])
+                    opener.finderGroup['<{$env.get.finder_id}>'].refresh();
+                  location.reload();
+                  <{/if}>
+                }});
+
+
+            }});
+
+        }else{
+          W.page( act_url.substitute({'action':'do'+btn.get('act')}),{onComplete:function(re){
+            try{re = JSON.decode(re)}catch(e){}
+            if(re&&re.error){return;}
+            <{if !$env.get.singlepage}>
+            <{if $env.get.finder_id}>
+            finderGroup['<{$env.get.finder_id}>'].refresh();
+            <{/if}>
+            <{else}>
+            if (opener.finderGroup&&opener.finderGroup['<{$env.get.finder_id}>'])
+              opener.finderGroup['<{$env.get.finder_id}>'].refresh();
+            location.reload();
+            <{/if}>
+
+          }});
+        }
+
+      });
+
+    });
+  </script>
+</div>
+<div class="tableform">
+  <table>
+    <tr>
+      <td><{$data.params}></td>
+    </tr>
+  </table>
+  </div>

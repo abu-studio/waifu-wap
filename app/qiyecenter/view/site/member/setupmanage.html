@@ -1,0 +1,196 @@
+<script>
+    window.loadedPart = [1,0,(new Date).getTime()];
+    BREADCRUMBS ='0:0';
+    MODALPANEL = {
+        createModalPanel:function(){
+            var mp = new Element('div',{'id':'MODALPANEL'});
+            var mpStyles = {
+                'position': 'fixed',
+                'background': '#333333',
+                'width': '100%',
+                'display':'none',
+                'height': window.getScrollSize().y,
+                'top': 0,
+                'left': 0,
+                'zIndex': 65500,
+                'opacity': .4
+            };
+            this.element = mp.setStyles(mpStyles).inject(document.body);
+            return this.element;
+        },
+        show:function(){
+            var panel = this.element = this.element||this.createModalPanel();
+            panel.setStyles({
+                'width': '100%',
+                'height': window.getScrollSize().y
+            }).show();
+        },hide:function(){
+            if(this.element)this.element.hide();
+        }
+    };
+    Xtip = new Tips({tip:'tip_Xtip',fixed:true,offset: {x: 24, y: -15},onBound:function(bound){
+        if(bound.x2){
+            this.tip.getElement('.tip-top').addClass('tip-top-right');
+            this.tip.getElement('.tip-bottom').addClass('tip-bottom-right');
+        }else {
+            this.tip.getElement('.tip-top').removeClass('tip-top-right');
+            this.tip.getElement('.tip-bottom').removeClass('tip-bottom-right');
+        }
+    }});
+    var LAYOUT = {
+        container: $('container'),
+        side: $('side'),
+        workground: $('workground'),
+        content_main: $('main'),
+        content_head: $E('#workground .content-head'),
+        content_foot: $E('#workground .content-foot'),
+        side_r: $('side-r'),
+        side_r_content:$('side-r-content')
+    };
+</script>
+<{script src="load.js" app="qiyecenter" pdir="js"}>
+<{script src="wpage.js" app="qiyecenter" pdir="js"}>
+<script>
+    var W = new Wpage({});
+</script>
+<{script src="dialog.js" app="qiyecenter" pdir="js"}>
+<div class="qiye_list" xmlns="http://www.w3.org/1999/html">
+    <div class="right_top">
+        <div class="r_tit">
+            <div class="guanlibumen">设置管理员</div>
+        </div>
+        <div class="create_de" style="display: none;">
+            <div class="an_input" onclick="add_group()">添加管理员</div>
+        </div>
+    </div>
+    <form action="<{link app=qiyecenter ctl=site_member  act=qunzuguanli}>" method="post">
+    <div class="right_selectbycon">
+        <div class="r_center">
+            <div class="suoshuqiye">雇员姓名</div>
+            <div class="suoshuqiye">
+                <input type="text" style="border: 1px solid;width: 100px;" name="group_name"/>
+            </div>
+
+
+            <div class="suoshuqiye"><input type="submit" value="查询" class="search_bott"/></div>
+        </div>
+    </div>
+    </form>
+	<{if $sfscdata}>
+    <div class="r_list">
+        <div class="show_list">
+            <div class="list_head">
+                <div class="head_font" style="width: 20%;">操作</div>
+                <div class="head_font" style="width: 20%;">雇员编号</div>
+                <div class="head_font" style="width: 20%;">用户名</div>
+                <div class="head_font" style="width: 20%;">雇员姓名</div>
+                <div class="head_font" style="width: 20%;">身份证号</div>
+            </div>
+            <{foreach from=$sfscdata item=item}>
+                <div class="list_con">
+                    <div class="head_font" style="width: 20%;"><{$item.GROUP_NAME|default:'-'}></div>
+                    <div class="head_font" style="width: 20%;"><{$item.HAS_ACCOUNT|default:'-'}></div>
+                    <div class="head_font" style="width: 20%;"><{$item.BALANCE|default:'-'}></div>
+                    <div class="head_font" style="width: 20%;"><{$item.CUSTOMER_NAME|default:'-'}></div>
+                    <div class="head_font" style="width: 20%;">
+                        <font class="edit"><a  href="javascript:void(0);">编辑</a></font>
+                    </div>
+                </div>
+            <{/foreach}>
+        </div>
+    </div>
+    <input type='hidden' id='current_page' value='0' />
+        <div class="show_fenye">
+            <div class="feny" id="page_navigation">
+            </div>
+        </div>
+		<{else}>
+		<div style="border:1px solid #eee;height:40px;line-height:40px;text-align:center">没有相关信息</div>
+		<{/if}>
+</div>
+
+<script type="text/javascript">
+	var per_page = 10; 
+	var items = document.getElementsByClassName("list_con");
+	var pages = Math.ceil(items.length/per_page);
+	gotopage(0);
+	
+	function gotopage(page){
+		for(var i=0;i<items.length;i++){
+			items[i].style.display='none';
+		}
+		for(var i=page*per_page;i<(page+1)*per_page;i++){
+			if(i<items.length){
+			items[i].style.display='block';
+			}
+		}
+		var navigation_html = '<a class="page_link" title="��һҳ" href="javascript:prepage();">&lt;</a>';
+		
+		for(var current_link = 0; current_link < pages; current_link++){
+			if(pages<=10){
+			current_link == page?navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>':navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';	
+			}else{
+				if(current_link == page){
+					navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+				}
+				if(current_link <= (page+4)&&current_link >= (page-4)&&current_link != page){
+					navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+				}	
+			}
+		}
+		navigation_html += '<a class="page_link" title="��һҳ" href="javascript:nextpage();">&gt;</a>';
+		document.getElementById("page_navigation").innerHTML= navigation_html;
+		document.getElementById("current_page").value= page;
+		
+	}
+	function nextpage(){
+		var page = parseInt(document.getElementById("current_page").value);
+		if(page < pages- 1){
+			gotopage((page+1));
+			document.getElementById("current_page").value= page+1;
+		}	
+	}
+	function prepage(){
+		var page = parseInt(document.getElementById("current_page").value);		
+		if(page > 0){
+			gotopage((page - 1));
+			document.getElementById("current_page").value= page - 1;
+		}
+	}
+	
+	
+</script>
+<script type="text/javascript">
+	function add_group(){
+		var url = "<{link app=qiyecenter ctl=site_member act=add_group}>";
+		new Ex_Dialog(url, {
+		title: '编辑管理员',
+		width: 600,
+		height: 250,
+		modal: true,
+		onLoad:function(){
+		},
+		asyncOptions: {
+			
+		}
+	});
+	}
+    window.addEvent('domready',function(){
+        $$('.list_con').getElements(".edit").each(function(item){
+            item.addEvent('click',function(){
+                var customer_no = this.getParent(".list_con").getChildren(".head_font").getText()[0];
+                new Dialog('<{link app=qiyecenter ctl=site_member act=editinput}>',{
+                    width:1200,
+                    height:600,
+                    resizeable:false,
+                    dragable:false,
+                    ajaxoptions:{
+                        method: 'post',
+                        data:'qunzuguanli_edit=true&customer_no='+customer_no
+                    }
+                });
+            });
+        });
+
+    });
+</script>

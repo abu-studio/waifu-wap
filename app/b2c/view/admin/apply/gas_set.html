@@ -1,0 +1,22 @@
+<h3 class="head-title"><{t}>燃气费缴费规则描述 <{/t}></h3>
+<form action="index.php?app=b2c&ctl=admin_apply&act=gas" method="post" class="tableform">
+<input type="hidden" name="gas_rules[id]" value="<{$gas_rules.id}>"/>
+<input type="hidden" name="gas_guide[id]" value="<{$gas_guide.id}>"/>
+<input type="hidden" name="jiaofei_set" value="jiaofei_set"/>
+	<table>
+		<tr>
+		<!-- xhk 2015/11/05 配置缴费规则 -->
+			<th>燃气费缴费指南图片（在前台缴费页面显示）:</th>
+			<td><{input type="image" vtype="required" value=$gas_guide.value name="gas_guide[value]" textcol="name" cols="name" filter="disabled=false" width=100 height=100 }><span style="color:red;">建议上传高宽比大约为1：2的图片</span> &nbsp;</td>
+		</tr>
+		<tr>
+		<!-- xhk 2015/11/05 配置缴费规则 -->
+			<th>燃气费缴费规则描述（在前台缴费页面显示）:</th>
+			<td>
+			<div style="width:1000px;"><{input type="html" vtype="required" value=$gas_rules.value name="gas_rules[value]" textcol="name" cols="name" filter="disabled=false"}> &nbsp;</div></td>
+		</tr>
+	</table>
+	<div class="table-action">
+  <{button label=$___image="保存"|t:'image' class="btn-primary" type="submit"}>
+	</div>
+</form>

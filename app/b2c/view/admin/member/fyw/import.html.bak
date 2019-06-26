@@ -1,0 +1,66 @@
+<form method="POST" id='fyw_members_form' action="index.php?app=b2c&ctl=admin_member_fyw&act=create" class="tableform"
+enctype="multipart/form-data">
+    <div class="division">
+	<table>
+		<tr>
+				<th>选择文件:</th>
+				<td>
+					<input type="file"  name="fyw_members" />
+          <a target='_blank' href="index.php?app=b2c&ctl=admin_member_fyw&act=down_template">下载模板</a>
+				</td>
+		</tr>
+	</table>
+    </div>
+</form>
+<{area inject='.mainFoot'}>
+<div class="table-action">
+	<{button label=$___b2c="保存"|t:'b2c' type="submit" id='fyw_members_form_submit' }>
+</div>
+<{/area}>
+
+<script>
+    (function(){
+        var _form = $('fyw_members_form');
+        var btn =$('fyw_members_form_submit');
+		_form.store('target',{
+            onComplete:function(response){         
+				var hash_res_obj = JSON.decode(response);
+				if (hash_res_obj.success != undefined && hash_res_obj.success != ""){
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                    }
+               }else{
+                    //alert(hash_res_obj.error);
+                }            
+            },
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+               if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+              {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                    }
+               }
+               else
+                {
+                    //alert(hash_res_obj.error);
+                }            
+            }
+        });
+		
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+        });
+
+    })();
+</script>

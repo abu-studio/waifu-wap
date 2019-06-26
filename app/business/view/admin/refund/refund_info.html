@@ -1,0 +1,69 @@
+<form method="POST" action="index.php?app=business&ctl=admin_balance&act=refund_info" class="tableform" id="form_edit_auditing">
+<div class="division">
+<table width="100%" border="0" cellpadding="0" cellspacing="0"id='member_level' class="member-set">
+<{input type="hidden" name="refund_id" value=$refund_id}>
+<tr><td colspan=2 style="text-align:center;"><span style="color:red;font-weight:bold;">请线下退款给买家，在此记录退款信息！</span></td></tr>
+<tr>
+  <th><{t}><span style="color:red;font-weight:bold;">*</span>收款人：<{/t}></th>
+  <td><input type="text" name="account" vtype="required"/></td>
+</tr>
+<tr>
+  <th><{t}><span style="color:red;font-weight:bold;">*</span>收款银行：<{/t}></th>
+  <td><input type="text" name="bank" vtype="required"/></td>
+</tr>
+<tr>
+  <th><{t}><span style="color:red;font-weight:bold;">*</span>收款金额：<{/t}></th>
+  <td><input type="text" name="money" vtype="required&&number"/></td>
+</tr>
+<tr>
+  <th><{t}>备注：<{/t}></th>
+  <td><input type="textarea" name="memo" style="width:260px;height:60px"/></td>
+</tr>
+
+</table>
+</div>
+</form>
+<{area inject='.mainFoot'}>
+     <div class="table-action">
+	 <{button type="button" label=$___b2c="保存"|t:'b2c' id="form_edit_auditing-submit"}>
+     </div>
+<{/area}>
+
+
+
+
+
+<script>
+(function(){
+	var _form = $('form_edit_auditing');
+	var btn =$('form_edit_auditing-submit');
+	var finder = finderGroup['<{$env.get.finder_id}>'];
+
+	_form.store('target',{
+		onSuccess:function(response){
+			var hash_res_obj = JSON.decode(response);
+
+			if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+			{
+				try{
+					var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+				}catch(e){}
+
+				if(_dialogIns)
+				{
+					_dialogIns.close();
+					window.finderGroup['<{$env.get.finder_id}>'].refresh();
+				}
+			}
+
+		}
+	});
+
+	    btn.addEvent('click',function(){
+		    _form.fireEvent('submit',{stop:$empty});
+		});
+
+})();
+
+
+</script>

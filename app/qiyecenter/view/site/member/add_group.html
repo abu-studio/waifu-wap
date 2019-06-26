@@ -1,0 +1,57 @@
+<div style="margin-left:150px;">
+<form action="<{link app='qiyecenter' ctl='site_member' act='createGroup'}>" method="post" onsubmit="return validate_form(this)">
+	<div style="font-size:14px;margin:10px;200px;">
+		<span style="color:red;width: 10px;display:inline-block;">*</span>
+		<span style="width: 60px;display:inline-block">群组名称</span>
+		<input type="text" style="height:25px;width: 160px; border: 1px solid #ccc;" name="group_name">
+	</div>
+	<div style="font-size:14px;margin:10px;200px;">
+		<span style="color:red;width: 10px;display:inline-block;">*</span>
+		<span style="width: 60px;display:inline-block;">群组编号</span>
+		<input type="text" style="height:25px;width: 160px; border: 1px solid #ccc;" name="group_no">
+	</div>
+	<div style="font-size:14px;margin:10px;200px;">
+		<span style="color:red;width: 10px;display:inline-block;">*</span>
+		<span style="width: 60px;display:inline-block">所属企业</span>
+		<select name="customer_id" id="customer_id" style="height:25px;width: 160px; border: 1px solid #ccc;" class="xla_k">
+			<option value="">--请选择企业--</option>
+			<{foreach from=$company item=company}>
+			<option value="<{$company.CUSTOMER_ID}>"><{$company.CUSTOMER_NAME}></option>
+			<{/foreach}>
+		</select>
+	</div>
+	<div style="margin-left:100px;">
+	<input type="submit" style="margin-top: 20px; margin-bottom: 10px; width: 100px; background: #c40001; font-size:14px; font-weight: bold; color: #ffffff; height: 30px;border-radius: 5px;" value="提交">
+	</div>
+</form>
+</div>
+<script type="text/javascript">
+	function validate_required(field,alerttxt){
+		with (field){
+			if (value==null||value==""){
+			alert(alerttxt);
+			return false;
+			}else {
+			return true;
+			}
+		} 
+	}
+	function validate_form(thisform){
+		with (thisform){
+			if (validate_required(group_name,"群组名称不能为空！")==false){
+				group_name.focus();return false;
+			}
+			if (validate_required(group_no,"群组编号不能为空！")==false){
+				group_no.focus();return false;
+			}
+		}
+		var myselect = document.getElementById('customer_id');
+		var index=myselect.selectedIndex ;
+		var customer_id=myselect.options[index].value;
+		if(customer_id==null||customer_id==""){
+			alert('所属企业不能为空');
+			myselect.focus();
+			return false;
+		}
+	}
+</script>

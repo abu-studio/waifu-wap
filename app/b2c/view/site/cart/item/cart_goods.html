@@ -1,0 +1,288 @@
+<script >
+function promotion_order(a,id){
+	var content=document.getElementById(id);
+	if(content.style.display!='none'){
+		content.style.display='none';
+		a.innerHTML='+';
+	}else{
+		content.style.display='';
+		a.innerHTML='-';
+	}
+}
+</script>
+<div>
+	<div class="cart_order2"></div>
+	<div class="cart_order1">
+	购物车
+				<font style="color: #CDCDCD;font-size: 8.5px;">
+				Shopping cart
+				</font>
+		</div>
+</div>
+
+
+
+<{if $aCart.object.goods}>
+<table class="pro_list_cart_xu" width="100%" border="0" cellspacing="0" cellpadding="0" class="ddqr_info">
+      <!--<col class="span-8 "></col>
+      <col class="span-2 textcenter"></col>
+      <col class="span-2"></col>
+      <col class="span-3"></col>
+      <col class="span-3"></col>
+      <{if !$checkout}><col class="span-2"></col><{/if}>
+      <{if $checkout}><col class="span-4"></col><{/if}>-->
+      <thead>
+        <tr>
+		<{if $checkout}>
+		<{else}>
+		<th style="width: 24px;"><input type="checkbox" id="top"name="select_all[all]" onclick="select_store_alltop()"/>
+		<input type="hidden" name="cart_check" value='1'/>
+		</th>
+		<{/if}>
+          <th class="bl_none" width="360">
+				<p class="goods_shop_info" style="border-right: 1px solid;color: #CDCDCD;">
+				<span class="cjm_logo"></span>
+              <{if $checkout}>
+                    <span class="pl_10 pr_10"  style="line-height: 20px;color: #727272;font-family : 微软雅黑,宋体;font-size : 10px">店铺
+
+					Shop
+
+					</span>
+                   <!-- <span class="pl_10 pr_10">商家：<span class="lan"><{$goods.shop_name}></span></span>-->
+                    <!-- <td id="shipping_<{$goods.store_id}>" class="textcenter storeShipping"></td> -->
+                <{else}>
+                    <span class="pl_10 pr_10"  style="line-height: 15px;color: #727272;font-family : 微软雅黑,宋体;font-size : 10px">店铺
+
+					Shop
+
+					</span>
+                    <!-- <span class="pl_10 pr_10">商家：<span class="lan"><{$goods.shop_name}></span></span> -->
+              <{/if}>
+              <!-- <span class="yh_cart">满2100，减100。</span> -->
+			 </p>
+          </th>
+
+           <th class="c_969696" width="166" style="line-height: 20px;text-align: center;color: #727272;"><{t}>
+		   <p style="border-right: 1px solid #CDCDCD;font-family : 微软雅黑,宋体;font-size : 10px">
+		   规格
+				  <font style="color:">
+				  Specifications
+				  </font>
+				  </p>
+			  <{/t}>
+
+			  </th>
+              <th class="c_969696" width="98" style="line-height: 20px;text-align: center;color: #727272;font-family : 微软雅黑,宋体;font-size : 10px"><{t}>
+				<p style="border-right: 1px solid #CDCDCD">
+			  单价Unit Price</p><{/t}></th>
+              <th class="c_969696" width="140" style="line-height: 20px;text-align: center;color: #727272;font-family : 微软雅黑,宋体;font-size : 10px"><{t}>
+			  <p style="border-right: 1px solid #CDCDCD">
+			  数量Amount
+			  </p>
+			  <{/t}></th>
+              <th class="c_969696" width="180" style="line-height: 20px;text-align: center;color: #727272;font-family : 微软雅黑,宋体;font-size : 10px"><{t}>
+			  <p style="border-right: 1px solid #CDCDCD">
+			  优惠方式Preferential way
+			  </p>
+			  <{/t}></th>
+              <th class="c_969696" width="166" style="line-height: 20px;text-align: center;color: #727272;font-family : 微软雅黑,宋体;font-size : 10px"><{t}>
+			  <p style="border-right: 1px solid #CDCDCD">
+			  小计（元）subtotal</p><{/t}></th>
+          <!-- <th><{t}>积分<{/t}></th> -->
+          <{if !$checkout}><th class="c_969696" width="164" style="line-height: 20px;text-align: center;color: #727272;font-family : 微软雅黑,宋体;font-size : 10px"><{t}>操作Operation<{/t}></th><{/if}>
+          <{if $checkout}><th class="c_969696" width="164" style="line-height: 20px;text-align: center;color: #727272;font-family : 微软雅黑,宋体;font-size : 10px"><{t}>配送方式Distribution mode<{/t}></th><{/if}>
+        </tr>
+      </thead>
+</table>
+<{foreach from=$aCart.object.goods item=goods key=_obj_key}>
+<{if $goods.is_first == 'true'}>
+
+
+<!-- <{if $goods.is_first == 'true'}>
+<tr id="storeid_<{$goods.store_id}>">
+    <{if $checkout}>
+    <td colspan="5">
+        <span class="pl_10 pr_10">店铺：<{$goods.store_name}></span>
+        <span class="pl_10">商家：<{$goods.shop_name}></span>
+    </td>
+    <td id="shipping_<{$goods.store_id}>" class="textcenter storeShipping"></td>
+    <{else}>
+    <td colspan="6">
+        <span class="pl_10 pr_10">店铺：<{$goods.store_name}></span>
+        <span class="pl_10">商家：<{$goods.shop_name}></span>
+    </td>
+    <{/if}>
+</tr>
+<{/if}> -->
+<table class="pro_list_cart_xu" width="100%" border="0" cellspacing="0" cellpadding="0" class="ddqr_info" id="storeid_<{$goods.store_id}>">
+<tr style="height: 40px;">
+	<th style="background: #EAF9FF;">
+		<input type="checkbox" onclick="select_store_all('<{$goods.store_id}>')" id="select_all<{$goods.store_id}>"name="select_all[<{$goods.store_id}>][all]"/>
+	</th>
+	<th style="background: #EAF9FF;text-align: left;">
+		<span class="lan"><{$goods.store_name}></span>
+	</th>
+	<th style="background: #EAF9FF;"></th>
+	<th style="background: #EAF9FF;"></th>
+	<th style="background: #EAF9FF;"></th>
+	<th style="background: #EAF9FF;"></th>
+	<th style="background: #EAF9FF;"></th>
+	<th style="background: #EAF9FF;"></th>
+</tr>
+<{/if}>
+<tr chlid_id="del-<{$goods.obj_items.products.0.product_id}>" urlupdate="<{link app=b2c ctl='site_cart' act='update' arg0='goods' arg1=$item.link_key}>" urlremove="<{link app=b2c ctl='site_cart' act='remove' arg0='goods'}>" number="<{$goods.store.real}>" g_name="<{$goods.store.name}>" floatstore="<{$goods.obj_items.products.0.floatstore}>" buy_price="<{$goods.obj_items.products.0.price.buy_price}>" buy_store="<{$goods.quantity}>" buy_store_id="<{$goods.store_id}>">
+    <td><input type="checkbox" onclick="select_product('<{$goods.store_id}>')" name="select_products[<{$goods.obj_items.products.0.product_id}>]" value="goods_<{$goods.obj_items.products.0.goods_id}>_<{$goods.obj_items.products.0.product_id}>"/></td>
+	<td style="width: 307px;">
+		<{if $goods.obj_items.products.0.goods_kind == 'jdgoods' || $goods.obj_items.products.0.goods_kind == 'jdbook'}>
+        <div class='cart-product-img goodpic spmc_l' style="float:left" isrc="<{$goods.obj_items.products.0.thumbnail}>" ghref='<{link app=jdsale ctl=site_product act="index" arg0=$goods.obj_items.products.0.goods_id arg1=$goods.vcat_id}>'>
+		<{else}>
+		<div class='cart-product-img goodpic spmc_l' style="float:left" isrc="<{$goods.obj_items.products.0.default_image.thumbnail|default:$env.conf.site.default_thumbnail_pic|storager:'s'}>" ghref='<{link app=b2c ctl=site_product act="index" args=$args arg0=$goods.obj_items.products.0.goods_id arg1=1 arg2=1 arg3=$goods.vcat_id}>'>
+		<{/if}>
+            <img src='<{$res_url}>/images/loading.gif'/>
+        </div>
+        <div class="spmc_r" style="float:left">
+			<{if $goods.obj_items.products.0.goods_kind == 'jdgoods' || $goods.obj_items.products.0.goods_kind == 'jdbook'}>
+            <a target="_blank" class="item_title" href="<{link app=jdsale ctl=site_product arg0=$goods.obj_items.products.0.goods_id arg1=$goods.vcat_id}>">
+			<{else}>
+			<a target="_blank" class="item_title" href="<{link app=b2c ctl=site_product arg0=$goods.obj_items.products.0.goods_id arg1=1 arg2=1 arg3=$goods.vcat_id}>">
+			<{/if}>
+			<{$goods.obj_items.products.0.name}></a>
+        </div>
+    </td>
+    <!--商品规格-->
+    <td style="width: 147px;"><span><{if $goods.obj_items.products.0.spec_info}><{$goods.obj_items.products.0.spec_info}><{else}>无<{/if}></span></td>
+    <td class="goods_price textcenter" align="center" valign="middle" style="width: 78px;">
+        <p class="del_price"><{$goods.obj_items.products.0.price.mktprice|cur_odr}></p>
+        <p class="now_price"><{$goods.obj_items.products.0.price.buy_price|cur_odr}></p>
+        <{if ($goods.obj_items.products.0.price.mktprice-$goods.obj_items.products.0.price.buy_price)>0}>
+          <div style="border: 1px solid;color: #FDDBDC;"><p class="pie_price">省<{$goods.obj_items.products.0.price.mktprice-$goods.obj_items.products.0.price.buy_price|cur_odr}>
+          </p></div>
+        <{/if}>
+    </td>
+    <td class="textcenter" style="width: 115px;">
+        <{if !$checkout}>
+        <div class="Numinput ma numadjust-arr">
+            <span class="numadjust decrease"></span>
+            <input type="text" min="0" numtype="<{if $goods.obj_items.products.0.floatstore === '1'}>float<{else}>int<{/if}>" name="modify_quantity[<{$goods.obj_ident}>][quantity]" size="3" value="<{$goods.quantity}>" onchange="if(Cart)Cart.ItemNumUpdate(this,this.value,event);"/>
+            <span class="numadjust increase"></span>
+        </div>
+        <p class="t" style="display:none">(<{t}>需要备货<{/t}>)</p>
+        <{else}>
+        <{$goods.quantity}>
+        <{/if}>
+        <!--  <{if $goods.obj_items.products.0.floatstore}><{t}>可输入小数<{/t}><{/if}>-->
+        <{if $goods.store.less<$goods.obj_items.products.0.min_buy}><h6 class="font-red">(<{t}>提示<{/t}>:<{t}>该商品不足起订量!起订量为：<{/t}><{$goods.obj_items.products.0.min_buy}>)</h6><{/if}>
+    </td>
+    <td class="textcenter" style="width: 155px;">
+        <{if $goods.obj_items.products.0.act_type != 'normal'}><span class="cx_cart">卖家促销</span><{else}>&nbsp<{/if}>
+    </td>
+    <td style="width: 139px;" class="goods_price textcenter buy_price xj_p" name="subtotal_price"><{$goods.obj_items.products.0.price.buy_price*$goods.quantity|cur_odr}></td>
+    <!-- <td class="consume_score textcenter" ><{$goods.obj_items.products.0.gain_score*$goods.quantity}></td>-->
+    <{if !$checkout}>
+    <td>
+        <!-- class="CartNav-icon1 " -->
+        <ul class="cart-coll-ul">
+            <li class="" style="width: 100px;" <{if $login!="nologin"}>star="<{$goods.obj_items.products.0.goods_id}>"<{/if}> class="star-off textcenter" title=<{$goods.obj_items.products.0.name|escape:"html"}>>
+            <a <{if $login=="nologin"}> href="<{link app=b2c ctl="site_passport" act="login"}>" <{else}>href="###" rel="_fav_"<{/if}> class="">
+                <span><div class="fav"><{t}>收藏<{/t}></div><div class="nofav"><{t}>已收藏<{/t}></div></span>
+            </a>
+            </li>
+            <li class="" style="width: 100px;"><a class="red"><span class="delItem"><{t}>删除<{/t}></span></a></li></ul>
+    </td>
+    <{/if}>
+    <{if $checkout}>
+      <{if $goods.is_first == 'true'}>
+      <td id="shipping_<{$goods.store_id}>" class="textcenter storeShipping"></td>
+      <{else}>
+      <td></td>
+      <{/if}>
+    <{/if}>
+</tr>
+
+<{if $item_goods_section}>
+<{foreach from=$item_goods_section item=section}>
+<{if $section.app != 'package' || $goods.is_first == 'true'}>
+<{include file=$section.file app=$section.app }>
+<{/if}>
+<{/foreach}>
+<{/if}>
+ </tbody>
+<{if $goods.is_last == 'true'}>
+<tfoot>
+<tr>
+<td colspan="8">
+  <{if $cart_promotion_display == 'true'}>
+  <!-- 订单获得的优惠促销 -->
+  <div id="cart-real-sales-promotion<{$goods.store_id}>" <{if !$aCart.promotion.order ||!in_array($goods.store_id,$aCart.promotion.store_ids)}> style="display:none;"<{/if}>>
+    <h3 style="text-align: left;"><a href="javascript:void(0);" onclick="promotion_order(this,'promotion_centent<{$goods.store_id}>')"class="cart-promotion-order">-</a><{t}>您已享受的促销优惠<{/t}></h3>
+	  <ul class="cart-promotion-order-centent" id="promotion_centent<{$goods.store_id}>">
+	    <{foreach from=$aCart.promotion.order item=item}>
+		<{if $item.store_id ==$goods.store_id}>
+	    <li class="clearfix p10"><span class="w300 fl"><input type="hidden" class="order_rule_id" value="<{$item.rule_id}>" /><{$item.name}></span><span class="w400 fl ml10"><{$item.solution}></span></li>
+		<{/if}>
+	    <{/foreach}>
+	  </ul>
+  </div>
+  <br/>
+  <!-- 未享受到的优惠促销 -->
+  <div id="cart-real-sales-unpromotion<{$goods.store_id}>"  <{if !$unuse_rule||!in_array($goods.store_id,$unuse_rule.0.store_ids)}>style="display:none;"<{/if}>>
+      <h3><a href="javascript:void(0);" onclick="promotion_order(this,'unpromotion_centent<{$goods.store_id}>')"class="cart-promotion-order">-</a><{t}>您还未享受到的优惠<{/t}>
+      <{if $fororder_show == 'true'}>
+      <a href="javascript:void(0);" class="action-fororder"><em><{t}>凑单<{/t}>?</em></a>
+      <{/if}>
+    </h3>
+    <ul class="cart-promotion-order-centent"id="unpromotion_centent<{$goods.store_id}>">
+      <{foreach from=$unuse_rule item=rule}>
+	  <{if $rule.store_id ==$goods.store_id}>
+      <li class="clearfix p10"><span class="w300 fl"><input type="hidden" class="order_rule_id" value="<{$rule.rule_id}>" /><{$rule.name}></span><span class="w400 fl ml10"><{$rule.solution}></span></li>
+	  <{/if}>
+      <{/foreach}>
+    </ul>
+  </div>
+  <{/if}>
+</td>
+</tr>    <{if $checkout}>
+    <tr class="goods_bj">
+        <td colspan="6" id="store_<{$goods.store_id}>">
+            <table width="100%">
+            <{assign var='store_id' value=$goods.store_id}>
+                <tr>
+                    <td class="bb_none">补充说明：<input type="text" class="width_500" name="shipping[<{$goods.store_id}>][memo]" style="height: 22px" /></td>
+                    <td class="bb_none fr">店铺优惠：
+                    <select onchange="userCoupons(this,<{$goods.store_id}>)">
+                        <option value="no">--不使用优惠券--</option>
+                        <{foreach from=$coupon_lists.$store_id item=list_coupon key=key}>
+                            <{if $coupon.$store_id.coupon==$list_coupon.memc_code}>
+                            <option value="<{$list_coupon.memc_code}>" selected><{$list_coupon.memc_code}></option>
+                            <{else}>
+                            <option value="<{$list_coupon.memc_code}>"><{$list_coupon.memc_code}></option>
+                            <{/if}>
+                        <{/foreach}>
+                    </select><em class="red1">-<{$discount.$store_id|cur_odr}></em></td>
+                </tr>
+				<tr style="display:none;">
+				<td class="bb_none"></td>
+				<td class="bb_none fr">物流保价：<em class="font_16 red1"><{$store_protect.$store_id}></em></td>
+				</tr>
+				<tr style="display:<{if $discount.$store_id}>''<{else}>none<{/if}>;">
+				<td class="bb_none"></td>
+				<td class="bb_none fr">优惠金额：<em class="font_16 red1"><{$discount.$store_id}></em></td>
+			</tr>
+                <tr>
+
+                    <td class="bb_none"></td>
+                    <td class="bb_none fr">商品合计（含运费）：<em class="font_16 red1"><{if ($aCart.subtotal_price_store.$store_id-$discount.$store_id) > 0  }><{($aCart.subtotal_price_store.$store_id-$discount.$store_id)|cur_odr}><{else}><{0|cur_odr}><{/if}></em></td>
+                </tr>
+                <tr>
+                    <td class="bb_none"></td>
+                    <!-- <td class="bb_none fr">满288元，免运费</td> -->
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <{/if}>
+  </tfoot>
+</table>
+<{/if}>
+<{/foreach}>
+<{/if}>

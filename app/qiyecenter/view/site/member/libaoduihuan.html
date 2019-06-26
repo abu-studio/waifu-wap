@@ -1,0 +1,190 @@
+<script>
+    window.loadedPart = [1,0,(new Date).getTime()];
+    BREADCRUMBS ='0:0';
+    MODALPANEL = {
+        createModalPanel:function(){
+            var mp = new Element('div',{'id':'MODALPANEL'});
+            var mpStyles = {
+                'position': 'fixed',
+                'background': '#333333',
+                'width': '100%',
+                'display':'none',
+                'height': window.getScrollSize().y,
+                'top': 0,
+                'left': 0,
+                'zIndex': 65500,
+                'opacity': .4
+            };
+            this.element = mp.setStyles(mpStyles).inject(document.body);
+            return this.element;
+        },
+        show:function(){
+            var panel = this.element = this.element||this.createModalPanel();
+            panel.setStyles({
+                'width': '100%',
+                'height': window.getScrollSize().y
+            }).show();
+        },hide:function(){
+            if(this.element)this.element.hide();
+        }
+    };
+    Xtip = new Tips({tip:'tip_Xtip',fixed:true,offset: {x: 24, y: -15},onBound:function(bound){
+        if(bound.x2){
+            this.tip.getElement('.tip-top').addClass('tip-top-right');
+            this.tip.getElement('.tip-bottom').addClass('tip-bottom-right');
+        }else {
+            this.tip.getElement('.tip-top').removeClass('tip-top-right');
+            this.tip.getElement('.tip-bottom').removeClass('tip-bottom-right');
+        }
+    }});
+    var LAYOUT = {
+        container: $('container'),
+        side: $('side'),
+        workground: $('workground'),
+        content_main: $('main'),
+        content_head: $E('#workground .content-head'),
+        content_foot: $E('#workground .content-foot'),
+        side_r: $('side-r'),
+        side_r_content:$('side-r-content')
+    };
+</script>
+<{script src="load.js" app="qiyecenter" pdir="js"}>
+<{script src="wpage.js" app="qiyecenter" pdir="js"}>
+<script>
+    var W = new Wpage({});
+</script>
+<{script src="dialog.js" app="qiyecenter" pdir="js"}>
+<{script src="loader.js" app="desktop" pdir="js"}>
+<{script src="uploader.js" app="qiyecenter" pdir="js"}>
+<div class="qiye_list">
+    <div class="right_top">
+        <div class="r_tit">
+            <div class="guanlibumen">礼包兑换结果</div>
+        </div>
+    </div>
+    <div class="right_selectbycon">
+        <form action="<{link app=qiyecenter ctl=site_member act=qiyeguanli}>" method="post">
+        <div class="r_center">
+            <div class="suoshuqiye">礼包名称</div>
+            <div class="suoshuqiye" >
+                <input type="text" style="border: 1px solid;width: 100px;" name="name_ch"/>
+            </div>
+            
+            <div class="suoshuqiye" >
+                <input type="submit" value="搜索" class="search_bott"/>
+            </div>
+        </div>
+        </form>
+    </div>
+	<{if $sfscdata}>
+    <div class="r_list">
+        <div class="show_list">
+            <div class="list_head">
+                <div class="head_font" style="width: 10%;">接收人</div>
+                <div class="head_font" style="width: 10%;">姓名</div>
+                <div class="head_font" style="width: 10%;">证件号</div>
+                <div class="head_font" style="width: 10%;">礼包名称</div>
+                <div class="head_font" style="width: 15%;">卡号</div>
+				<div class="head_font" style="width: 10%;">接收状态</div>
+				<div class="head_font" style="width: 15%;">商城订单号</div>
+				<div class="head_font" style="width: 10%;">接收时间</div>
+				<div class="head_font" style="width: 10%;">过期时间</div>
+            </div>
+            <{foreach from=$sfscdata item=item}>
+                <div class="list_con">
+                    <div class="head_font" style="width: 10%;"><{$item.REC_ID|default:'-'}></div>
+                    <div class="head_font" style="width: 10%;"><{$item.NAME|default:'-'}></div>
+                    <div class="head_font" style="width: 10%;"><{$item.ID|default:'-'}></div>
+                    <div class="head_font" style="width: 10%;"><{$item.PRODUCT_ID|default:'-'}></div>
+					<div class="head_font" style="width: 15%;"><{$item.CARD_NUMBER|default:'-'}></div>
+					<div class="head_font" style="width: 10%;"><{$item.REC_STATUS|default:'-'}></div>
+					<div class="head_font" style="width: 15%;"><{$item.REC_ORDER_ID|default:'-'}></div>
+					<div class="head_font" style="width: 10%;"><{$item.REC_TIME|default:'-'}></div>
+					<div class="head_font" style="width: 10%;"><{$item.OVERDUE_TIME|default:'-'}></div>
+                </div>
+            <{/foreach}>
+
+        </div>
+        <script type="text/javascript">
+            window.addEvent('domready',function(){
+                $$('.list_con').getElements(".edit").each(function(item){
+                    item.addEvent('click',function(){
+                        var customer_no = this.getParent(".list_con").getChildren(".head_font").getText()[0];
+                        new Dialog('<{link app=qiyecenter ctl=site_member act=editinput}>',{
+                            width:1200,
+                            height:600,
+                            resizeable:false,
+                            dragable:false,
+                            ajaxoptions:{
+                                method: 'post',
+                                data:'qiyeguanli_edit=true&customer_no='+customer_no
+                            }
+                        });
+                    });
+                });
+
+
+            });
+        </script>
+        <input type='hidden' id='current_page' />
+        <div class="show_fenye">
+            <div class="feny" id="page_navigation">
+
+            </div>
+        </div>
+    </div>
+	<{else}>
+		<div style="border:1px solid #eee;height:40px;line-height:40px;text-align:center">没有找到相应的礼包</div>
+	<{/if}>
+</div>
+<script type="text/javascript">
+	var per_page = 10; 
+	var items = document.getElementsByClassName("list_con");
+	var pages = Math.ceil(items.length/per_page);
+	gotopage(0);
+	
+	function gotopage(page){
+		for(var i=0;i<items.length;i++){
+			items[i].style.display='none';
+		}
+		for(var i=page*per_page;i<(page+1)*per_page;i++){
+			if(i<items.length){
+			items[i].style.display='block';
+			}
+		}
+		var navigation_html = '<a class="page_link" title="上一页" href="javascript:prepage();">&lt;</a>';
+		
+		for(var current_link = 0; current_link < pages; current_link++){	
+			if(pages<=10){
+			current_link == page?navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>':navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';	
+			}else{
+				if(current_link == page){
+					navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+				}
+				if(current_link <= (page+4)&&current_link >= (page-4)&&current_link != page){
+					navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+				}
+			}
+		}
+		navigation_html += '<a class="page_link" title="下一页" href="javascript:nextpage();">&gt;</a>';
+		document.getElementById("page_navigation").innerHTML= navigation_html;
+		document.getElementById("current_page").value= page;
+		
+	}
+	function nextpage(){
+		var page = parseInt(document.getElementById("current_page").value);
+		if(page < pages-1){
+			gotopage((page+1));
+			document.getElementById("current_page").value= page+1;
+		}	
+	}
+	function prepage(){
+		var page = parseInt(document.getElementById("current_page").value);		
+		if(page > 0){
+			gotopage((page - 1));
+			document.getElementById("current_page").value= page - 1;
+		}
+	}
+	
+	
+</script>

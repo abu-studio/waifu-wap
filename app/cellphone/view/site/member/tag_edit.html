@@ -1,0 +1,54 @@
+<{css src="member.css" app='b2c'}>
+<{include file="site/common/header.html" app="b2c"}>
+<div class="member-main">
+  <div class="title title2">标签管理</div>
+  <div>
+    <div id="tab-discus" class="section switch">
+      <ul class="switchable-triggerBox tab_member clearfix">
+          <li><a href="<{link app=cellphone ctl=site_member act=tags}>"><{t}>标签列表<{/t}></a></li>
+          <li class="active"><a href="javascript:void(0);"><{t}>标签维护<{/t}></a></li>
+      </ul>
+      <div class="switchable-content">
+        <form action="<{link app=cellphone ctl='site_member' full='1' act='save_tags'}> " method="post" class="section" <!--onSubmit="return Form_Validator(this)"-->
+          <input type="hidden" name="tag_id" value="<{$data.tag_id}>">
+          <div class="FormWrap" style="background:none; border:none; padding:0; margin:0;">
+            <div class="division" style="border:none;">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" class="forform">
+                <tr>
+                  <th><em>*</em><{t}>名称：<{/t}></th>
+                  <td><{input class="inputstyle _x_ipt" name="tag_name" vtype=required id="tag_name" size="30" value=$data.tag_name|escape:'html'}></td>
+                </tr>
+                <tr>
+                  <th><em>*</em><{t}>类型：<{/t}></th>
+                  <td>
+                    <select name="tag_type" id="tag_type">
+                    <{foreach from=$type key=key item=item}>
+                    <option class="optionlevels" value='<{$key}>' <{if $key==$data.tag_type}>selected<{/if}>><{$item}></option>
+                    <{/foreach}>
+                    </select>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div style="border-top:1px solid #f1f1f1;"></div>
+            <div class="division" style="border:none;">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" class="forform">
+                <tr>
+                  <th><{t}>备注：<{/t}></th>
+                  <td><{input class="inputstyle font12px" type="textarea" name="tag_abbr" cols="50" rows="5" id="tag_abbr" value=$data.tag_abbr|escape:'html'}></td>
+                </tr>
+                <tr>
+                  <th></th>
+                  <td>
+                    <{button type="submit" label=$___b2c="保存"|t:'b2c' rel="_request"}>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <{button id="Submit_outbox" onclick="$('tag_name').value='';$('tag_abbr').value='';" type="button" label=$___b2c="清空"|t:'b2c'}>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

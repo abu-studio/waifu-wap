@@ -1,0 +1,98 @@
+<{if !$_is_singlepage}>
+
+<form method="POST" action="index.php?app=b2c&ctl=admin_member_fyw&act=save" class="tableform" id="form_member_lv">
+<div class="division">
+<table width="100%" border="0" cellpadding="0" cellspacing="0" >
+	<tr>
+	  <th><em class="c-red">*</em><{t}>会员号：<{/t}></th>
+	  <{if $member_fyw.member_fyw_id}><{input type='hidden' name='member_fyw_id' value=$member_fyw.member_fyw_id}><{/if}>
+	  <td><{$member_fyw.member_no}></td>
+	</tr>
+</table>
+<table width="100%" border="0" cellpadding="0" cellspacing="0"id='member_level' class="member-set">
+<tr>
+  <th><em class="c-red">*</em><{t}>证件号：<{/t}></th>
+  <td><{input type="unsigned" name="certificate_no" style="width:150px" size="20" vtype="required" value=$member_fyw.certificate_no}>
+    </td>
+</tr>
+<tr>
+  <th><em class="c-red">*</em><{t}>证件类型：<{/t}></th>
+  <td><{input type="select" name="certificate_type" options=$member_fyw.certificate_type_options value=$member_fyw.certificate_type vtype="required" separator="&nbsp;" }>
+	</td>
+</tr>
+<tr>
+	<th><em class="c-red">*</em><{t}>姓名：<{/t}></th>
+	<td><{input type="unsigned" name="member_name" style="width:50px" size="20" vtype="required" value=$member_fyw.member_name}>
+	</td>
+</tr>
+<tr>
+	<th><em class="c-red">*</em><{t}>手机号码：<{/t}></th>
+	<td><{input type="unsigned" name="mobile_no" style="width:80px" size="11" vtype="required&&number" value=$member_fyw.mobile_no}>
+	</td>
+</tr>
+<tr>
+	<th><em class="c-red">*</em><{t}>公司名：<{/t}></th>
+	<td><{input type="unsigned" name="company_name" style="width:150px" size="20" vtype="required" value=$member_fyw.company_name}>
+	</td>
+</tr>
+<tr>
+	<th><{t}>商社代码：<{/t}></th>
+	<td><{input type="unsigned" name="company_code" style="width:150px" size="20" vtype="" value=$member_fyw.company_code}>
+	</td>
+</tr>
+<tr>
+	<th><{t}>地区：<{/t}></th>
+	<td><{input type="unsigned" name="region" style="width:150px" size="20" vtype="" value=$member_fyw.region}>
+	</td>
+</tr>
+<tr>
+	<th><em class="c-red">*</em><{t}>用户状态：<{/t}></th>
+	<td><{input type="select" name="status" options=$member_fyw.status_options value=$member_fyw.status vtype="required" separator="&nbsp;" }>
+	</td>
+</tr>
+</table>
+
+</div>
+</form>
+<{area inject='.mainFoot'}>
+     <div class="table-action">
+	<{button type="button" label=$___b2c="保存"|t:'b2c' id="member_lv-form-submit"}>
+</div>
+<{/area}>
+
+<script>
+(function(){
+	var _form = $('form_member_lv');
+	var btn =$('member_lv-form-submit');
+	var finder = finderGroup['<{$env.get._finder.finder_id}>'];
+
+	_form.store('target',{
+		onSuccess:function(response){
+			var hash_res_obj = JSON.decode(response);
+
+			if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+			{
+				try{
+					var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+				}catch(e){}
+
+				if(_dialogIns)
+				{
+					_dialogIns.close();
+					window.finderGroup['<{$env.get._finder.finder_id}>'].refresh();
+				}
+			}
+
+		}
+	});
+
+	    btn.addEvent('click',function(){
+		    _form.fireEvent('submit',{stop:$empty});
+		});
+
+})();
+
+
+</script>
+
+<{/if}>

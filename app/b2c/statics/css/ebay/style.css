@@ -1,0 +1,571 @@
+*{
+	padding: 0px;
+	margin:0px;
+}
+li{
+	list-style: none;
+}
+a{
+	text-decoration:none;
+}
+.main_box{
+	width: 1200px;
+	margin: 0 auto
+}
+.main_box header{
+	padding: 32px 0px 38px 0px
+}
+/*帮助页*/
+.help_page{
+	background: #f8f8f8;
+	box-sizing: border-box;
+}
+.help_page .main_box .help_bg{
+	width: 1200px;
+	height: 1837px;
+	margin-bottom: 66px;
+	position: relative;
+	background: url(../../images/ebayimages/help_bg.png) no-repeat;
+	background-size: 100% 100%;
+}
+.help_page .main_box .help_bg .text_info{
+	position: absolute;
+	left: 604px;
+	top: 1000px;
+	font-size: 16px;
+	color: #747474
+}
+.help_page .main_box .help_bg .text_info span{
+	color: #3496d1
+}
+.help_page .main_box .help_bg .text_info .two_but{
+	margin-top: 45px;
+	font-size: 16px
+}
+.help_page .main_box .help_bg .text_info .two_but .yes{
+	width: 216px;
+	background: #3496d1;
+	color: #fff;
+	border: none;
+	padding: 12px 0px;
+	margin-left: 140px;
+	margin-right: 26px;
+	cursor: pointer;
+}
+.help_page .main_box .help_bg .text_info .two_but span{
+	position: relative;
+    top: 10px;
+    font-size: 12px;
+    color: #929292;
+	cursor: pointer;
+}
+/*管理员登录*/
+.admin_page{}
+.admin_page .logo_box{
+	background: url(../../images/ebayimages/logo_bg.png) no-repeat;
+	background-position: center center;
+    height: 550px;
+}
+.admin_page .logo_box .main_box{
+    position: relative;
+    height: 550px;
+}
+.admin_page .logo_box .form_box{
+	position: absolute;
+	top: 122px;
+    left: 746px;
+}
+.admin_page .logo_box .form_box h4{
+	margin-top: 42px;
+	font-size: 26px;
+	color: #5c5c5c
+}
+.admin_page .logo_box .form_box input{
+	width: 301px;
+	font-size: 16px;
+	color: #b2b2b2;
+	border: none;
+}
+.admin_page .logo_box .form_box span{
+	color: red
+}
+.admin_page .logo_box .form_box .user_name{
+	position: absolute;
+    top: 128px;
+    left: 42px;
+    padding: 13px 2px 14px 2px
+}
+.admin_page .logo_box .form_box .user_name_prompt{
+	position: absolute;
+	top: 180px;
+	font-size: 14px
+}
+.admin_page .logo_box .form_box .user_possword{
+	position: absolute;
+    top: 207px;
+    left: 42px;
+    padding: 13px 2px 14px 2px
+}
+.admin_page .logo_box .form_box .user_name_password{
+	position: absolute;
+	top: 259px;
+	font-size: 14px
+}
+.admin_page .logo_box .form_box button{
+	width: 352px;
+	padding: 15px 0px;
+	font-size: 22px;
+	color: #fff;
+	border: none;
+	border-radius: 4px;
+	background: #36a5ff;
+	position: absolute;
+    top: 297px;
+	cursor: pointer;
+}
+/*绑定、解绑*/
+.bing_page{
+	background: #f8f8f8;
+}
+.bing_page header{
+	padding: 28px 0px;
+}
+.bing_page .text_info{
+	padding: 36px 48px;
+	background: #fff;
+    text-align: center;
+}
+.bing_page .text_info button{
+	background: #176da4;
+    color: #fff;
+    width: 278px;
+    font-size: 22px;
+    border: none;
+    padding: 12px 0px;
+    cursor: pointer;
+}
+.bing_page .text_info .tab{
+	position: relative;
+    top: 10px;
+    left: 6px;
+    font-size: 12px;
+    color: #929292;
+    cursor: pointer;
+}
+.bing_page .text_info h2{
+	font-size: 20px;
+	padding-bottom: 10px;
+	margin-bottom: 115px;
+	border-bottom: 2px solid #f5f5f5;
+    text-align: left;
+}
+.bing_page .text_info_box{
+    font-size: 16px;
+    padding-bottom: 56px;
+    color: #3b3b3b;
+}
+.bing_page .text_info_box span{
+	color: #3496d1;
+}
+.bing_page .bing_page_mag{
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	width: 372px;
+	height: 224px;
+	margin-top: -112px;
+	margin-left: -186px;
+	border-radius: 4px;
+	z-index: 9;
+	text-align: center;
+	background: #fff;
+	box-shadow: -2px 1px 24px #e2e2e2;
+	display: none;
+}
+.bing_page .bing_page_mag img{
+	width: 23px;
+	height: 22px;
+	vertical-align: sub;
+	margin-right: 4px;
+}
+.bing_page .bing_page_mag_title{
+	width: 272px;
+    color: #343434;
+    font-size: 16px;
+    padding-top: 78px;
+    padding-bottom: 45px;
+    margin: 0 auto;
+    word-wrap: normal;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.bing_page .bing_page_mag button{
+	width: 108px;
+	padding: 9px;
+	font-size: 15px;
+	color: #fff;
+	border: none;
+    cursor: pointer;
+}
+.bing_page .bing_page_mag .yes{
+	background: #007cc6;
+	margin-right: 26px;
+}
+.bing_page .bing_page_mag .no{
+	background: #909090;
+	margin-right: 26px;
+}
+/*后台-流水充值、发放流水*/
+.water_page{
+	background: #fff;
+	margin-top: 80px;
+	min-width: 1386px
+}
+.water_page header{
+	height: 80px;
+	color: #fff;
+	overflow: hidden;
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	right: 0px;
+	background: -webkit-linear-gradient(left, #007cc6 , #2397dc);
+ 	background: -o-linear-gradient(right, #007cc6 , #2397dc);
+    background: -moz-linear-gradient(right, #007cc6 , #2397dc);
+    background: linear-gradient(to right, #007cc6 , #2397dc);
+}
+.water_page header .left_text{
+	padding-left: 18px;
+	font-size: 18px;
+	line-height: 80px;
+	float: left;
+}
+.water_page header .right_details{
+	float: right;
+}
+.water_page header .right_details ul{
+	padding: 15px 30px 0px 0px;
+}
+.water_page header .right_details ul li:nth-child(1){
+    padding-left: 35px;
+	border-left: 1px solid #1b84c3
+}
+.water_page header .right_details ul li{
+	display: inline-block;
+	font-size: 12px;
+	text-align: center;
+    cursor: pointer;
+    padding-left: 16px;
+}
+.water_page header .right_details ul li img{
+	width: 26px;
+	height: 26px;
+	display: block;
+	margin: 0 auto 8px auto;
+}
+.water_page .water_box{
+	overflow: hidden;
+}
+.water_box .left_slide{
+	width: 136px;
+	float: left;
+	box-sizing: border-box;
+	border-right: 1px solid #e0e0e0;
+	background: #f2f2f2;
+
+}
+.water_box .left_slide li{
+	padding: 10px 0px 10px 16px;
+	border-bottom: 1px solid #e0e0e0;
+}
+.water_box .left_slide li img{
+	width: 17px;
+	height: 17px;
+	vertical-align: bottom;
+	margin-right: 12px;
+}
+.water_box .left_slide li a{
+	font-size: 14px;
+	color: #666;
+}
+.water_box .left_slide .on a{
+	color: #027dc7
+}
+.water_box .right_info{
+	float: left;
+	box-sizing: border-box;
+	padding: 0px 98px
+}
+.water_box .right_info .time_item{
+	padding-top: 52px;
+	font-size: 14px;
+	color: #333;
+	overflow: hidden;
+	margin-bottom: 34px;
+}
+.water_box .right_info .time_item .start_time{
+	margin-right: 52px;
+	float: left;
+}
+.water_box .right_info .time_item .end_time{
+	margin-right: 52px;
+	float: left;
+}
+.water_box .right_info .time_item .query{
+	float: left;
+}
+.water_box .right_info .time_item .query button{
+	width: 86px;
+	font-size: 14px;
+	color: #fff;
+	background: #007cc6;
+	border: none;
+	padding: 10px 0px;
+	border-radius: 4px;
+    cursor: pointer;
+}
+.water_box .right_info .time_item input{
+	width: 144px;
+	height: 34px;
+	padding-left: 16px;
+	border: 1px solid #e0e0e0;
+	background: url(../../images/ebayimages/arr_down.png) no-repeat;
+	background-position: 132px;
+}
+.water_box .right_info .report_form{
+	min-width: 1020px;
+	border-top: 1px solid #ececec;
+	border-left: 1px solid #ececec;
+	border-right: 1px solid #ececec
+}
+.water_box .right_info .report_form_title{
+	background: #f7f8fa
+}
+.water_box .right_info .report_form_title li:nth-child(1){
+	width: 372px;
+	border-right: 1px solid #ececec
+}
+.water_box .right_info .report_form_title li{
+	width: 652px;
+	display: inline-block;
+	text-align: center;
+	padding: 17px 0px;
+	color: #333333
+}
+.water_box .right_info .report_form_item li{
+	overflow: hidden;
+	text-align: center;
+	border-bottom: 1px solid #ececec
+}
+.water_box .right_info .report_form_item .price{
+	width: 372px;
+	float: left;
+	padding: 17px 0px;
+	border-right: 1px solid #ececec
+}
+.water_box .right_info .report_form_item .data{
+	width: 652px;
+	float: left;
+	display: inline-block;
+	text-align: center;
+	padding: 17px 0px;
+	color: #333333
+}
+.water_box .right_info .paging{
+	color: #222222;
+	font-size: 12px;
+	margin-top: 20px;
+	text-align: right;
+}
+.water_box .right_info .paging span{
+	margin: 0px 14px;
+	display: inline-block;
+    cursor: pointer;
+}
+.water_box .right_info .paging .on{
+	width: 27px;
+	height: 27px;
+	color: #fff;
+	text-align: center;
+	line-height: 27px;
+	box-sizing: border-box;
+	background: #007cc6
+}
+.water_page .mask{
+	background: #000;
+	opacity: 0.6;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	z-index: 9;
+	display: none;
+}
+.water_page .modify_box{
+	width: 306px;
+	height: 266px;
+	box-sizing: border-box;
+	background: #fff;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin-top: -233px;
+	margin-left: -153px;
+	z-index: 10;
+	border-radius: 4px;
+	padding: 0px 35px 35px 35px;
+	overflow: hidden;
+	display: none;
+}
+.water_page .modify_box .modify_box_title{
+	font-size: 13px;
+	color: #343434;
+	font-weight: bold;
+	text-align: center;
+	padding-top: 24px;
+	margin-bottom: 15px
+}
+.water_page .modify_box input{
+	width: 100%;
+	color: #b2b2b2;
+	font-size: 14px;
+	border: 1px solid #e8e8e8;
+	border-radius: 4px;
+	padding: 8px 18px;
+	box-sizing: border-box;
+	margin-bottom: 12px
+}
+.water_page .modify_box button{
+	width: 109px;
+	height: 35px;
+	border: none;
+	font-size: 15px;
+    cursor: pointer;
+    margin-top: 8px
+}
+.water_page .modify_box .yes{
+	float: left;
+	background: #007cc6;
+	color: #fff
+}
+.water_page .modify_box .no{
+	float: right;
+	color: #ffffff;
+	background: #999999
+}
+/*登录*/
+.login_page{
+	background: #f8f8f8
+}
+.login_page .text_info{
+	padding: 36px 48px;
+    background: #fff;
+    margin-bottom: 118px
+}
+.login_page h2{
+	font-size: 20px;
+    padding-bottom: 10px;
+    margin-bottom: 38px;
+    border-bottom: 2px solid #f5f5f5;
+    text-align: left;
+}
+.login_page .login_box{
+	overflow: hidden;
+}
+.login_page .left_from{
+	float: left;
+	width: 539px;
+	height: 355px;
+	box-sizing: border-box;
+	padding-left: 52px;
+	padding-top: 16px;
+	padding-right: 127px;
+	position: relative;
+	border-right: 1px solid #f5f5f5
+}
+.login_page .logo_err{
+	font-size: 14px;
+    position: absolute;
+    top: 204px;
+    left: 60px;
+    color: red;
+}
+.login_page .left_from .logoin{
+	width: 100%;
+	margin-top: 50px;
+	margin-bottom: 30px;
+	background: #176da4;
+	border: none;
+	padding: 17px;
+    cursor: pointer;
+	text-align: center;
+	color: #fff
+}
+.login_page .left_from .friendship_link{
+	text-align: right;
+	color: #666;
+}
+.login_page .left_from .friendship_link a{
+	color: #666;
+	font-size: 14px;
+}
+.login_page .right_ebay{
+	float: left;
+	width: 560px;
+}
+.login_page .right_ebay img{
+	width: 561px;
+	height: 355px
+}
+.login_page .login_box .input_item{
+	padding: 29px 0px 10px 0px;
+	border-bottom: 1px solid #e6e6e6
+}
+.login_page .login_box .input_item span{
+	display: inline-block;
+	margin-left: 15px;
+	margin-right: 24px
+}
+.login_page .login_box .input_item b{
+	font-size: 14px;
+    color: #176da4;
+    font-weight: normal;
+    position: relative;
+    top: 4px;
+    left: 23px;
+}
+.login_page .login_box .input_item i{
+	width: 104px;
+	height: 42px;
+	background: #000;
+	display: inline-block;
+	position: absolute;
+	margin-top: -12px;
+    margin-left: 10px;
+}
+.login_page .login_box .input_item input{
+	font-size: 14px;
+    color: #a1a1a1;
+    padding: 2px 4px;
+    width: 174px;
+    border: none;
+}
+.login_page .login_box .input_item .lable_user{
+	width: 12px;
+	height: 14px;
+	background: url(../../images/ebayimages/user.png) no-repeat;
+}
+.login_page .login_box .input_item .lable_pass{
+	width: 12px;
+	height: 16px;
+	background: url(../../images/ebayimages/pas.png) no-repeat;
+}
+.login_page .login_box .input_item .lable_code{
+	width: 20px;
+	height: 15px;
+	margin-left: 11px;
+	margin-right: 20px;
+	background: url(../../images/ebayimages/code.png) no-repeat;
+}

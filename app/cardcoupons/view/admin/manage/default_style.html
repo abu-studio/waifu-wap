@@ -1,0 +1,83 @@
+<{css src="default/singlepage.css" app="desktop" pdir="css/"}>
+<h3 class="head-title"><{t}>基本设置 <{/t}></h3>
+<form action="index.php?app=cardcoupons&ctl=admin_manage&act=default_style" method="post" class="tableform">
+<input type="hidden" name="store[id]" value="<{$store.id}>"/>
+<input type="hidden" name="card[id]" value="<{$card.id}>"/>
+<input type="hidden" name="store_set" value="store_set"/>
+	<table>
+	  <tr>
+		<th><{t}>头部图片:<{/t}></th>
+        <td>
+          <div class="dft_image">
+            <span class="lnk"><{input type="image" name="card[value][top][image]" value=$card.top.image }></span>
+              <div class="gpic-btn-bar" style="border: 1px solid #cccccc; border-top:none; text-align: center; height: 15px; width: 20px; background: #f2f2f2; color: #c8c8c8; font-size: 8px; line-height: 14px;">
+                  <span class="gpic-btn-delete" onclick="deleteImage(this);"></span>
+              </div>
+          </div>
+        </td>
+      </tr>
+      <tr style="display: none;">
+        <th><{t}>尺寸：<{/t}></th>
+        <td><{t}>宽 <{/t}><{input  type="number" name="card[value][top][width]" value=$card.top.width size="2"}>&nbsp;&nbsp;&nbsp;x&nbsp;&nbsp;&nbsp;<{t}>高<{/t}> <{input  type="number" name="card[value][top][height]" value=$card.top.height size="2"}>
+        </td>
+      </tr>
+	  <tr>
+	  <th><{t}>左部图片:<{/t}></th>
+        <td>
+          <div class="dft_image">
+            <span class="lnk"><{input type="image" name="card[value][left][image]" value=$card.left.image }></span>
+              <div class="gpic-btn-bar" style="border: 1px solid #cccccc; border-top:none; text-align: center; height: 15px; width: 20px; background: #f2f2f2; color: #c8c8c8; font-size: 8px; line-height: 14px;">
+                  <span class="gpic-btn-delete" onclick="deleteImage(this);"></span>
+              </div>
+          </div>
+        </td>
+      </tr>
+      <tr style="display: none;">
+        <th><{t}>尺寸：<{/t}></th>
+        <td><{t}>宽 <{/t}><{input  type="number" name="card[value][left][width]" value=$card.left.width size="2"}>&nbsp;&nbsp;&nbsp;x&nbsp;&nbsp;&nbsp;<{t}>高<{/t}> <{input  type="number" name="card[value][left][height]" value=$card.left.height size="2"}>
+        </td>
+      </tr>
+	  <tr>
+	  <th><{t}>右部图片:<{/t}></th>
+        <td>
+          <div class="dft_image">
+            <span class="lnk"><{input type="image" name="card[value][right][image]" value=$card.right.image }></span>
+            <div class="gpic-btn-bar" style="border: 1px solid #cccccc; border-top:none; text-align: center; height: 15px; width: 20px; background: #f2f2f2; color: #c8c8c8; font-size: 8px; line-height: 14px;">
+                <span class="gpic-btn-delete" onclick="deleteImage(this);"></span>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr style="display: none;">
+        <th><{t}>尺寸：<{/t}></th>
+        <td><{t}>宽 <{/t}><{input  type="number" name="card[value][right][width]" value=$card.right.width size="2"}>&nbsp;&nbsp;&nbsp;x&nbsp;&nbsp;&nbsp;<{t}>高<{/t}> <{input  type="number" name="card[value][right][height]" value=$card.right.height size="2"}>
+        </td>
+      </tr>
+        <tr>
+            <th><{t}>提示语设置：<{/t}></th>
+            <td>
+                <div class="tableform">
+                    <{input type="html" name="card[value][message]" value=$card.message includeBase=true}>
+                </div>
+            </td>
+        </tr>
+	</table>
+	<div class="table-action">
+  <{button label=$___image="保存"|t:'image' class="btn-primary" type="submit"}>
+	</div>
+</form>
+
+
+<script type="text/javascript">
+    function deleteImage(obj){
+        if(confirm("确定删除图片？")){
+            var obj = $(obj);
+            var img = obj.getParent('.gpic-btn-bar').getPrevious().getElements('.image-input-view img');
+            var input = obj.getParent('.gpic-btn-bar').getPrevious().getElements('.image-input input[type=hidden]');
+            if(input.get("value") && img.get("src")){
+                input.set("value","");
+                img.set("src","")
+            }
+        }
+    }
+</script>

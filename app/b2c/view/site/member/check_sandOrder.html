@@ -1,0 +1,60 @@
+<!-- right-->
+<{css src="member.css" app="b2c" pdir="css_mini"}>
+<div class="bianzhifuContent-right">
+    <div class="content-title"><{t}><{$title}><{/t}></div>
+    <div class="mywelfare">
+        <div class="tx_step tx_step2">
+        </div>
+    </div>
+    <div style="height:200px;margin-left:40px;">
+        <div class="pinl_tt2"><div class="jfcx_tt" style="margin-left:0px;">账单信息确认</div></div>
+        <form id="mobile_create_form" method="post" action="<{link app=sand ctl=site_sand act=utilitypay}>">
+			 <input type="hidden" name="order_amount" value="<{$data.pay_money}>">
+			 <input type="hidden" name="payment_amount" value="<{$data.money}>">
+            <div class="jfcx_lists" style="border:none;">
+                <div>
+                    <table width="96%" border="0" cellpadding="0" cellspacing="0">
+                        <tbody>
+                            <tr class="jfcx_lists_tt" style="line-height:40px">
+                                <td  align="left" class="jfcx_ft1" style="text-align:center">充值金额</td>
+                                <td  align="left" class="jfcx_ft1" style="text-align:center">手续费</td>
+                                <td  align="left" class="jfcx_ft1" style="text-align:center">实付金额</td>
+                            </tr>
+							<tr style="line-height:40px;height: 40px;border-left: 1px solid #F4F4F4;border-right: 1px solid #F4F4F4;">
+                                <td align="left" class="jfcx_boder1" style="text-align:center">
+                                    <font style="color:#FB5E00;font-weight: bold;">￥<{$data.money}></font>
+                                </td>
+                                <td  align="left" class="jfcx_boder1" style="text-align:center">
+                                    <font style="color:#FB5E00;font-weight: bold;">￥<{$data.commission}></font>
+                                </td>
+                                <td align="left" class="jfcx_boder1" style="text-align:center">
+                                    <font style="color:#FB5E00;font-weight: bold;">￥<{$data.pay_money}></font>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="jfcx_price_tip" style="width:900px;">
+                    <span class="jfcx_price_tip1">已选账单笔数:
+                        <span class="jfcx_price_tip2" id="billCountTip">1</span>笔，已选账单总计:
+                        <span class="jfcx_price_tip2" id="amountTip">￥<{$data.pay_money}></span>
+                    </span>
+                </div>
+                <div class="clear"></div>
+                <div style="float: right;margin-right: 40px;">
+                    <button id="sand_create_form_submit" type="submit" class="sdm_sel_button" rel="_request">结算</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    (function(){
+        var btn =$('sand_create_form_submit');
+
+		btn.addEvent('click',function(e){
+			btn.set('disabled','true');
+		});
+    })();
+</script>

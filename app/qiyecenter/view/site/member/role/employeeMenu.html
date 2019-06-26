@@ -1,0 +1,69 @@
+<div class="tree_head">
+    <div class="head_center">
+        <div class="con">
+            <font class="zuzhijiegou">组织结构:</font><{$sfsc_menu_name}>
+        </div>
+    </div>
+    <div class="tree">
+        <div class="head_tree" id="head_tree">
+            <{$sfsc_menu}>
+        </div>
+    </div>
+</div>
+<script>
+/*
+window.addEvent('domready', function(){
+    new Tree('both');
+    new Collapse('both');
+    $$(".sfsc_menu_type").addEvent('click', function() {
+        var dataObj = {};
+        dataObj.menu_type = this.get("value");
+        if(this.get("value") != ""){
+            new Request.HTML({
+                url:'<{link app=qiyecenter ctl=site_member act=getMenus}>',
+                update:$('head_tree'),
+                method:'POST',
+                data:dataObj,
+                onComplete:function(res){
+                    $('head_tree').show();
+                    new Tree('both');
+                    new Collapse('both');
+                }
+            }).send();
+        }
+    });
+});
+*/
+function switch_sfscmenu(id,sfscthis,type){
+	var frmIdObj = document.getElementById('frmId');
+    sfscthis.getFirst().set("checked",'checked');
+    var dataObj = {};
+    dataObj.NODE_TYPE = type;
+    dataObj.NODE_ID = id;
+    dataObj.ORDER_ID = frmIdObj.ORDER_ID.value;//订单Id
+    if($("totab_getUnspecifyEmployees").hasClass("sel_tit")){
+    	dataObj.IS_NULL = '0';
+    }else{
+    	dataObj.IS_NULL = '1';
+    }
+    dataObj.type = type;
+    dataObj.id = id;
+    dataObj.getSpecifyEmployees = true;
+    if(id != ""){
+        new Request.HTML({
+            url:'<{link app=qiyecenter ctl=site_member act=meuneditinput}>',
+            update:$('show_list'),
+            method:'POST',
+            data:dataObj,
+            onComplete:function(res){
+                $('show_list').show();
+            }
+        }).send();
+
+    }
+}
+
+
+    
+</script>
+

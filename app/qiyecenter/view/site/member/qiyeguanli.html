@@ -1,0 +1,233 @@
+<script>
+    window.loadedPart = [1,0,(new Date).getTime()];
+    BREADCRUMBS ='0:0';
+    MODALPANEL = {
+        createModalPanel:function(){
+            var mp = new Element('div',{'id':'MODALPANEL'});
+            var mpStyles = {
+                'position': 'fixed',
+                'background': '#333333',
+                'width': '100%',
+                'display':'none',
+                'height': window.getScrollSize().y,
+                'top': 0,
+                'left': 0,
+                'zIndex': 65500,
+                'opacity': .4
+            };
+            this.element = mp.setStyles(mpStyles).inject(document.body);
+            return this.element;
+        },
+        show:function(){
+            var panel = this.element = this.element||this.createModalPanel();
+            panel.setStyles({
+                'width': '100%',
+                'height': window.getScrollSize().y
+            }).show();
+        },hide:function(){
+            if(this.element)this.element.hide();
+        }
+    };
+    Xtip = new Tips({tip:'tip_Xtip',fixed:true,offset: {x: 24, y: -15},onBound:function(bound){
+        if(bound.x2){
+            this.tip.getElement('.tip-top').addClass('tip-top-right');
+            this.tip.getElement('.tip-bottom').addClass('tip-bottom-right');
+        }else {
+            this.tip.getElement('.tip-top').removeClass('tip-top-right');
+            this.tip.getElement('.tip-bottom').removeClass('tip-bottom-right');
+        }
+    }});
+    var LAYOUT = {
+        container: $('container'),
+        side: $('side'),
+        workground: $('workground'),
+        content_main: $('main'),
+        content_head: $E('#workground .content-head'),
+        content_foot: $E('#workground .content-foot'),
+        side_r: $('side-r'),
+        side_r_content:$('side-r-content')
+    };
+</script>
+<{script src="load.js" app="qiyecenter" pdir="js"}>
+<{script src="wpage.js" app="qiyecenter" pdir="js"}>
+<script>
+    var W = new Wpage({});
+</script>
+<{script src="dialog.js" app="qiyecenter" pdir="js"}>
+<{script src="loader.js" app="desktop" pdir="js"}>
+<{script src="uploader.js" app="qiyecenter" pdir="js"}>
+<{script src="modedialog.js" app="qiyecenter" pdir="js"}>
+<div class="qiye_list">
+    <div class="right_top">
+        <div class="r_tit">
+            <div class="guanlibumen">企业管理</div>
+        </div>
+        <!-- <div class="create_de">
+            <div class="an_input">创建部门</div>
+        </div> -->
+    </div>
+    <div class="right_selectbycon">
+        <form action="<{link app=qiyecenter ctl=site_member act=qiyeguanli}>" method="post">
+        <div class="r_center">
+            <div class="suoshuqiye">企业名称 :</div>
+            <div class="suoshuqiye" >
+                <input type="text" style="border: 1px solid #cccccc;width: 100px;" name="name_ch"/>
+            </div>
+            <div class="suoshuqiye">企业编号 :</div>
+            <div class="suoshuqiye" style="width: 100px;">
+                <input type="text" style="border: 1px solid #cccccc;width: 100px;" name="company_no"/>
+            </div>
+            <div class="suoshuqiye" >
+                <input type="submit" value="搜索" class="search_bott"/>
+            </div>
+        </div>
+        </form>
+    </div>
+	<{if true}>
+    <div class="r_list">        
+        <div class="show_list">
+            <div class="list_head">
+                <div class="head_font" style="width: 20%;">企业编号</div>
+                <div class="head_font" style="width: 30%;">企业名称</div>
+                <div class="head_font" style="width: 15%;">账户余额(福点)</div>
+                <div class="head_font" style="width: 10%;">操作</div>
+            </div>
+         <form method="post" id="g_business" >
+            <{foreach from=$sfscdata item=item}>
+                <div class="list_con">
+				   <input type="hidden" value="<{$item.CUSTOMER_ID}>" name="company_no">
+                    <div class="head_font" style="width: 20%;"><{$item.CUSTOMER_ID}></div>
+                    <div class="head_font" style="width: 30%;"><{$item.CUSTOMER_NAME}></div>
+                    <div class="head_font" style="width: 15%;color:#a11f45"><a href="<{link app=qiyecenter ctl=site_member act=qiyeguanli_list}>?company_no=<{$item.CUSTOMER_ID}>"><{$item.BALANCE}></a></div>
+                    <div class="head_font" style="width: 20%;">
+                        <span class="edit" style="display:none;"><a href="javascript:void(0);">编辑</a></span>
+                        <span><a href="javascript:void(0);" onclick="setmanger(this)">设置管理员</a></span>
+                        <span><a href="javascript:void(0);" onclick="selectmanger(this)">查看管理员</a></span>
+                    </div>
+                </div>
+            <{/foreach}>
+            <!--<div class="table-action" style="text-align: center;margin-top: 20px">-->
+                <!--<{button onclick="save_business();" class="btn btn-primary" label=$___ectools="设置默认支付账号"|t:'ectools'}>-->
+            <!--</div>-->
+        </form>
+        </div>
+        <script type="text/javascript">
+            var setmanger = function(el){
+                var el = $(el);
+                var company_no= el.getParent(".list_con").getChildren("input[name='company_no']").getValue();
+                Ex_Loader('modedialog',function(){
+                    var time = Date.parse(new Date());
+                    new ModeDialog('<{link app=qiyecenter ctl=site_member act=getenterprise_price}>?COMPANY_NO='+company_no,{
+                        width:600,height:600,params:{iptText:1,iptHidden:2}});
+                });
+            }
+            //查看管理员
+            var selectmanger = function(el){
+                var el = $(el);
+                var company_no= el.getParent(".list_con").getChildren("input[name='company_no']").getValue();
+                Ex_Loader('modedialog',function(){
+                    var time = Date.parse(new Date());
+                    new ModeDialog('<{link app=qiyecenter ctl=site_member act=getenterprise_price_selectmanger}>?COMPANY_NO='+company_no,{
+                        width:600,height:600,params:{iptText:1,iptHidden:2}});
+                });
+            }
+
+            window.addEvent('domready',function(){
+                $$('.list_con').getElements(".edit").each(function(item){
+                    item.addEvent('click',function(){
+                       /*
+                        var customer_no = this.getParent(".list_con").getChildren(".head_font").getText()[0];
+                        new Dialog('<{link app=qiyecenter ctl=site_member act=editinput}>',{
+                            width:1200,
+                            height:600,
+                            resizeable:false,
+                            dragable:false,
+                            ajaxoptions:{
+                                method: 'post',
+                                data:'qiyeguanli_edit=true&customer_no='+customer_no
+                            }
+                        });
+                     */
+                    });
+                });
+
+            });
+        </script>       
+    </div>
+    <input type='hidden' id='current_page' value='0' />
+        <div class="show_fenye">
+            <div class="feny" id="page_navigation">
+            </div>
+        </div>
+	<{else}>
+		<div style="border:1px solid #eee;height:40px;line-height:40px;text-align:center">没有找到相应的企业</div>
+	<{/if}>
+</div>
+<script type="text/javascript">
+	var per_page = 10; 
+	var items = document.getElementsByClassName("list_con");
+	var pages = Math.ceil(items.length/per_page);
+	gotopage(0);
+	
+	function gotopage(page){
+		for(var i=0;i<items.length;i++){
+			items[i].style.display='none';
+		}
+		for(var i=page*per_page;i<(page+1)*per_page;i++){
+			if(i<items.length){
+			items[i].style.display='block';
+			}
+		}
+		var navigation_html = '<a class="page_link" title="上一页" href="javascript:prepage();">&lt;</a>';
+		
+		for(var current_link = 0; current_link < pages; current_link++){
+			if(pages<=10){
+			current_link == page?navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>':navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';	
+			}else{
+				if(current_link == page){
+					navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+				}
+				if(current_link <= (page+4)&&current_link >= (page-4)&&current_link != page){
+					navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+				}
+			}		
+		}
+		navigation_html += '<a class="page_link" title="下一页" href="javascript:nextpage();">&gt;</a>';
+		document.getElementById("page_navigation").innerHTML= navigation_html;
+		document.getElementById("current_page").value= page;
+		
+	}
+	function nextpage(){
+		var page = parseInt(document.getElementById("current_page").value);
+		if(page < pages - 1){
+			gotopage((page+1));
+			document.getElementById("current_page").value= page+1;
+		}	
+	}
+	function prepage(){
+		var page = parseInt(document.getElementById("current_page").value);		
+		if(page > 0){
+			gotopage((page - 1));
+			document.getElementById("current_page").value= page - 1;
+		}
+	}
+	//设置商社等级
+	 function save_business(){
+        var postArgs = $('g_business').toQueryString();
+        new Request.JSON({
+            url:'<{link app=qiyecenter ctl=site_member act=get_business_add}>',
+            method:'POST',
+            data:postArgs,
+            onComplete:function(res){
+                if (res.success == 'true'){
+                    Message.success("更新成功！");
+                    //location.href = '<{link app=qiyecenter ctl=site_member act=qiyeguanli}>';
+                }else{
+                    Message.error(res.error);
+                    location.reload();
+                }
+            }
+        }).send();
+
+    }
+</script>

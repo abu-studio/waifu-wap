@@ -1,0 +1,13 @@
+<!-- <{if $card_service_data}>
+
+    <select class="inputstyle" name="cards[service_id]">
+        <{foreach from=$card_service_data item=item}>
+            <option value="<{$item.card_service_id}>"<{if $item.card_service_id==$cards.service_id}>selected="selected"<{/if}>><{$item.name}></option>
+        <{/foreach}>
+    </select>
+
+    
+<{else}>
+	名目未设置，请在卡券名目中先添加对应类型卡券名目...
+<{/if}> -->
+<{input type="object" vtype="required" required="required"  cardcoupons="true" filter=$filter object="cards_service@cardcoupons" rowselect="true"  textcol="name" name="cards[service_id]" value=$cards.service_id }>

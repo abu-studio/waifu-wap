@@ -1,0 +1,69 @@
+<{css src="ecmall.css" app="business"}>
+<div class="content">
+  <div class="webpage new_reg dis_bl">
+        <div class="titleban"><img src="<{$env.base_url}>/themes/simple/pic/shop.png" /></div>
+        <div class="title">
+            <div class="title_img">
+                <img src="<{$env.base_url}>/app/business/statics/images/reg_stpe.jpg" alt="" />
+            </div>
+        </div>
+        <div class="reg_step_2">
+            <!-- <p class="reg_step_tip"><span>*</span>请选择店铺类型</p> -->
+            <div class="reg_shop">
+
+                   <{foreach from=$sgrades item=sgrade}>
+                        <{switch  from=$sgrade.issue_type}>
+                         <{case value=0}>
+                           <{assign var="issuename" value='卖场型旗舰店'}>
+                           <{assign var="issuepic" value="step_2_02.png"}>
+                         <{case value=1}>
+                           <{assign var="issuename" value='专卖店'}>
+                           <{assign var="issuepic" value="step_2_04.png"}>
+                         <{case value=2}>
+                           <{assign var="issuename" value='专营店'}>
+                           <{assign var="issuepic" value="step_2_01.png"}>
+                         <{case value=3}>
+                           <{assign var="issuename" value='品牌旗舰店'}>
+                           <{assign var="issuepic" value="step_2_03.png"}>
+                         <{/switch}>
+                   <div class="fl" id=<{$sgrade.grade_id}> >
+                        <h3><img src="<{$env.base_url}>/app/business/statics/images/<{$issuepic}>" alt="<{$issuename}>" /></h3>
+                        <p class="reg_shop_info">
+                           <{$sgrade.remark}>
+                        </p>
+                   </div>
+                   <{/foreach}>
+                <div class="crl"></div>
+                <div class="t_c">
+                <a  id='nextstep'  href="<{link app='business' ctl='site_store' act='storeapplystep2' arg0='gradeid' }>" class="reg_step_2_button">下一步</a><div class="crl"></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+ window.addEvent('domready',function(){
+
+        $$('.fl').addEvents({
+        click:function(){
+            $$('.fl').removeClass('active');
+           this.addClass('active');
+           var str="<{link app='business' ctl='site_store' act='storeapplystep2' arg0='gradeid'}>";
+            str=str.replace('gradeid',this.id)
+           $('nextstep').href= str;
+
+        }
+        });
+
+        if($$('.fl').length>0){
+            $$('.fl')[0].addClass('active');
+            var str="<{link app='business' ctl='site_store' act='storeapplystep2' arg0='gradeid'}>";
+            str=str.replace('gradeid', $$('.fl')[0].id)
+           $('nextstep').href= str;
+        }
+
+
+   });
+
+
+</script>
+

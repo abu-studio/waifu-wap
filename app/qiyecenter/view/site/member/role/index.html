@@ -1,0 +1,239 @@
+
+                            		<div class="r_one">
+                                    	<div class="one_left">
+                                        		<div class="content1">
+                                                        <img src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_09.png" />
+                                                        <font class="content1_1">
+                                                            我的悠福
+                                                        </font>    
+                                                </div>
+                                                <div class="content2">
+                                                   <!--      账户余额：
+                                                            <font class="content2_1">
+                                                            <{$head_data.COMPANY_MONEY}><br />
+                                                            </font>
+                                                    <div class="con">
+                                                        我的企业：
+                                                            <font class="content2_2">
+                                                            <{$head_data.COMPANY_NUM}>
+                                                            </font>
+                                                    </div>
+                                                    <div class="con">
+                                                        我的部门： 
+                                                            <font class="content2_2">
+                                                            <{$head_data.DEPARTMENT_NUM}>
+                                                            </font>
+                                                    </div>
+                                                    <div class="con">
+                                                        我的群组： 
+                                                            <font class="content2_2">
+                                                           <{$head_data.GROUP_NUM}>
+                                                            </font>
+                                                    </div>    
+                                                    <div class="con">
+                                                        我的员工： 
+                                                            <font class="content2_2">
+                                                             <{$head_data.EMPLOYEE_NUM}>
+                                                            </font>
+                                                    </div>
+                                                        <br />
+                                                   
+                                                    <div class="con">
+                                                        我的订单： 
+                                                            <font class="content2_2">
+                                                            2
+                                                            </font>
+                                                    </div>  -->
+                                                    <div class="con">     
+                                                        我的消息： 
+                                                            <font class="content2_2">
+                                                            0
+                                                            </font>  
+                                                    </div>
+                                                 <!--    <div class="con">
+                                                        礼物咨询： 
+                                                            <font class="content2_2">
+                                                             <{$head_data.CONSULT_NUM}>
+                                                            </font> 
+                                                    </div> -->
+                                                </div>
+                                        </div>
+                                       <!--  <div class="one_right">
+                                        		<div class="r_tit">
+                                                	<img src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_09.png" />
+                                                	<font class="operate">
+                                                    	快捷操作
+                                                    </font>  
+                                                </div>
+                                        		<div class="r_opera">
+                                                		<img src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_12.png" onmousemove="picChange(1);" onmouseout="picleave(1)" id="opera1"/>
+                                                        <img src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_10.png" onmousemove="picChange(2);" onmouseout="picleave(2)" id="opera2"/>
+                                                </div>                                           
+                                        </div> -->
+                                    </div>
+                                    
+                                    
+                                    <div class="r_two">
+                                                <div class="tit">
+                                                    <ul>
+                                                        <li style="border-left: 3px solid #A02044;">
+                                                                <font class="brithday">
+                                                                   近期过生日的员工
+                                                                </font>  
+                                                        </li>
+                                                        <li>
+                                                                <font class="brithday" style="color: #CDCDCD;">
+                                                                   点赞最多的员工
+                                                                </font>  
+                                                        </li>
+                                                    </ul>
+                                                  </div>  
+                                                <div class="employee">
+                                                		<div class="emp1">
+                                                        	<img src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_14.png" id="f_left" onclick="forwardL();"/>
+                                                        </div>
+                                                        <div class="emp2">
+                                                        	<div class="fudong" id="fudong">
+                                                        	<ul>
+															<{foreach from=$emp_info item=emp}>
+                                                            	<li>
+                                                                	<div class="photo">
+                                                                        <div class="photo1">
+                                                                            <img src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_16.jpg" />
+                                                                        </div>
+                                                                        <div class="e_name">
+                                                                            <{$emp.NAME}>
+                                                                        </div>
+                                                                         <input type="button" value="送祝福" class="send"/>
+	                                                            </div>
+                                                                </li>
+															<{/foreach}>
+                                                                <li>
+                                                                	<div class="photo">
+                                                                        <div class="photo1">
+                                                                            <img src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_17.jpg" />
+                                                                         </div>
+                                                                         <div class="e_name">
+                                                                                张三
+                                                                         </div>
+                                                                 		 <input type="button" value="送祝福" class="send"/>
+                                                            		</div>
+                                                                </li>
+                                                                <li>
+                                                                  <div class="photo">
+                                                                     <div class="photo1">
+                                                                        <img src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_18.jpg" />
+                                                                     </div>
+                                                                     <div class="e_name">
+                                                                            张三
+                                                                     </div>
+                                                                 		 <input type="button" value="送祝福" class="send"/>
+                                                            	   </div>
+                                                                </li>
+                                                                <li>
+                                                                   <div class="photo">
+                                                                      <div class="photo1">
+                                                                            <img src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_19.jpg" />
+                                                                      </div>
+                                                                	  <div class="e_name">
+                                                                        张三
+                                                                      </div>
+                                                                 	  <input type="button" value="送祝福" class="send"/>
+                                                            	   </div>
+                                                                </li>
+                                                                <li>
+                                                                  <div class="photo">
+                                                                        <div class="photo1">
+                                                                        <img src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_20.jpg" />
+                                                                        </div>
+                                                                        <div class="e_name">
+                                                                            张三
+                                                                        </div>
+                                                                         <input type="button" value="送祝福" class="send"/>
+                                                            	  </div>
+                                                                </li>
+                                                                <li>  
+                                                                	<div class="photo">
+                                                                         <div class="photo1">
+                                                                            <img src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_19.jpg" />
+                                                                         </div>
+                                                                         <div class="e_name">
+                                                                          张三
+                                                                         </div>
+                                                                         <input type="button" value="送祝福" class="send"/>
+                                                            		</div>
+                                                            	</li>
+                                                                 <li>  
+                                                                	<div class="photo">
+                                                                         <div class="photo1">
+                                                                            <img src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_19.jpg" />
+                                                                         </div>
+                                                                         <div class="e_name">
+                                                                          张三
+                                                                         </div>
+                                                                         <input type="button" value="送祝福" class="send"/>
+                                                            		</div>
+                                                            	</li>
+                                                            </ul>
+                                                        	</div>
+                                                         </div>
+                                                        <div class="emp3">
+                                                        	<img src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_15.png" id="foward_r" onclick="fowardR()"/>
+                                                        </div>
+                                                </div>
+	
+                                    </div>
+                                    
+                                    
+                                    <div class="r_three">
+                                    		<div class="content1">
+                                                	<img src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_09.png" />
+                                                	<font class="content1_1">
+                                                    	悠福推荐
+                                                    </font>    
+                                            </div>	
+                                            <div class="tuijian_pro">
+                                            		<ul>
+                                                    	<li>
+                                                        	<img src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_22.jpg" />
+                                                            <div class="tuijian_content">
+                                                                【康宁】明锅玻璃锅汤 V8-12/硅胶手套
+                                                                <br />
+                                                                <font class="price">
+                                                                    ￥187.00
+                                                                </font>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                        	<img src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_24.jpg" />
+                                                            <div class="tuijian_content">
+                                                                【康宁】明锅玻璃锅汤 V8-12/硅胶手套
+                                                                <br />
+                                                                <font class="price">
+                                                                    ￥187.00
+                                                                </font>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                        	<img src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_25.jpg" />
+                                                            <div class="tuijian_content">
+                                                                【康宁】明锅玻璃锅汤 V8-12/硅胶手套
+                                                                <br />
+                                                                <font class="price">
+                                                                    ￥187.00
+                                                                </font>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                        	<img src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_23.jpg" />
+                                                            <div class="tuijian_content">
+                                                                【康宁】明锅玻璃锅汤 V8-12/硅胶手套
+                                                                <br />
+                                                                <font class="price">
+                                                                    ￥187.00
+                                                                </font>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                            </div>
+                                    </div>

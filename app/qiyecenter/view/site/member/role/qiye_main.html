@@ -1,0 +1,161 @@
+<style>
+	.left_tree .tree_head .head_center .con {padding-top: 18px;}
+	.sel_tit{padding-top:0px}	
+</style>
+<div class="fafuli_con">
+    <div class="fafuli_tit" style="height:29px;border-bottom:1px solid #A02043">
+        <p class="fafuli_titf" style="font-size:14px">企业管理</p>
+    </div>
+    <div style="height:500px">
+        <div class="left_tree" style="width:21%">
+            <{$qiyemenu}>
+        </div>
+        <div class="zzright_list" id="zzright_list" style="width:78%">
+            <input type="hidden" id="customer_no" value="<{$customer_no}>">
+            <div class="title">
+                <div class="unsel_tit" style="padding-top:0px;line-height:38px;" id="totab_yuangong" onclick="totab_qiye(this.id)">员工</div>
+             <!--    <div class="unsel_tit" id="totab_zhanghu" onclick="totab_qiye(this.id)">福点账户</div>
+                <div class="unsel_tit" id="totab_order" onclick="totab_qiye(this.id)">福利订单</div> -->
+                <div class="sel_tit" style="padding-top:7px" id="totab_setting" onclick="totab_qiye(this.id)">企业设置</div>
+            </div>
+            <div class="list" style="height:82%;width:93%;margin-left:24px;margin-top:-14px" id="list">
+                <div class="list">
+                    <div class="fd_ye">
+                        <div class="center">
+                            <ul>
+                                <li style="border-bottom-width: 3px; border-bottom-style: solid; border-bottom-color: rgb(28, 99, 161); color: rgb(28, 99, 161);" id="qiye_setting" onclick="tab_qiyesetting(this.id)">企业设置</li>
+                                <li id="qiye_stylesetting" onclick="tab_qiyesetting(this.id)">风格设置</li>
+                               <!--  <li id="qiye_guyuansetting" onclick="tab_qiyesetting(this.id)">雇员访问设置</li> -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="list" style="height: 82%;" id="list_nei">
+				<form action="<{link app='qiyecenter' ctl='site_member' act='updateSingleCustomerExt'}>" method="post">
+                    <div class="fd_ye" style="height: auto;">
+                        <div style="padding-top: 15px; font-size: 14px;">
+                            企业名称
+                        </div>
+                        <div style="padding-top: 15px; font-size: 14px;">
+							<input type="hidden" name="customer_id" value="<{$customer_id}>" />
+                            <input type="text"  disabled='disabled' style="width: 160px; border: 1px solid #000000;" name="" value="<{$customer_name}>">
+                        </div>
+                    </div>
+                    <div class="fd_ye" style="height: auto;">
+                        <div style="padding-top: 15px; font-size: 14px;">
+                            前台显示名称
+                        </div>
+                        <div style="padding-top: 15px; font-size: 14px;">
+                            <input type="text" style="width: 160px; border: 1px solid #000000;" name="company_name" value="<{$company_name}>">
+                            <span style="margin-left: 30px;">为空显示以上默认企业信息</span>
+                        </div>
+						<div style="text-align:center;">
+						<input type="submit" style="margin-top: 20px; margin-bottom: 10px; width: 100px; background: #c40001; font-size:14px; font-weight: bold; color: #ffffff; height: 30px;border-radius: 5px;" rel="_request" value="提交">
+						</div>
+                    </div>
+				</form>
+<!-- 
+                    <div class="show_list" style="margin-top: 20px;">
+                        <div class="list_head" style="width: 93%;margin-left: 26px">
+                            <div class="head_font" style="width: 16%;">帐号名称</div>
+                            <div class="head_font" style="width: 16%;">姓名</div>
+                            <div class="head_font" style="width: 16%;">手机号</div>
+                            <div class="head_font" style="width: 16%;">角色</div>
+                            <div class="head_font" style="width: 16%;">备注</div>
+                            <div class="head_font" style="width: 16%;">操作</div>
+                        </div>
+                        <div class="list_con" style="width: 93%;margin-left: 26px">
+                            <div class="head_font" style="width: 16%;">收入</div>
+                            <div class="head_font" style="width: 16%;">企业账户</div>
+                            <div class="head_font" style="width: 16%;">15/04/10</div>
+                            <div class="head_font" style="width: 16%;">充值</div>
+                            <div class="head_font" style="width: 16%;">1000</div>
+                            <div class="head_font" style="width: 16%;">
+                                <span class="edit">编辑</span> <span class="edit">撤销</span>
+                            </div>
+                        </div>
+                        <div class="list_con" style="width: 93%;margin-left: 26px; border-bottom:0px;">
+                            <div class="head_font" style="width: 16%; color:#6896C0;">添加</div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ <script type="text/javascript">
+     /*
+     window.addEvent('domready',function(){
+        $("getyuangongsearch").addEvent("click",function(){
+            var getyuangongsearch_id_action = $('getyuangongsearch_id').action;
+            var postArgs = $('getyuangongsearch_id').toQueryString();
+
+            new Request.HTML({
+                url:getyuangongsearch_id_action,
+                update:$('list'),
+                method:'POST',
+                data:postArgs,
+                onComplete:function(res){
+                    $('list').show();
+                }
+            }).send();
+        });
+     });
+    */
+
+
+     function totab_qiye(id){
+         $(id).getParent('div').getElements("div").each(function(el){
+            if(el.hasClass("sel_tit")){
+                el.removeClass("sel_tit");
+                el.addClass("unsel_tit");
+            }
+
+         });
+
+        $(id).addClass('sel_tit');
+
+        new Request.HTML({
+             url:'<{link app=qiyecenter ctl=site_member act=getqiyetable}>',
+             update:$('list'),
+             method:'POST',
+             data:'type='+encodeURIComponent(id)+'&customer_no='+$('customer_no').get("value"),
+             onComplete:function(res){
+                 $('list').show();
+             }
+         }).send();
+     }
+
+
+
+
+
+     function tab_qiyesetting(id){
+         $(id).getParent('ul').getElements("li").each(function(el){
+             if(el.get('style')){
+                 el.set('style','');
+             }
+
+         });
+
+         $(id).setStyles({
+             'border-bottom-width': '3px',
+             'border-bottom-style': 'solid',
+             'border-bottom-color': 'rgb(28, 99, 161)',
+             'color': 'rgb(28, 99, 161)'
+         });
+
+         new Request.HTML({
+             url:'<{link app=qiyecenter ctl=site_member act=get_qiyesettingtable}>',
+             update:$('list_nei'),
+             method:'POST',
+             data:'type='+encodeURIComponent(id)+'&customer_no='+$('customer_no').get("value"),
+             onComplete:function(res){
+                 $('list_nei').show();
+             }
+         }).send();
+     }
+
+
+</script>

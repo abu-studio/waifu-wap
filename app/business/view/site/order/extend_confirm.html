@@ -1,0 +1,36 @@
+<!-- right-->
+<div class="member-main member-main2">
+<form action="<{link app=business ctl='site_order' act='extend_confirm'}>" method="post"  id="extend_confirm" class="section" extra="subOrder">
+         <input type="hidden" name="order_id" value="<{$order_id}>" />
+         <p style=" font-family:simsun;background:#fff4e8;border: 1px solid #ffeeda;clear: both;font-size: 12px;height: 38px;line-height: 38px;margin: 5px 0;padding: 0 10px;"><{t}>延长收货时间可以让买家有更多时间来“确定收货”，而不会急于去申请退款。<{/t}></p>
+        <div class="FormWrap bn">
+                  <div style="padding:10px; border-bottom:1px dashed #ddd;">
+                          <ul>
+                              <li>
+                                <label><{t}>延长本交易的“确认收货”期限为：<{/t}></label>
+                                <select id="J_DelayDays" class="delay-days" name="delayDays" style="padding:2px; border:1px solid #ddd;">
+                                    <option value="3">3天</option>
+                                    <option value="5">5天</option>
+                                    <option value="7">7天</option>
+                                    <option value="10">10天</option>
+                                </select>
+                              </li>
+                                    <!--  <li>
+                                        <label><{t}>选择支付币别：<{/t}></label>
+                                        <span><{$currencys.cur_name}></span>
+                                      </li>
+                                    --> 
+                           </ul>
+                  </div>
+                  <div style="text-align:center; margin-top:10px;">
+                          <{button id="sub" style="background:#ea5513;padding:5px 20px;text-align:center; color:#fff; border-radius:4px; border:none; margin:0 auto;" class="common-btn" type="submit" isDisabled="true" label="确认"}>
+                          <!-- <input class="btnstyle pay-btn" type="submit" value="<{t}>点击立刻付款<{/t}>" /> -->
+                  </div>
+        </div>
+</div>
+</form>
+
+<!-- right-->
+<script>
+	Popup.hide();
+</script>

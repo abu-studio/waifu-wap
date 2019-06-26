@@ -1,0 +1,208 @@
+<!-- right-->
+<{css src="member.css" app="b2c" pdir="css_mini"}>
+ <div class="bianzhifuContent-right">
+	<div class="content-title"> <{$title}> -- <{$otitle}> </div>
+	<div style="height:480px;margin-left:40px;margin-top:60px;">
+		<form id="frmId" method="post" action="<{link app=b2c ctl=site_mobilecost act=mobileOrderList}>">
+            <input type="hidden" id="organization_code" name="organization_code" value="">
+		<div class="sdm_tr">
+			<div class="sdm_td_left">
+				<span style="display:block;font-size: 15px;line-height:40px;">手机号码：</span>
+			</div>
+			<div class="sdm_td_right">
+				<input class="sdm_input_l" id="phone" name="phone" type="text" value="" onBlur="getMobilePhoneInfo(this);"/><span style="margin-left: 20px;color:red;" id='mtips'></span>
+			</div>
+		</div>
+		
+		<div class="sdm_tr"> 
+	
+			<div class="sdm_td_left">
+				<span style="display:block;font-size: 15px;line-height:40px;">充值金额：</span>
+			</div>
+			<div class="sdm_td_right">
+				<select class="sdm_select" id="stMoney" name="money" onChange="getMoney(this);">
+					<option value='0'>请选择充值金额</option>
+					<option value='30'>30</option>
+					<option value='50'>50</option>
+					<option value='100'>100</option>
+				</select>
+				<span style="margin-left: 20px;color:red;" id='cztips'></span>
+			</div>
+		</div>
+		
+		<div class="sdm_tr"> 
+	
+			<div class="sdm_td_left">
+				<span style="display:block;font-size: 15px;line-height:40px;">支付金额：</span>
+			</div>
+			<div class="sdm_td_right">
+				<span style="height: 40px;line-height: 40px;font-size: 15px;margin-left: 20px;"><font style="color:#FB5E00;font-weight: bold;font-size: 16px;" id="curMoney">0</font> 元</span>
+			</div>
+		</div>
+		
+		<div class="sdm_tr"> 
+	
+			<div class="sdm_td_left">
+				
+			</div>
+			<button class="sdm_sel_button" onClick="return validateBtn(this);">立即充值</button>
+		</div>
+		
+		</form>
+	</div>
+</div>
+		
+<script type="text/javascript">
+<!--
+
+//定义全局变量
+var phoneValidate = false;
+var czMoneyValidate = false;
+document.getElementById('phone').value = '';
+document.getElementById("stMoney").selectedIndex = 0;
+
+//提交参数
+function validateBtn(obj){
+	var url="<{link app=b2c ctl=site_mobilecost act=getMobileInfo}>";
+
+	var stMoneyObj = document.getElementById("stMoney");
+	var indexNum = stMoneyObj.selectedIndex;
+	var indexValue = stMoneyObj[indexNum].value;
+
+	var curMoneyObj = document.getElementById("curMoney");
+	var mtipsObj = document.getElementById("mtips");
+	var cztipsObj = document.getElementById("cztips");
+	
+	new Request.JSON({
+		url:url,
+		method:'post',
+		data:{
+			'PHONE':document.getElementById('phone').value,
+			'MONEY':indexValue,
+			'ORDER_AMOUNT':curMoneyObj.innerHTML
+		},
+		onComplete: function(rs){
+			if(!phoneValidate){
+				mtipsObj.innerHTML = "";
+				mtipsObj.innerHTML = "请输入正确的手机号码";
+				phoneValidate = false;
+				return false;
+			}
+			if(!czMoneyValidate){
+				cztipsObj.innerHTML = "";
+				cztipsObj.innerHTML = "请选择充值金额！";
+				czMoneyValidate = false;
+				return false;
+			}
+            if(rs.TYPE == 'fail'){
+                alert(rs.PROVINCE_NAME);
+                return false;
+            }
+
+			var frmObj = document.getElementById('frmId');
+            $('organization_code').set('value',rs.ORGANIZATION_CODE);
+			frmObj.submit();
+			return;
+		}
+	}).send(); 
+	return false;
+
+}
+
+
+//根据选择金额
+function getMoney(obj){
+	var stMoneyObj = document.getElementById("stMoney");
+	var curMoneyObj = document.getElementById("curMoney");
+	var cztipsObj = document.getElementById("cztips");
+	var mtipsObj = document.getElementById("mtips");
+
+	var indexNum = stMoneyObj.selectedIndex;
+	var indexValue = stMoneyObj[indexNum].value;
+	curMoneyObj.innerHTML = indexValue;
+	if(indexValue==0){
+		cztipsObj.innerHTML = "";
+		cztipsObj.innerHTML = "请选择充值金额！";
+		czMoneyValidate = false;
+		return;
+	}
+	
+	var url="<{link app=b2c ctl=site_mobilecost act=getFactMoney}>";
+	new Request({
+		url:url,
+		method:'post',
+		data:{
+			'PHONE':document.getElementById('phone').value,
+			'MONEY':indexValue,
+		},
+		onComplete: function(rs){
+			rs = JSON.parse(rs);
+			if(rs ==''){
+				mtipsObj.innerHTML = "";
+				mtipsObj.innerHTML = "请输入正确的手机号码";
+				phoneValidate = false;
+				czMoneyValidate = false;
+				return;
+			}
+			if(typeof rs == 'object'){
+				curMoneyObj.innerHTML = "";
+				curMoneyObj.innerHTML = rs.ORDER_AMOUNT;
+
+				cztipsObj.innerHTML = "";
+				cztipsObj.innerHTML = "*本次充值手续费"+rs.COUNTER_FEE+"元";
+				czMoneyValidate = true;
+			}
+		}
+	}).send(); 
+	return false;
+}
+
+//校验手机格式并获取手机的方式联通移动，所在地
+function getMobilePhoneInfo(obj){
+	var isOk = checkMobile(obj.value);
+	var mtipsObj = document.getElementById("mtips");
+	if(!isOk){
+		mtipsObj.innerHTML = "";
+		mtipsObj.innerHTML = "请输入正确的手机号码";
+		czMoneyValidate = false;
+		return;
+	}
+	var url="<{link app=b2c ctl=site_mobilecost act=getMobileInfo}>";
+	new Request({
+		url:url,
+		method:'post',
+		data:{
+			'PHONE':obj.value
+		},
+		onComplete: function(rs){
+			rs = JSON.parse(rs);
+			if(typeof rs == 'object'){
+				mtipsObj.innerHTML = "";
+				mtipsObj.innerHTML = rs.PROVINCE_NAME +"  "+ rs.TYPE_NAME;
+				phoneValidate = true;
+			}
+			return;
+		}
+	}).send(); 
+	return false;
+
+	
+}
+//校验手机格式
+function checkMobile(str){
+   var re = /^1\d{10}$/;
+   if (!re.test(str)) {
+       return false;
+   }
+   return true;
+}
+
+
+
+//-->
+</script>
+		
+		
+		
+		
+		

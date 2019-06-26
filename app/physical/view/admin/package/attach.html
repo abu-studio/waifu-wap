@@ -1,0 +1,65 @@
+<form id="package_form" class="tableform" action="index.php?app=physical&ctl=admin_package&act=add_attach"  method="POST" >
+    <input type="hidden" name="package_id" value="<{$package_id}>">
+    <div class="division">
+        <table width="100%" >
+			<tr>
+                <th><em class="red">*</em><{t}>套餐名称：<{/t}></th>
+                <td>
+				<{t}><{$package.package_name}><{/t}>
+				</td>
+            </tr>
+			<tr>
+                <th><em class="red">*</em><{t}>关联门店：<{/t}></th>
+                <td>
+					<{input type="object" require="require" object="store@physical" multiple="true" rowselect="true" textcol="store_name" filter=$filter name="store_id" return_url="{$related_return_url}" value=$package.store_info.store_id view="physical:admin/package/attach/store.html"}>
+				</td>
+            </tr>
+        </table>
+    </div>
+
+</form>
+
+<{area inject='.mainFoot'}>
+<div class="table-action"><{button type="submit"  label=$___physical="保存"|t:'physical' id='package_form_submit'}></div>
+<{/area}>
+
+<script>
+    (function(){
+        var _form = $('package_form');
+        var btn =$('package_form_submit');
+        var finder = finderGroup['<{$env.get._finder.finder_id}>'];
+
+        _form.store('target',{
+            onComplete:function(){
+
+            },
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                        finder.refresh.delay(400,finder);
+                    }
+                }
+                else
+                {
+                    //alert(hash_res_obj.error);
+                }
+            }
+        });
+
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+
+
+
+        });
+
+    })();
+</script>

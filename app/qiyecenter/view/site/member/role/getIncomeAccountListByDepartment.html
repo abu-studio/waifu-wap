@@ -1,0 +1,149 @@
+<style>
+ .show_fenye .feny a {
+		display: inline-block;
+		width: 15px;
+		height: 28px;
+		line-height: 28px;
+		padding: 0px 8px;
+		border: 1px solid #eee;
+		margin: 0 2px;
+		text-align: center;
+}
+.show_fenye .feny a.on {
+	background: #c40001;
+	color: #fff;
+	border-color: #c40001;
+}
+</style>
+<div class="waiqiye">
+	<div class="wai_tit">
+	<!--
+    	<div class="tit_font">
+        	条件筛选
+        </div>
+		-->
+        <div class="wai_1">
+        	<div class="wai_1font" style="height:34px;font-size:14px;font-weight:700px;margin-left:20px">部门订单列表</div>
+        </div>
+		<{if $list}>
+        <div class="wai_1">
+            <div class="wai_2">
+<!--                <div class="wai_2font"><input type="checkbox" id="selectAll" name="selectAll" onclick="selectAll1(this);"/>全选/反选</div>-->
+                <{foreach from=$list item="pv" key="pk"}>
+					<div style="height:34px;border:1px solid #ddd;line-height:34px" class="list_con">
+						<div class="qunzu_head1" style="float:left;margin-left:20px;width:240px;text-algin:center;height:34px"><{$pk}></div>
+						<{foreach from=$pv item="v" key="k"}>
+						<div>
+							<div class="wai_2font" style="float:left;margin-left:20px;text-algin:center">
+								<input type="checkbox" name="chkdep" id='<{$v.DEPT_ID}>' value='<{$v.DEPT_ID}>' lang="<{$v.EMPLOYEE_NUM}>" title="<{$v.DEPT_NAME}>" alt="<{$v.BALANCE}>" step="<{$v.DEPT_LEVEL}>"/><{$v.DEPT_NAME}>
+							</div> 
+							<div class="wai_3font" style="float:left;margin-left:20px;width:150px;text-algin:center">余额：<font style="color:red"><{$v.BALANCE}> </font>福点</div>
+						</div>
+						<{/foreach}>
+					</div>
+                <{/foreach}>
+            </div>
+			<input type='hidden' id='current_page' value='0' />
+			<div class="show_fenye" style="height:34px;line-height:34px;margin-top:15px;margin-left:20px">
+				<div class="feny" id="page_navigation"></div>
+			</div>
+         </div>   
+		  <p style="clear:both"></p>
+         <div class="war_bottom" style="width:100%;overflow:hidden;margin-top:10px">
+         	<div class="anniu" style="margin:0 auto;float:none;background:#c40001;line-height:35px" onclick="getcdgList(this, 2);">
+            	确认提交
+            </div>
+         </div>
+    </div>
+	<{else}>
+		<div style="border:1px solid #eee;height:40px;line-height:40px;text-align:center">没有找到相应的部门账户</div>
+	<{/if}>
+</div>
+<script type="text/javascript">
+	var per_page = 9; 
+	var items = document.getElementsByClassName("list_con");
+	var pages = Math.ceil(items.length/per_page);
+	gotopage(0);
+	
+	function gotopage(page){
+		for(var i=0;i<items.length;i++){
+			items[i].style.display='none';
+		}
+		for(var i=page*per_page;i<(page+1)*per_page;i++){
+			if(i<items.length){
+			items[i].style.display='block';
+			}
+		}
+		var navigation_html = '<a class="page_link" title="上一页" href="javascript:prepage();">&lt;</a>';
+		
+		for(var current_link = 0; current_link < pages; current_link++){
+			current_link == page?navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>':navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';			
+		}
+		navigation_html += '<a class="page_link" title="下一页" href="javascript:nextpage();">&gt;</a>';
+		document.getElementById("page_navigation").innerHTML= navigation_html;
+		document.getElementById("current_page").value= page;
+		
+	}
+	function nextpage(){
+		var page = parseInt(document.getElementById("current_page").value);
+		if(page < pages -1){
+			gotopage((page+1));
+			document.getElementById("current_page").value= page+1;
+		}	
+	}
+	function prepage(){
+		var page = parseInt(document.getElementById("current_page").value);		
+		if(page > 0){
+			gotopage((page - 1));
+			document.getElementById("current_page").value= page - 1;
+		}
+	}
+	
+	
+</script>
+<script>
+var listData=<{$data}>;
+//初始化数据
+var childDiv = document.getElementById("companyList").childNodes;
+for(var i=0; i<childDiv.length; i++){
+	var did = childDiv[i].lang;
+	//alert(document.getElementById(did));
+	document.getElementById(did).checked = true;
+}
+//全选反选
+function selectAll1(obj){
+	//var chkInput = document.getElementsByTagName('input');
+	var chkInput = document.getElementsByName("chkdep");
+	if(obj.checked){
+		for(var i=0; i<chkInput.length;i++){
+			if(!chkInput[i].checked){
+				chkInput[i].checked = true;
+			}
+		}
+	}else{
+		for(var i=0; i<chkInput.length;i++){
+			if(chkInput[i].checked){
+				chkInput[i].checked = false;
+			}
+		}
+	}
+	
+}
+//获取祥光的公司
+function getCompanyList(obj){
+	var chkObj = {};
+	var chkArray = new Array();
+	var chkInput = document.getElementsByName("chk");
+	for(var i=0; i<chkInput.length; i++){
+		if(chkInput[i].checked){
+			chkArray.push(chkInput[i].value);
+		}
+	}
+
+	//获取相应的选项
+	
+	//对象
+	chkObj.chkInput = chkArray;
+	alert(chkObj);
+}
+</script>

@@ -1,0 +1,89 @@
+<!-- right-->
+<{css src="member.css" app="b2c" pdir="css_mini"}>
+<div class="bianzhifuContent-right">
+    <div class="content-title"><{t}><{$title}><{/t}></div>
+    <div class="mywelfare">
+        <div class="tx_step tx_step2">
+        </div>
+    </div>
+    <div style="height:200px;margin-left:40px;">
+        <div class="pinl_tt2"><div class="jfcx_tt" style="margin-left:0px;">账单信息确认</div></div>
+        <form id="mobile_create_form" method="post" action="<{link app=b2c ctl=site_lifecost act=utilitypay}>">
+            <input type="hidden" name="order_amount" value="<{$data.ORDER_AMOUNT}>">
+            <input type="hidden" name="order_id" value="<{$data.ORDER_ID}>">
+            <input type="hidden" name="organization_type" value="<{$data.ORGANIZATION_TYPE}>">
+            <input type="hidden" name="counter_fee" value="<{$data.COUNTER_FEE}>">
+            <input type="hidden" name="payment_amount" value="<{$data.PAYMENT_AMOUNT}>">
+            <input type="hidden" name="organization_code" value="<{$data.ORGANIZATION_CODE}>">
+            <input type="hidden" name="organization_name" value="<{$data.ORGANIZATION_NAME}>">
+            <input type="hidden" name="barcode" value="<{$data.BARCODE}>">
+            <div class="jfcx_lists" style="border:none;">
+                <div class="jfcx_lists_tt">
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        <tbody>
+                            <tr>
+                                <td width="50" height="40" align="center">
+                                    <label id="checkbox_xw" style="display: none;">
+                                        <input type="checkbox" name="allbox" id="checkbox">
+                                    </label>
+                                </td>
+                                <td width="155" align="left" class="jfcx_ft1">机构名称</td>
+                                <td width="117" align="left" class="jfcx_ft1">机构编号</td>
+                                <td width="119" align="left" class="jfcx_ft1">充值金额</td>
+                                <td width="126" align="left" class="jfcx_ft1">手续费</td>
+                                <td width="126" align="left" class="jfcx_ft1">实付金额</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="jfcx_lists_info">
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        <tbody>
+                            <tr>
+                                <td width="50" height="40" align="center" class="jfcx_boder1">
+                                    <!-- 帐单是否过期 -->
+                                    <input type="checkbox" amount="" name="billbox" style="display: none;">
+                                </td>
+                                <td width="155" height="40" align="left" class="jfcx_boder1"><{$data.ORGANIZATION_NAME}></td>
+                                <td width="117" align="left" class="jfcx_boder1"><{$data.ORGANIZATION_CODE}></td>
+                                <td width="126" align="left" class="jfcx_boder1">
+                                    <font style="color:#FB5E00;font-weight: bold;"><{$data.PAYMENT_AMOUNT}></font>
+                                </td>
+                                <td width="126" align="left" class="jfcx_boder1">
+                                    <font style="color:#FB5E00;font-weight: bold;"><{$data.COUNTER_FEE}></font>
+                                </td>
+                                <td width="126" align="left" class="jfcx_boder1">
+                                    <font style="color:#FB5E00;font-weight: bold;"><{$data.ORDER_AMOUNT}></font>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="jfcx_price_tip" style="width:900px;">
+                    <span class="jfcx_price_tip1">已选账单笔数:
+                        <span class="jfcx_price_tip2" id="billCountTip">1</span>笔，已选账单总计:
+                        <span class="jfcx_price_tip2" id="amountTip">￥<{$data.ORDER_AMOUNT}></span>
+                    </span>
+                </div>
+                <div class="clear"></div>
+                <div style="float: right;margin-right: 40px;">
+                    <button id="mobile_create_form_submit" type="submit" class="sdm_sel_button" rel="_request">结算</button>
+                </div>
+            </div>
+        </form>
+    </div>
+	<!--充值规则 -->
+	<div style="margin:20px auto;width: 795px;">
+	<{$recharge_rules.value|default:'手机充值规则（可在后台配置）'}>
+	</div>
+</div>
+
+<script>
+    (function(){
+        var btn =$('mobile_create_form_submit');
+
+		btn.addEvent('click',function(e){
+			btn.set('disabled','true');
+		});
+    })();
+</script>

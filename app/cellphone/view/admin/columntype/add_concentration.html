@@ -1,0 +1,47 @@
+
+<form method="POST" action="<{link app=cellphone ctl=admin_columntype act=toAdd}>" id="groupactivity-from">
+<div class="goods-detail tableform">
+    <h3><{t}>基本信息<{/t}></h3>
+	<input type="hidden" name="columntype_id" value="<{$item.columntype_id}>">
+	<input type="hidden" name="type" value="concentration">
+	<input type="hidden" name="reUrl" value="<{$reUrl}>">
+    <div class="division">
+        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+            <tr>
+                <th><{t}>栏目类型：<{/t}></th>
+                <td><{input type="text" value="{$item.columntype_name}" name="columntype_name" size="22" vtype="required"}><em><font color="red">*</font></em></td>
+            </tr>
+            <tr>
+                <th><{t}>录入时间：<{/t}></th>
+                <td><{input type="date" value="{$item.columntype_createtime}" name="columntype_createtime" size="30" vtype="required"}><em><font color="red">*</font></em></td>
+            </tr>
+			  <tr>
+                <th><{t}>排序：<{/t}></th>
+                <td><{input type="text" value="{$item.d_order}" name="d_order" size="5" vtype="required&&number"}><em><font color="red">*</font></em></td>
+            </tr>
+            <tr>
+                <th><{t}>栏目描述：<{/t}></th>
+                <td><{input type="textarea" class="x-input" value="{$item.columntype_description}" name="columntype_description" style="resize:none;" cols="50" rows="5" maxth="255" }>
+                </td>
+            </tr>
+           <tr> <th>选择一级分类：</th>
+		   
+		   <td><{input type="object" object="category@cellphone" vtype="required" name="cat_id" filter=$cat_filter  multiple=false  select="radio" value=$item.cat_id}>
+		   </td>
+		   </tr>
+			<tr>
+				<th>上传图片：</th>
+				<td>
+					<{input type="image" name="image_id" value=$item.image_id width=160 height=90}>
+				</td> 
+			</tr>
+        </table>
+    </div>
+    
+<div class="table-action">
+    <{button label="保存" type="submit" id="groupactivity-btn" }>
+	  <{button label="取消" type="button" id="groupactivity-btn" href=$reUrl}>
+</div>
+<form>
+
+

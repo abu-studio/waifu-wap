@@ -1,0 +1,14 @@
+<{if $card_service_data}>
+    <{if $card_service_type == '01'}>
+    <{input type="object" vtype="required" required="required" change_way=$change_way  cardcoupons="true" filter=$goodsselect_filter object="goods@b2c" multiple="true"  rowselect="true"  textcol="name,price,store" name="cards[solution][goods]" value=$cards.solution.goods }>
+    <{/if}>
+    <{if $card_service_type == '02'}>
+    <{input type="object" vtype="required" required="required"  change_way=$change_way cardcoupons="true" object="package@physical" rowselect="true"  textcol="package_name" name="cards[solution][package]" value=$cards.solution.package }>
+    <{/if}>
+    <{if $card_service_type == '03'}>
+    <{input type="object" vtype="required" required="required"  change_way=$change_way cardcoupons="true" object="goods@b2c" filter=$goodsselect_filter multiple="true"  rowselect="true"  textcol="name,price,store" name="cards[solution][goods]" value=$cards.solution.goods }>
+    <{input type="object" vtype="required" required="required" change_way=$change_way  cardcoupons="true" object="package@physical" multiple="true"  rowselect="true"  textcol="package_name" name="card[solution][package]" value=$cards.solution.package }>
+    <{/if}>
+<{else}>
+	名目未设置，请在卡券名目中先添加对应类型卡券名目...
+<{/if}>

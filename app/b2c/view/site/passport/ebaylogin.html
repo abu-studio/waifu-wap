@@ -1,0 +1,142 @@
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>登录</title>
+    <{css src="ebay/style.css" app="b2c"}>
+    <{css src="framework.css" app="site"}>
+    <{css src="css_mini/framework.css" app="site"}>
+</head>
+<body class="login_page">
+    <div class="main_box">
+        <header>
+            <img src="<{$logo_01}>">
+        </header>
+        <div class="text_info">
+            <h2>悠福网用户登录</h2>
+            <div class="login_box">
+                <form action="<{$url}>" method="post" id="loginBar">
+                <div class="left_from">
+                    <div class="input_item">
+                        <span class="lable_user"></span>
+                        <input type="text" id='name' placeholder="用户名" name="name">
+                    </div>
+                    <div class="input_item">
+                        <span class="lable_pass"></span>
+                        <input type="password" id='password' placeholder="密码" name="password">
+                        <a href="<{$forgeturl}>"><b>忘记密码？</b></a>
+                    </div>
+                    <div class="input_item">
+                        <span class="lable_code"></span>
+                        <input type="text" id='verifyCode' placeholder="验证码" name="verifyCode">
+                        <!-- <i></i> -->
+                              <img src='<{link app=b2c ctl="site_passport" act="eBayverifyCode"}>' align="absmiddle" id="verifyCodeimg"/>
+                              <a href="javascript:void(0)" onclick="changeimg('verifyCodeimg')">&nbsp;<{t}>看不清楚?换个图片<{/t}></a>
+                            
+                            <div class="crl_xu"><span id="remind_vcode"></span></div>
+                         
+                    </div>
+                    <input type="button"  class="logoin" onclick ="ebsubmit()" value='登 录'/>
+                </form>
+                
+                </div>
+
+                <div class="right_ebay">
+                    <img src="<{$login_right_img}>">
+                </div>
+                <div style="text-align: right;color: #666;" class="left_from">
+                        <a style="color: #666;font-size: 14px;" target="black" href="<{$regurl}>">注册新账号</a>
+                        <a style="color: #666;font-size: 14px;" href="<{$helpurl}>">帮助</a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+
+    <div id="lmessage">
+        <div class="error-message" data-single="false" style="display: none; position: fixed; left: 40%; top: 40%; opacity: 1; visibility: visible;">
+            <div class="error-message-body">
+            <div class="error-message-content"></div>
+            </div>
+        </div>
+
+        <div class="success-message" style="left: 40%; top: 40%; display: none; visibility: visible; position: fixed; opacity: 1;" data-single="false"><div class="success-message-body">
+        <div class="success-message-content"></div>
+        </div></div>
+    </div>
+
+</body>
+</html>
+
+<{script src="jquery1.11.2.min.js" app="b2c"}>
+<script type="text/javascript">
+
+    function ebsubmit() {
+         var name = $('#name').val(); 
+         var password = $('#password').val(); 
+         var verifyCode = $('#verifyCode').val();
+
+         if (name=='' || password=="") {
+            $(".error-message").css('display','block');
+            $(".error-message-content").html("用户名或密码不能为空！");
+            setTimeout(function() {
+                $(".error-message").css('display','none');
+            },1000);
+            return;
+         }
+         if (verifyCode=="") {
+            $(".error-message").css('display','block');
+            $(".error-message-content").html("验证码不能为空！");
+            setTimeout(function() {
+                $(".error-message").css('display','none');
+            },1000);
+            return;
+         }
+
+         $('.logoin').val('登录中...');
+
+           $.ajax({             
+                url:"<{$url}>",
+                type:'POST',
+                data: { 
+                        'name' : name ,
+                        'password':password,
+                        'verifyCode':verifyCode            
+                      },
+                success:function(re) {
+                        var obj = JSON.parse(re); 
+                        console.log(obj);//return;
+                        $('.logoin').val('登 录');
+                        if ('error' in obj) {
+                            $(".error-message").css('display','block');
+                            $(".error-message-content").html(obj.error);
+                            changeimg('verifyCodeimg');
+                            setTimeout(function() {
+                                $(".error-message").css('display','none');
+                            },3000);
+                            // setTimeout(function() {
+                            //     window.location.href=obj.redirect;
+                            // },3000);
+                        }else{
+                            $(".success-message").css('display','block');
+                            $(".success-message-content").html(obj.success);
+                            setTimeout(function() {
+                                $(".success-message").css('display','none');
+                            },3000);
+                            setTimeout(function() {
+                                window.location.href=obj.redirect;
+                            },3000);
+                            
+                        }                        
+                    }       
+            }); 
+    }
+
+    function changeimg(id){
+        // var code = document.getElementById(id);
+        var code = $('#'+id);
+        code.attr('src','<{link app="b2c" ctl="site_passport" act="eBayverifyCode"}>?'+(+new Date()));
+        // code.setAttribute('src','<{link app="b2c" ctl="site_passport" act="eBayverifyCode"}>?'+(+new Date()));
+  }
+</script>

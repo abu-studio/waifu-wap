@@ -1,0 +1,38 @@
+<services>
+    <service id="desktop_finder.physical_mdl_organization">
+        <class>physical_finder_organization</class>
+    </service>
+	<service id="desktop_finder.physical_mdl_package">
+        <class>physical_finder_package</class>
+    </service>
+	<service id="desktop_finder.physical_mdl_package_type">
+        <class>physical_finder_package_type</class>
+    </service>
+	<service id="desktop_finder.physical_mdl_project">
+        <class>physical_finder_project</class>
+    </service>
+	<service id="desktop_finder.physical_mdl_store">
+        <class>physical_finder_store</class>
+    </service>
+	<service id="desktop_finder.physical_mdl_store_status">
+        <class>physical_finder_store_status</class>
+    </service>
+	<service id="desktop_finder.physical_mdl_organization_status">
+        <class>physical_finder_organization_status</class>
+    </service>
+	<service id="desktop_finder.physical_mdl_subject">
+        <class>physical_finder_subject</class>
+    </service>
+	<service id="desktop_finder.physical_mdl_orders">
+        <class>physical_finder_orders</class>
+    </service>
+	
+
+	<service id="html_input">
+        <class>physical_view_input</class>
+    </service>
+		<service id="order.pay_finish_extend">
+		<class>physical_order_deal</class>
+	</service>
+	
+</services>

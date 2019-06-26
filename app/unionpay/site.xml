@@ -1,0 +1,7 @@
+<site> 
+    <module controller="site_request">
+        <name>unionpay</name>
+        <title>中国银联在线支付状态同步</title>
+        <disable>false</disable>
+    </module>
+</site>

@@ -1,0 +1,968 @@
+﻿<meta http-equiv="x-ua-compatible" content="IE=5">
+<!--
+<{css src="qiye_zhongxin.css" app="qiyecenter"}>
+-->
+<script>
+  /*  window.loadedPart = [1,0,(new Date).getTime()];
+    BREADCRUMBS ='0:0';
+    MODALPANEL = {
+        createModalPanel:function(){
+            var mp = new Element('div',{'id':'MODALPANEL'});
+            var mpStyles = {
+                'position': 'fixed',
+                'background': '#333333',
+                'width': '100%',
+                'display':'none',
+                'height': window.getScrollSize().y,
+                'top': 0,
+                'left': 0,
+                'zIndex': 65500,
+                'opacity': .4
+            };
+            this.element = mp.setStyles(mpStyles).inject(document.body);
+            return this.element;
+        },
+        show:function(){
+            var panel = this.element = this.element||this.createModalPanel();
+            panel.setStyles({
+                'width': '100%',
+                'height': window.getScrollSize().y
+            }).show();
+        },hide:function(){
+            if(this.element)this.element.hide();
+        }
+    };
+    Xtip = new Tips({tip:'tip_Xtip',fixed:true,offset: {x: 24, y: -15},onBound:function(bound){
+        if(bound.x2){
+            this.tip.getElement('.tip-top').addClass('tip-top-right');
+            this.tip.getElement('.tip-bottom').addClass('tip-bottom-right');
+        }else {
+            this.tip.getElement('.tip-top').removeClass('tip-top-right');
+            this.tip.getElement('.tip-bottom').removeClass('tip-bottom-right');
+        }
+    }});
+    var LAYOUT = {
+        container: $('container'),
+        side: $('side'),
+        workground: $('workground'),
+        content_main: $('main'),
+        content_head: $E('#workground .content-head'),
+        content_foot: $E('#workground .content-foot'),
+        side_r: $('side-r'),
+        side_r_content:$('side-r-content')
+    };  */
+</script>
+<{script src="load.js" app="qiyecenter" pdir="js"}>
+<{script src="wpage.js" app="qiyecenter" pdir="js"}>
+<script>
+    var W = new Wpage({});
+</script>
+<{script src="dialog.js" app="qiyecenter" pdir="js"}>
+<div class="qiye_list" style="margin-top: -17px;">
+	<div class="fafuli_width">
+    	<div class="fafuli_con">
+        	<div class="fafuli_tit" style="height:35px;border-bottom:1px solid #A02043">
+            	<p class="fafuli_titf" style="font-size:18px;font-weight:normal">
+                	发放福利
+                </p>
+            </div>
+            
+            <form action="" method="post" id="frmId" name="frmName">
+            <input type="hidden" name="ORDER_ID" id="ORDER_ID" value="<{$fuliInfo['ORDER_ID']}>">
+            
+            <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
+            <div id="part1" style="display:block;">
+            <div class="mingmu" style="height:55px;background:none">
+            	<div class="mingmu_left" style="font-size:14px;font-weight:normal;line-hieght:65px;margin-top:28px;padding-left:25px">
+                	发放名目 :
+                </div>
+                <div class="mingmu_center">
+                	<input type="text" name='GRANT_NAME' style="height: 22px;width: 300px;border: 1px solid #CDCDCD;"/>
+                </div>
+                <div class="mingmu_right" style="font-size:12px">
+                	例如：中秋福利/20个字符以内
+                </div>
+            </div>
+            <div class="zhichu" style="height:45px;border:none;">
+            	<div class="zhichu_one" style="font-weight:1">
+                	<div class="zhichu_tit" style="font-size:14px;padding-left:25px;font-weight:normal">支出账户 :</div>
+                	<{if $fuliInfo['ACT_TYPE']['COMPANY']}>
+                	<div class="zhichu_qiye">
+                    	<label><input type="radio" name="PAY_ACT_TYPE" value="I00102" onclick="getInAccountList(this);"/>企业账户</label>
+                    </div>
+                    <{/if}>
+                    <{if $fuliInfo['ACT_TYPE']['DEPT']}>
+                	<div class="zhichu_qiye">
+                    	<label><input type="radio" name="PAY_ACT_TYPE" value="I00103" onclick="getInAccountList(this);"/>部门账户</label>
+                    </div>
+                    <{/if}>
+                    <{if $fuliInfo['ACT_TYPE']['GROUP']}>
+                	<div class="zhichu_qiye">
+                    	<label><input type="radio" name="PAY_ACT_TYPE" value="I00105" onclick="getInAccountList(this);"/>群组账户</label>
+                    </div>  
+                    <{/if}>                                                        
+                </div>
+                <div id="companyList" style="float:left;"></div>
+            </div>
+            <div class="fafangfangshi" style="height:30px;border-bottom:none;margin-top:10px">
+            	<div class="fafangfangshi_tit" style="font-size:14px;font-weight:1;padding-top:0px;font-weight:normal">收入账户性质 :</div>
+                <div class="fangshi_rad" style="padding:0px">
+                	<label><input type="radio" name="REC_ACT_TYPE" id="ygzh" value="I00104" onclick="changeGrant(this);"/>员工账户</label>
+                </div>
+                 <div class="fangshi_rad" style="padding:0px">
+                 	<label><input type="radio" name="REC_ACT_TYPE" id="xjzzzh" value="I00103" onclick="changeGrant(this);"/>部门账户</label>
+                </div>
+                
+                 <div class="fangshi_rad" style="padding:0px">
+                 	<label><input type="radio" name="REC_ACT_TYPE" id="qzzh" value="I00105" onclick="changeGrant(this);"/>群组账户</label>
+                </div>
+            </div>
+            
+            <div class="fafangfangshi" style="border-bottom:none;height:55px">
+            	<div class="fafangfangshi_tit" style="font-size:14px;margin-top:20px;padding-top:0px;font-weight:normal">收入账户类型 :</div>
+                <div class="fangshi_rad" style="width:300px;padding-top: 15px;">
+                	<select style="width:300px;height:30px;font-family: 微软雅黑,宋体;font-size: 14px;color: #C6C6C6;" name="REC_SUB_ACT_TYPE_ID" id="REC_SUB_ACT_TYPE_ID">
+                		<option value="0" style="font-size:14px">请选择收入账户</option>
+                		<{foreach from=$incomeAccountList item="v" key="k"}>
+                    	<option value="<{$v.VALUE}>"style="font-size:14px"><{$v.LABEL}></option>
+                    	<{/foreach}>
+                    </select>
+                </div>
+                 <div class="fangshi_rad" style="color: #C6C6C6;font-size:12px;padding-top:20px">
+                 	指分配给员工的哪个账户
+                </div>
+            </div>
+            
+            <div class="fafangfangshi" style="border:none;height:40px;margin-top:5px">
+            	<div class="fafangfangshi_tit" style="font-size:14px;padding:0px;padding-left:25px;font-weight:normal">发放方式 :</div>
+                <div class="fangshi_rad" style="padding:0px">
+                	<label id="ldeff"><input type="radio" name="GRANT_TYPE" id="deff" value='1' onclick="changeEmployee(this);"/>等额发放</label>
+                </div>
+                 <div class="fangshi_rad" style="padding:0px">
+                 	<label id="lceff"><input type="radio" name="GRANT_TYPE" id="ceff" value='2' onclick="changeEmployee(this);"/>差额发放</label>
+                </div>
+            </div>
+            
+             <div class="fafangfangshi" style="height:26px;border:none">
+            	<div class="fafangfangshi_tit" style="font-size:14px;padding:0px;padding-left:25px;font-weight:normal">发放范围 :</div>
+                <div class="fangshi_rad" style="padding:0px">
+                	<label id="lsyyg"><input type="radio" name="GRANT_RANGE" value='1' id="allEmployee"/>所有员工</label>
+                </div>
+                 <div class="fangshi_rad" style="padding:0px">
+                 	<label id="lzdyg"><input type="radio" name="GRANT_RANGE" value="2" id="someEmployee" onclick="showEmployees();"/>指定员工</label>
+                </div>
+            </div>
+			<p style="clear:both"></p>
+            <div class="fafangfangshi" id='ffad' style="border:none;">
+            	<div class="fafangfangshi_tit" style="font-size:14px;padding-left:25px;font-weight:normal">发放额度 :</div>
+               
+                 <div class="fangshi_rad" style="padding-top: 16px;">
+                 	<input type="text" style="width: 299px;height: 24px;border: 1px solid #CDCDCD;" name="PRICE" value="" onblur="javascript:if(this.value>300){alert('最多300福点');this.value='';}"/>
+                </div>
+                <div class="fangshi_rad" style="color: #C6C6C6;font-size:12px;padding-top:20px";>
+                 	最多人均可发放浮点：<font style="color:#5959e5">300 </font>浮点
+                </div>
+            </div>
+            </div>
+            
+            <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
+            <div id="part2" style="display:none;">
+            <div class="mingmu">
+            	<div class="mingmu_left">
+                	发放名目
+                </div>
+                <div class="mingmu_center">
+                	<label id='lGRANT_NAME'>测试发放</label>
+                	<input type="hidden" id="GRANT_NAME2" name='GRANT_NAME2' value=''/>
+                </div>
+            </div>
+            <div class="zhichu">
+            	<div class="zhichu_one">
+                	<div class="zhichu_tit">支出账户</div>
+                	<div class="zhichu_qiye">
+                		<label id="lPAY_ACT_TYPE">企业账户</label>
+                    	<input type="hidden" name="PAY_ACT_TYPE2" id="PAY_ACT_TYPE2" value="COMPANY"/>
+                    </div>
+                                                                      
+                </div>
+                <div id="companyList2" style="float:left;"></div>
+            </div>
+            <div class="fafangfangshi">
+            	<div class="fafangfangshi_tit">收入账户性质</div>
+                <div class="fangshi_rad">
+                	<label id='lREC_ACT_TYPE'>员工账户</label>
+                	<input type="hidden" name="REC_ACT_TYPE2" id="REC_ACT_TYPE2" value="1"/>
+                </div>
+            </div>
+            
+            <div class="fafangfangshi">
+            	<div class="fafangfangshi_tit">收入账户类型</div>
+                <div class="fangshi_rad" style="width:300px;padding-top: 15px;">
+                	<label id='lREC_SUB_ACT_TYPE_ID'>通用账户</label>
+                	<input type="hidden" name="REC_SUB_ACT_TYPE_ID2" id="REC_SUB_ACT_TYPE_ID2" value="1"/>
+                </div>
+            </div>
+            
+            <div class="fafangfangshi">
+            	<div class="fafangfangshi_tit">发放方式</div>
+                <div class="fangshi_rad">
+                	<label id="lGRANT_TYPE">等额发放</label>
+                	<input type="hidden" name="GRANT_TYPE2" id="GRANT_TYPE2" value='1'/>
+                </div>
+            </div>
+            
+             <div class="fafangfangshi">
+            	<div class="fafangfangshi_tit">发放范围</div>
+                <div class="fangshi_rad">
+                	<label id="lGRANT_RANGE">所有员工</label>
+                	<input type="hidden" name="GRANT_RANGE2" value='1' id="GRANT_RANGE2"/>
+                </div>
+            </div>
+            <div class="fafangfangshi" id='ffad'>
+            	<div class="fafangfangshi_tit">发放额度</div>
+               
+                 <div class="fangshi_rad" style="padding-top: 16px;">
+                 	<label id="lPRICE"></label>
+                 	<input type="hidden" name="PRICE2" value="" id="PRICE2"/>
+                </div>
+            </div>
+            </div>
+            <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
+            <div class="fafangfangshi" id='ffad'>
+                 <div class="fangshi_rad" style="padding-top: 16px;border:none">
+                 	<input style="font-weight:700;margin-left:300px" type="button" name="btnSave" alt="1" value="保存设置" id="btnSave" onclick="saveInfo(this);"/>
+                </div>
+            </div>
+            <!-- $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
+            
+            <div class="fafangfangshi" style="height:50px">
+            	<div class="fafangfangshi_tit" style="font-size:15px">本次发放详情</div>
+                <div class="fangshi_rad" style="color: #0260A6;cursor:pointer;font-size:14px" id="closeEmployee" onclick="closeEmployee();">
+                	收起
+                </div>
+                 <div class="fangshi_rad" style="color: #0260A6; cursor:pointer;font-size:14px" id="showEmployee" onclick="showEmployeeList();">
+                 	人员详情
+                </div>
+            </div>
+             
+            
+            <div class="fafangfangshi" style="background:#EEEEEE;height:30px;">
+            	<div class="fafangfangshi_tit" style="margin-left:20px;font-size:14px;padding-top:0px;margin-top:6px">设置结果</div>
+            </div>
+            
+            
+             <div class="fafangfangshi" style="height: 25px;background:#F8F8F8;padding-top:0px">
+            	<div class="fuli_list" style="height:25px;line-height:25px;font-size:12px">账户支出名称</div>
+                <div class="fuli_list" style="height:25px;line-height:25px;font-size:12px">发放人数</div>
+                <div class="fuli_list" style="height:25px;line-height:25px;font-size:12px">发放方式</div>
+                <div class="fuli_list" style="height:25px;line-height:25px;font-size:12px">人均额度</div>
+                <div class="fuli_list" style="height:25px;line-height:25px;font-size:12px">发放小计</div>
+                <div class="fuli_list" style="height:25px;line-height:25px;font-size:12px">账户余额</div>
+                <div class="fuli_list" style="height:25px;line-height:25px;font-size:12px">状态</div>
+            </div>
+            <div id="settingResult"></div>
+            <div class="fafangfangshi" style="float:left;margin-left: 50px;height:40px;border:none">
+            	<div class="fafangfangshi_tit" style="font-size:14px;font-weight:normal;padding-top:20px;margin-left:25px">发放时间 :</div>
+                <div class="fangshi_rad">
+                	<label><input type="radio" name="EXEC_TYPE" value="I01601" onclick="showTime(this);"/>及时发放</label>
+                </div>
+                 <div class="fangshi_rad">
+                 	<label><input type="radio" name="EXEC_TYPE" value="I01602" onclick="showTime(this);"/>定时发放</label>
+                </div>
+                 <div class="fangshi_rad" style="color: #C6C6C6;margin-top: -5px;" id="showTime">
+                    <{input class="cal" type="date" class="inputstyle" vtype="required&&date" name='PLAN_EXEC_TIME' style="margin-right:0;padding-left:10px;width:100px;"}>
+                </div>
+            </div>
+            <div class="fafangfangshi" style="border:none">
+            	<div class="fafangfangshi_tit" style="font-size:14px;font-weight:normal;padding-top:20px;margin-left:25px">消息通知 :</div>
+               
+                 <div class="fangshi_rad" style="padding-top: 16px;">
+                 	<input type="text" name="GRANT_MESSAGE" onclick="javascript:this.value='';" style="font-size:12px;width:299px;height: 24px;border: 1px solid #CDCDCD;" value="劳动节福利"/>
+                </div>
+                <div class="fangshi_rad" style="color: #C6C6C6;font-size:12px">
+                 	20个字符以内
+                </div>
+            </div>
+            <div style="height: 120px;">
+             	<div class="anniu" style="margin-top:55px;background:#A02043;float:left;" onclick="saveNext();">保存</div> 
+            <!-- <div class="anniu" style="margin-top: 30px;float: right;background: white;color: black;border: 1px solid #CDCDCD;margin-right: 20px;" onclick="javascript:history.go(-1);">上一步</div> -->
+                              
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+//定义全局变量
+var dialogObj = null;
+//初始值防止多次点击
+var priceInit = 0;
+//保存表单数据
+var oldDataObj = null;
+
+//隐藏显示时间
+function showTime(obj){
+	if(obj.value=='I01601'){
+		document.getElementById("showTime").style.display = 'none';
+	}else{
+		document.getElementById("showTime").style.display = 'block';
+	}
+}
+//删除指定成员工
+function deleteBatchItemUser(){
+	var url="<{link app=qiyecenter ctl=site_member act=deleteBatchItemUser}>";
+	var frmIdObj = document.getElementById('frmId');
+	var dataObj = {};
+	//企业保存员工
+	dataObj.NODE_ID = 'HK0973';
+	dataObj.ORDER_ID = frmIdObj.ORDER_ID.value;//订单Id
+	
+	var itemArray = new Array();
+	var itemList = {};
+	itemList.UUID = '54259ff5bd18488fab76d12259bb5273';
+	
+	itemArray.push(itemList);
+	dataObj.ITEM_LIST = itemArray; 
+	
+	new Request({
+		url:url,
+		method:'post',
+		data:dataObj,
+		onComplete: function(rs){
+			alert(rs);
+		}
+	}).send();
+}
+//保存成指定员工
+function createItemUser(){
+	var url="<{link app=qiyecenter ctl=site_member act=createItemUser}>";
+	var frmIdObj = document.getElementById('frmId');
+	var dataObj = {};
+
+	//企业保存员工
+	dataObj.NODE_ID = 'HK0973';
+	dataObj.ORDER_ID = frmIdObj.ORDER_ID.value;//订单Id
+	dataObj.COMPANY_NO = 'HK0973';
+	var itemArray = new Array();
+	var itemList = {};
+	itemList.REC_ID = 'admin017';
+	itemList.PRICE = '3';
+	
+	itemArray.push(itemList);
+	dataObj.ITEM_LIST = itemArray; 
+
+	//dataObj = JSON.stringify(dataObj);
+	//alert(dataObj);
+	//return false;
+	new Request({
+		url:url,
+		method:'post',
+		data:dataObj,
+		onComplete: function(rs){
+			alert(rs);
+		}
+	}).send();
+}
+//获取人员列表
+function getDepartEmployeeList(){
+	var url="<{link app=qiyecenter ctl=site_member act=getDepartEmployeeList}>";
+	var frmIdObj = document.getElementById('frmId');
+	var dataObj = {};
+
+	//企业
+	dataObj.NODE_TYPE = 'I01302';
+	dataObj.NODE_ID = 'HK0973';
+	dataObj.ORDER_ID = frmIdObj.ORDER_ID.value;//订单Id
+	dataObj.IS_NULL = 0; //0未指定， 1指定
+	//部门
+	//dataObj.NODE_TYPE = 'I01303';
+	//dataObj.NODE_ID = '2c8080374dc1cc66014dc1cd8c850007';
+	//dataObj.ORDER_ID = frmIdObj.ORDER_ID.value;//订单Id
+	//dataObj.IS_NULL = 0; //0未指定， 1指定
+	
+	new Request({
+		url:url,
+		method:'post',
+		data:dataObj,
+		onComplete: function(rs){
+			alert(rs);
+		}
+	}).send();
+}
+
+//下一步检测
+function saveNext(){
+	if(document.getElementById('btnSave').alt!=2){
+		alert("请先保存以上数据");
+		return false;
+	}
+	var frmIdObj = document.getElementById('frmId');
+	var dataObj = {};
+	//使用保存的旧数据
+	dataObj.GRANT_TYPE = oldDataObj.GRANT_TYPE;//发放方式
+	dataObj.GRANT_RANGE = oldDataObj.GRANT_RANGE;//发放范围
+	dataObj.GRANT_NAME = oldDataObj.GRANT_NAME;
+	dataObj.REC_SUB_ACT_TYPE_ID = oldDataObj.REC_SUB_ACT_TYPE_ID;//收入账户类型
+	dataObj.PRICE = oldDataObj.PRICE;//发放额度
+
+	dataObj.ORDER_ID = frmIdObj.ORDER_ID.value;//订单Id
+	dataObj.GRANT_MESSAGE = frmIdObj.GRANT_MESSAGE.value;
+	dataObj.GRANT_PIC = '';//发放图片
+	dataObj.EXEC_TYPE = frmIdObj.EXEC_TYPE.value;	//执行类型
+	dataObj.PLAN_EXEC_TIME = frmIdObj.PLAN_EXEC_TIME.value;//计划执行时间
+
+	var url="<{link app=qiyecenter ctl=site_member act=saveNext}>";
+	new Request({
+		url:url,
+		method:'post',
+		data:dataObj,
+		onComplete: function(rs){
+			var url="<{link app=qiyecenter ctl=site_member act=fabufuliDetail args0=$fuliInfo['ORDER_ID']}>";
+			window.location.href = url;
+		}
+	}).send();
+	
+	return false;
+}
+//清除数据
+function cleanData(){
+	var url="<{link app=qiyecenter ctl=site_member act=cleanData}>";
+	var dataObj = {};
+	dataObj.ORDER_ID = document.getElementById('ORDER_ID').value;
+	new Request({
+		url:url,
+		method:'post',
+		data:dataObj,
+		onComplete: function(rs){
+			alert(rs);
+		}
+	}).send();
+}
+function saveInfo(obj){
+	//保存一份数据
+	var frmIdObj = document.getElementById('frmId');
+	var dataObj = {};
+	dataObj.GRANT_NAME = frmIdObj.GRANT_NAME.value;
+	dataObj.PAY_ACT_TYPE = frmIdObj.PAY_ACT_TYPE.value;//支出账户
+	dataObj.REC_ACT_TYPE = frmIdObj.REC_ACT_TYPE.value;	//收入账户性质
+	dataObj.REC_SUB_ACT_TYPE_ID = frmIdObj.REC_SUB_ACT_TYPE_ID.value;//收入账户类型
+	dataObj.REC_SUB_ACT_TYPE_ID_Name = frmIdObj.REC_SUB_ACT_TYPE_ID[frmIdObj.REC_SUB_ACT_TYPE_ID.selectedIndex].text;
+	dataObj.GRANT_TYPE = frmIdObj.GRANT_TYPE.value;//发放方式
+	dataObj.GRANT_RANGE = frmIdObj.GRANT_RANGE.value;//发放范围
+	dataObj.PRICE = frmIdObj.PRICE.value;//发放额度
+	dataObj.ORDER_ID = frmIdObj.ORDER_ID.value;//订单Id
+	var inAccountHtml = document.getElementById("companyList").innerHTML;
+
+	
+	oldDataObj = dataObj;
+	if(obj.alt==1){
+		//获取本次发放详情
+		var retValue = provideDetail();
+		if(!retValue){
+			return false;
+		}
+		document.getElementById('part1').style.display = 'none';
+		document.getElementById('part2').style.display = 'block';
+		obj.alt = 2;
+		obj.value = '重置';
+		obj.type = 'reset';
+		
+		//part2中的值显示
+		document.getElementById('lGRANT_NAME').innerHTML = dataObj.GRANT_NAME;
+		if(dataObj.PAY_ACT_TYPE=='I00102'){
+			document.getElementById('lPAY_ACT_TYPE').innerHTML = '企业账户';
+		}
+		else if(dataObj.PAY_ACT_TYPE=='I00103'){
+			document.getElementById('lPAY_ACT_TYPE').innerHTML = '部门账户';
+		}
+		else{
+			document.getElementById('lPAY_ACT_TYPE').innerHTML = '群组账户';
+		}
+		frmIdObj.PAY_ACT_TYPE2.value = dataObj.PAY_ACT_TYPE
+
+		if(dataObj.REC_ACT_TYPE==1){
+			document.getElementById('lREC_ACT_TYPE').innerHTML = '员工账户';
+		}else{
+			document.getElementById('lREC_ACT_TYPE').innerHTML = '下级组织账户';
+		}
+		document.getElementById('lREC_SUB_ACT_TYPE_ID').innerHTML = dataObj.REC_SUB_ACT_TYPE_ID_Name;
+		if(dataObj.GRANT_TYPE==1){
+			document.getElementById('lGRANT_TYPE').innerHTML = '等额发放';
+		}else{
+			document.getElementById('lGRANT_TYPE').innerHTML = '差额发放';
+		}
+		if(dataObj.GRANT_RANGE==1){
+			document.getElementById('lGRANT_RANGE').innerHTML = '所有员工';
+		}else{
+			document.getElementById('lGRANT_RANGE').innerHTML = '指定员工';
+		}
+		document.getElementById('lPRICE').innerHTML = dataObj.PRICE;
+		document.getElementById("companyList2").innerHTML = inAccountHtml;
+
+		
+	}
+	else if(obj.alt==2){
+		if(!confirm("您确认重置，之前的数据将会被清空！")){
+			return false;
+		}
+		document.getElementById('part1').style.display = 'block';
+		document.getElementById('part2').style.display = 'none';
+		obj.alt = 1;
+		obj.value = '保存设置';
+		obj.type = 'button';
+		//清空之前的所有信息
+		document.getElementById('companyList').innerHTML = '';
+		document.getElementById('settingResult').innerHTML = '';
+		//异步发送请求(数据库短清除)
+		cleanData();
+	}
+}
+
+//提供发放详情
+function provideDetail(){
+	//提交参数检验
+	var frmIdObj = document.getElementById('frmId');
+	if(!frmIdObj.PAY_ACT_TYPE.value){
+		alert("请选择支出账户");
+		return false;
+	}
+	if(!frmIdObj.REC_ACT_TYPE.value){
+		alert("收入账户性质");
+		return false;
+	}
+	if(!frmIdObj.REC_SUB_ACT_TYPE_ID.value){
+		alert("收入账户类型");
+		return false;
+	}
+	if(!frmIdObj.GRANT_TYPE.value){
+		alert("发放方式");
+		return false;
+	}
+	if(!frmIdObj.GRANT_RANGE.value){
+		alert("发放范围");
+		return false;
+	}
+	
+	var dataObj = {};
+	dataObj.PAY_ACT_TYPE = frmIdObj.PAY_ACT_TYPE.value;//支出账户
+	dataObj.REC_ACT_TYPE = frmIdObj.REC_ACT_TYPE.value;	//收入账户性质
+	dataObj.REC_SUB_ACT_TYPE_ID = frmIdObj.REC_SUB_ACT_TYPE_ID.value;//收入账户类型
+	dataObj.GRANT_TYPE = frmIdObj.GRANT_TYPE.value;//发放方式
+	dataObj.GRANT_RANGE = frmIdObj.GRANT_RANGE.value;//发放范围
+	dataObj.PRICE = frmIdObj.PRICE.value;//发放额度
+	dataObj.ORDER_ID = frmIdObj.ORDER_ID.value;//订单Id
+
+	
+	var url="<{link app=qiyecenter ctl=site_member act=provideDetail}>";
+	new Request({
+		url:url,
+		method:'post',
+		data:dataObj,
+		onComplete: function(rs){
+			rs = JSON.parse(rs);
+			if(rs){
+				var strHtml = '';
+				for(var i=0; i<rs.length; i++){
+					strHtml += '<div class="fafangfangshi" style="height: 40px;">';
+					strHtml += '<div class="fuli_list">'+rs[i].SUB_ACT_NAME+'</div>';
+					strHtml += '<div class="fuli_list">'+rs[i].COUNT+'</div>';
+					strHtml += '<div class="fuli_list">'+rs[i].PAY_TYPE+'</div>';
+					strHtml += '<div class="fuli_list">'+rs[i].PRICE+'</div>';
+					strHtml += '<div class="fuli_list">'+rs[i].PAY_AMOUNT+'</div>';
+					strHtml += ' <div class="fuli_list"><font style="color:red">'+rs[i].GRANT_BALANCE+'</font></div>';
+					strHtml += '<div class="fuli_list"><font style="color:red">'+rs[i].STATUS+'</font></div>';
+					strHtml += '</div>'; 
+				}
+				document.getElementById("settingResult").innerHTML = strHtml;
+			}
+		}
+	}).send(); 
+	return true;
+}
+//改变所有员工制定员工
+function changeEmployee(obj){
+	if(obj.id=='ceff'){
+		document.getElementById("lsyyg").style.display = 'none';
+		document.getElementById("ffad").style.display = 'none';
+	}else{
+		document.getElementById("lsyyg").style.display = 'block';
+		document.getElementById("someEmployee").checked = false;
+		document.getElementById("ffad").style.display = 'block';
+	}
+}
+//改变等额差额发放
+function changeGrant(obj){
+	document.getElementById("ffad").style.display = 'block';
+	if(obj.value=='I00104'){
+		document.getElementById("ldeff").style.display = 'block';
+		document.getElementById("lsyyg").style.display = 'block';
+		document.getElementById("someEmployee").checked = false;
+		document.getElementById("allEmployee").checked = false;
+		document.getElementById("ceff").checked = false;
+		document.getElementById("deff").checked = false;
+		//员工
+		var grantRange = document.getElementsByName("GRANT_RANGE");
+		for(var i=0; i<grantRange.length; i++){
+			if(grantRange[i].value=='1'){
+				grantRange[i].nextSibling.nodeValue = "所有员工";
+			}else{
+				grantRange[i].nextSibling.nodeValue = "指定员工";
+			}
+		}
+	}
+	else if(obj.value=='I00103'){
+		document.getElementById("ldeff").style.display = 'block';
+		document.getElementById("lsyyg").style.display = 'block';
+		document.getElementById("someEmployee").checked = false;
+		document.getElementById("allEmployee").checked = false;
+		document.getElementById("ceff").checked = false;
+		document.getElementById("deff").checked = false;
+		//部门
+		var grantRange = document.getElementsByName("GRANT_RANGE");
+		for(var i=0; i<grantRange.length; i++){
+			if(grantRange[i].value=='1'){
+				grantRange[i].nextSibling.nodeValue = "所有部门";
+			}else{
+				grantRange[i].nextSibling.nodeValue = "指定部门";
+			}
+		}
+	}
+	else{
+		document.getElementById("ldeff").style.display = 'none';
+		document.getElementById("lsyyg").style.display = 'none';
+		//群组
+		var grantRange = document.getElementsByName("GRANT_RANGE");
+		for(var i=0; i<grantRange.length; i++){
+			if(grantRange[i].value=='1'){
+				grantRange[i].nextSibling.nodeValue = "所有群组";
+			}else{
+				grantRange[i].nextSibling.nodeValue = "指定群组";
+			}
+		}
+	}
+}
+//隐藏div
+function hiddenDiv(param){
+	if(!confirm("您确认删除！")){
+		return false;
+	}
+	var url="<{link app=qiyecenter ctl=site_member act=delOrder}>";
+	var dataObj = {};
+	dataObj.ITEM_ID = param;
+	new Request({
+		url:url,
+		method:'post',
+		data:dataObj,
+		onComplete: function(rs){
+			//rs = JSON.parse(rs);
+			alert('删除成功！');
+			if(rs){
+				document.getElementById(param).style.display = 'none';
+			}
+			//document.getElementById(param).style.display = 'none';
+		}
+	}).send(); 
+}
+//指定员工
+function showEmployees(){
+	var frmIdObj = document.getElementById('frmId');
+	var dataObj = {};
+ 	//企业
+ 	dataObj.PAY_ACT_TYPE = frmIdObj.PAY_ACT_TYPE.value;//I00102公司，I00103部门， I00105群组
+ 	dataObj.REC_ACT_TYPE = frmIdObj.REC_ACT_TYPE.value;//I00104员工， I00103部门，I00105群组
+   	//dataObj.NODE_TYPE = 'I01302';
+ 	if(!document.getElementById('companyList').firstChild){
+   	   	alert("请选择支出账户！");
+   	   	return false;
+   	}
+ 	if(!frmIdObj.REC_ACT_TYPE.value){
+   	   	alert("收入账户性质！");
+   	   	return false;
+   	}
+ 	
+   	dataObj.NODE_ID = document.getElementById('companyList').children[0].lang;
+   	dataObj.ORDER_ID = frmIdObj.ORDER_ID.value;//订单Id
+   	dataObj.IS_NULL = 0; //0未指定， 1指定
+	dataObj.type = 'totab_getUnspecifyEmployees';
+	var url = '';
+	if(dataObj.REC_ACT_TYPE == 'I00105'){
+		url = '<{link app=qiyecenter ctl=site_member act=showGroups}>';
+	}
+	else if(dataObj.REC_ACT_TYPE == 'I00103'){
+		url = '<{link app=qiyecenter ctl=site_member act=showDepartments}>';
+	}
+	else{
+		var url = '<{link app=qiyecenter ctl=site_member act=showEmployees}>';
+	}
+    new Dialog(url,{
+        width:1200,
+        height:600,
+        resizeable:false,
+        dragable:false,
+        ajaxoptions:{
+            method: 'post',
+            data:dataObj,
+        }
+    });
+}
+//获取公司群组列表
+function getcdgList(obj, type){
+	//type 1标识公司， 2标识部门， 3标识群组
+	var strHtml = '';
+	var passParamObj = {};
+	var passParam = new Array();
+	var frmIdObj = document.getElementById('frmId');
+	
+	if(type==1){
+		var chkInput = document.getElementsByName("chk");
+		for(var i=0; i<chkInput.length; i++){
+			if(chkInput[i].checked){
+				for(var ii=0; ii<listData.length; ii++){
+					if(chkInput[i].value==listData[ii].CUSTOMER_NO){
+						passParam.push(listData[ii]);
+					}
+				}
+			}
+		}
+		//传递参数值
+		passParamObj.passParam = passParam;
+		var dataObj = {};
+		dataObj.ORDER_ID = document.getElementById('ORDER_ID').value;
+		dataObj.PAY_ACT_TYPE = frmIdObj.PAY_ACT_TYPE.value;
+		dataObj.ITEM_LIST = passParamObj;
+		var url="<{link app=qiyecenter ctl=site_member act=resetOrder}>";
+		new Request({
+			url:url,
+			method:'post',
+			data:dataObj,
+			onComplete: function(rs){
+				rs = JSON.parse(rs);
+				rs = rs.ITEM_LIST;
+				for(var i=0; i<rs.length; i++){
+					strHtml += '<div id="'+rs[i].ITEM_ID+'" lang="'+rs[i].CUSTOMER_NO+'" style="margin-left: 88px;height: 23px;margin-top: 13px;">';
+					
+					strHtml += '<div class="shaixuan">';
+					strHtml += '<div class="shaixuan_font">';
+					strHtml += rs[i].CUSTOMER_NAME;
+					strHtml += '</div>';
+					strHtml += ' <div class="XX" onclick="hiddenDiv('+"'"+rs[i].ITEM_ID+"'"+');">x</div>';
+					strHtml += ' </div>';	
+								
+					strHtml += '<div class="yu_e">余额：<font color="#A11F45">';
+					strHtml += rs[i].BALANCE;
+					strHtml += '</font>福点</div>';
+					
+					strHtml += '<div class="yu_e">员工：<font color="#A11F45">';
+					strHtml += rs[i].EMPLOYEE_NUM;
+					strHtml += '</font>人</div>';
+					strHtml += '</div>';
+				}
+				//赋值对话框
+				document.getElementById("companyList").innerHTML = strHtml;
+			}
+		}).send(); 
+	}
+	else if(type==2){
+		var chkInput = document.getElementsByName("chkdep");
+		for(var i=0; i<chkInput.length; i++){
+			if(chkInput[i].checked){
+				for(var ii=0; ii<listData.length; ii++){
+					if(chkInput[i].value==listData[ii].DEPT_ID){
+						passParam.push(listData[ii]);
+					}
+				}
+			}
+		}
+
+		if(passParam.length>1){
+			alert("只能选一项");
+			return false;
+		}
+		//传递参数值
+		passParamObj.passParam = passParam;
+		var dataObj = {};
+		dataObj.ORDER_ID = document.getElementById('ORDER_ID').value;
+		dataObj.PAY_ACT_TYPE = frmIdObj.PAY_ACT_TYPE.value;
+		dataObj.ITEM_LIST = passParamObj;
+		//dataObj.TYPE = 'DEPARTMENT';
+		var url="<{link app=qiyecenter ctl=site_member act=resetOrder}>";
+		new Request({
+			url:url,
+			method:'post',
+			data:dataObj,
+			onComplete: function(rs){
+				rs = JSON.parse(rs);
+				rs = rs.ITEM_LIST;
+				for(var i=0; i<rs.length; i++){
+					strHtml += '<div id="'+rs[i].ITEM_ID+'" lang="'+rs[i].DEPT_ID+'" style="margin-left: 88px;height: 23px;margin-top: 13px;">';
+					
+					strHtml += '<div class="shaixuan">';
+					strHtml += '<div class="shaixuan_font">';
+					strHtml += rs[i].DEPT_NAME;
+					strHtml += '</div>';
+					strHtml += ' <div class="XX" onclick="hiddenDiv('+"'"+rs[i].ITEM_ID+"'"+');">x</div>';
+					strHtml += ' </div>';	
+								
+					strHtml += '<div class="yu_e">余额：<font color="#A11F45">';
+					strHtml += rs[i].BALANCE;
+					strHtml += '</font>福点</div>';
+					
+					strHtml += '<div class="yu_e">员工：<font color="#A11F45">';
+					strHtml += rs[i].EMPLOYEE_NUM;
+					strHtml += '</font>人</div>';
+					strHtml += '</div>';
+				}
+				//赋值对话框
+				document.getElementById("companyList").innerHTML = strHtml;
+			}
+		}).send(); 
+		
+	}
+	else{
+		var chkInput = document.getElementsByName("chkgrp");
+		for(var i=0; i<chkInput.length; i++){
+			if(chkInput[i].checked){
+				for(var ii=0; ii<listData.length; ii++){
+					if(chkInput[i].value==listData[ii].GROUP_ID){
+						passParam.push(listData[ii]);
+					}
+				}
+			}
+		}
+		if(passParam.length>1){
+			alert("只能选一项");
+			return false;
+		}
+		//传递参数值
+		passParamObj.passParam = passParam;
+		var dataObj = {};
+		dataObj.ORDER_ID = document.getElementById('ORDER_ID').value;
+		dataObj.PAY_ACT_TYPE = frmIdObj.PAY_ACT_TYPE.value;
+		dataObj.ITEM_LIST = passParamObj;
+		dataObj.PAY_ACT_TYPE = frmIdObj.PAY_ACT_TYPE.value;
+		//dataObj.TYPE = 'GROUP';
+		var url="<{link app=qiyecenter ctl=site_member act=resetOrder}>";
+		new Request({
+			url:url,
+			method:'post',
+			data:dataObj,
+			onComplete: function(rs){
+				rs = JSON.parse(rs);
+				rs = rs.ITEM_LIST;
+				for(var i=0; i<rs.length; i++){
+					strHtml += '<div id="'+rs[i].ITEM_ID+'" lang="'+rs[i].GROUP_ID+'" style="margin-left: 88px;height: 23px;margin-top: 13px;">';
+					
+					strHtml += '<div class="shaixuan">';
+					strHtml += '<div class="shaixuan_font">';
+					strHtml += rs[i].GROUP_NAME;
+					strHtml += '</div>';
+					strHtml += ' <div class="XX" onclick="hiddenDiv('+"'"+rs[i].ITEM_ID+"'"+');">x</div>';
+					strHtml += ' </div>';	
+								
+					strHtml += '<div class="yu_e">余额：<font color="#A11F45">';
+					strHtml += rs[i].BALANCE;
+					strHtml += '</font>福点</div>';
+					
+					strHtml += '<div class="yu_e">员工：<font color="#A11F45">';
+					strHtml += rs[i].EMPLOYEE_NUM;
+					strHtml += '</font>人</div>';
+					strHtml += '</div>';
+				}
+				//赋值对话框
+				document.getElementById("companyList").innerHTML = strHtml;
+			}
+		}).send(); 
+	}
+	
+	//赋值对话框
+	document.getElementById("companyList").innerHTML = strHtml;
+	//关闭对话框
+	dialogObj.close();
+	return false;
+}
+
+
+//关闭收起
+function closeEmployee(){
+	if(document.getElementById("closeEmployee").innerHTML != "展开"){
+		document.getElementById("settingResult").style.display="none";
+		document.getElementById("closeEmployee").innerHTML = "展开";
+	}else{
+		document.getElementById("settingResult").style.display="block";
+		document.getElementById("closeEmployee").innerHTML = "收起";
+	}
+}
+//人员详情对话框
+function showEmployeeList(){
+	url = '<{link app=qiyecenter ctl=site_member act=showEmployeeList}>';
+	var dataObj = {};
+	dataObj.ORDER_ID = document.getElementById('ORDER_ID').value;
+	dialogObj = new Dialog(url,{
+	    width:802,
+	    height:502,
+	    resizeable:false,
+	    dragable:false,
+	    ajaxoptions:{
+            method: 'post',
+            data:dataObj,
+        }
+	});
+}
+
+//获取支出账户列表
+function getInAccountList(obj){
+	var url = "";
+	var divs1Obj = $('ygzh').getParent('div');
+	var divs2Obj = $('xjzzzh').getParent('div');
+	var divs3Obj = $('qzzh').getParent('div');
+	divs1Obj.setStyle('display', 'block');
+	divs2Obj.setStyle('display', 'block');
+	divs3Obj.setStyle('display', 'block');
+	
+	if(obj.value=='I00102'){
+		url = '<{link app=qiyecenter ctl=site_member act=getIncomeAccountListByCompany}>';
+		dialogObj = new Dialog(url,{
+		    width:802,
+		    height:502,
+		    resizeable:false,
+		    dragable:false
+		});
+	}
+	else if(obj.value=='I00103'){
+		url = '<{link app=qiyecenter ctl=site_member act=getIncomeAccountListByDepartment}>';
+		dialogObj = new Dialog(url,{
+		    width:802,
+		    height:502,
+		    resizeable:false,
+		    dragable:false
+		});
+		divs1Obj.setStyle('display', 'block');
+		divs2Obj.setStyle('display', 'block');
+		divs3Obj.setStyle('display', 'none');
+	}
+	else{
+		url = '<{link app=qiyecenter ctl=site_member act=getIncomeAccountListByGroup}>';
+		dialogObj = new Dialog(url,{
+		    width:802,
+		    height:502,
+		    resizeable:false,
+		    dragable:false
+		});
+		//隐藏相应的单选按钮
+		divs1Obj.setStyle('display', 'block');
+		divs2Obj.setStyle('display', 'none');
+		divs3Obj.setStyle('display', 'none');
+	}
+	
+	//每次改动都要清空相应的内容
+	//document.getElementById('companyList').innerHTML = '';
+}
+
+
+
+</script>
+
+
+
+

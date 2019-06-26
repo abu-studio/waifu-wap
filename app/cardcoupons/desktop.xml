@@ -1,0 +1,77 @@
+<desktop>
+    <permissions>
+        <permission id="cardcoupons" display='true' parent='0'  workground="cardcoupons.wrokground.card" >内部卡券管理</permission>
+        <permission id="addcard" display='true' parent='cardcoupons'  workground="cardcoupons.wrokground.card" >添加卡券</permission>
+        <permission id="editcard" display='true' parent='cardcoupons'  workground="cardcoupons.wrokground.card" >编辑卡券</permission>
+        <permission id="deletecard" display='true' parent='cardcoupons'  workground="cardcoupons.wrokground.card" >删除卡券</permission>
+        <permission id="importcard" display='true' parent='cardcoupons'  workground="cardcoupons.wrokground.card" >导出卡券</permission>
+        <permission id="cardpass" display='true' parent='cardcoupons'  workground="cardcoupons.wrokground.card" >卡密管理</permission>
+        <permission id="updatepass" display='true' parent='cardpass'  workground="cardcoupons.wrokground.card" >修改卡密</permission>
+        <permission id="shenhepass" display='true' parent='cardpass'  workground="cardcoupons.wrokground.card" >审核卡密</permission>
+        <permission id="exportcard" display='true' parent='cardcoupons'  workground="cardcoupons.wrokground.card" >导入卡券</permission>
+        <permission id="cardOrders" display='true' parent='cardcoupons'  workground="cardcoupons.wrokground.card" >卡券订单</permission>
+        <permission id="cardeditmarketable" display='true' parent='cardcoupons' workground="cardcoupons.wrokground.card" >上下架管理</permission>
+        <permission id="cardset" display='true' parent='cardcoupons' workground="cardcoupons.wrokground.card" >设置</permission>
+		<!--外部卡券-->
+		<permission id="excardcoupons" display='true' parent='0'  workground="cardcoupons.wrokground.card" >外部卡券管理</permission>
+        <permission id="addexcard" display='true' parent='excardcoupons'  workground="cardcoupons.wrokground.card" >添加卡券</permission>
+        <permission id="editexcard" display='true' parent='excardcoupons'  workground="cardcoupons.wrokground.card" >编辑卡券</permission>
+        <permission id="deleteexcard" display='true' parent='excardcoupons'  workground="cardcoupons.wrokground.card" >删除卡券</permission>
+        <permission id="importexcard" display='true' parent='excardcoupons'  workground="cardcoupons.wrokground.card" >导出卡券</permission>
+        <permission id="excardpass" display='true' parent='excardcoupons'  workground="cardcoupons.wrokground.card" >卡密管理</permission>
+        <permission id="updateexpass" display='true' parent='excardpass'  workground="cardcoupons.wrokground.card" >修改卡密</permission>
+        <permission id="shenheexpass" display='true' parent='excardpass'  workground="cardcoupons.wrokground.card" >审核卡密</permission>
+        <permission id="exportexcard" display='true' parent='excardcoupons'  workground="cardcoupons.wrokground.card" >导入卡券</permission>
+        <permission id="excardorders" display='true' parent='excardcoupons'  workground="cardcoupons.wrokground.card" >卡券订单</permission>
+        <permission id="excardeditmarketable" display='true' parent='excardcoupons' workground="cardcoupons.wrokground.card" >上下架管理</permission>
+		<permission id="excardexchange" display='true' parent='excardcoupons' workground="cardcoupons.wrokground.card" >卡券兑换记录</permission>
+		<permission id="hebaoOrders" display='true' parent='0' workground="ectools.wrokground.order" >和包订单</permission>
+	</permissions>
+ 
+    <workground name="卡券中心" id="cardcoupons.wrokground.card" app="cardcoupons" controller="admin_cards" action="index" order='2'>
+        <menugroup name="内部卡管理">
+            <menu controller='admin_cards_type' action='index' permission='cardcoupons' display='false' order='5'>卡券类型</menu>
+            <menu controller='admin_cards_service' action='index' permission='cardcoupons' display='true' order='10'>卡券名目</menu>
+			<menu controller='admin_cards' action='index' permission='cardcoupons' display='true' order='15'>卡券列表</menu>
+            <menu controller='admin_cards_pass' action='index' permission='cardpass' display='true' order='20'>卡密列表</menu>
+            <menu controller='admin_cards_pass_create' action='index' permission='cardpass' display='true' order='30'>卡密创建管理</menu>
+            <menu controller='admin_cards_pass_time' action='index' permission='updatepass' display='true' order='40'>卡密有效期</menu>
+            <menu controller='admin_cards_pass_disabled' action='index' permission='updatepass' display='true' order='50'>卡密有效性</menu>
+            <menu controller='admin_cards_pass_use' action='index' permission='updatepass' display='true' order='60'>卡密解冻冻结</menu>
+        </menugroup>
+        <menugroup name="外部卡管理">
+            <menu controller='admin_excards' action="index" permission='excardcoupons' display="true" order="10">卡券列表</menu>
+            <menu controller='admin_excards_pass' action='index' permission='excardpass' display='true' order='20'>卡密列表</menu>
+			<menu controller='admin_excards_pass_create' action='index' permission='excardpass' display='true' order='30'>卡密创建管理</menu>
+            <menu controller='admin_excards_pass_time' action='index' permission='updateexpass' display='true' order='40'>卡密有效期</menu>
+            <menu controller='admin_excards_pass_disabled' action='index' permission='updateexpass' display='true' order='50'>卡密有效性</menu>
+            <!-- <menu controller='admin_excards_pass_use' action='index' permission='updateexpass' display='true' order='60'>卡密解冻冻结</menu> -->
+        </menugroup>
+		<menugroup name="卡券结算报表">
+			<menu controller='admin_excards_pass_exchangelog' action='index' permission='excardexchange' display='true' order='10'>外部卡兑换记录</menu>
+			<menu controller='admin_excards_pass_balance' action='index' permission='excardexchange' display='true' order='20'>外部卡结算报表</menu>
+		</menugroup>
+        <menugroup name="卡券订单">
+            <menu controller='admin_order' action='index' permission='cardOrders' display='true' order='49'>自有券兑换订单</menu>
+            <menu controller='admin_order' action='sale' permission='cardOrders' display='true' order='50'>销售订单</menu>
+            <menu controller='admin_lcorder' action='index' permission='cardOrders' display='true' order='51'>大客户订单</menu>
+        </menugroup>
+		<menugroup name="基本设置">
+           <!-- <menu controller='admin_manage' action='type_cat' permission='cardset' display='true' order='10'>类型分类</menu>-->
+            <menu controller='admin_manage' action='store_set' permission='cardset' display='true' order='20'>自营店铺</menu>
+            <menu controller='admin_manage' action='default_style' permission='cardset' display='true' order='20'>默认风格</menu>
+        </menugroup>
+    </workground>
+
+
+    
+
+	<workground name="订单" id="ectools.wrokground.order" app="b2c" controller="admin_order" action="index" order='10'>
+        <menugroup name="第三方接口">
+            <menu controller='admin_cmpayorder' action='index' permission='hebaoOrders' display='true' order='52'>和包订单</menu>
+        </menugroup>
+    </workground>
+
+
+
+</desktop>

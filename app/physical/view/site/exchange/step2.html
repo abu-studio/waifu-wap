@@ -1,0 +1,45 @@
+<div class="top">
+	<div class="left">
+		预约套餐：<a href="javascript:void(0);"><{$package_info.package_name}></a>
+	</div>
+	<div class="right" >
+		<div class="xm_step2">						
+		</div>
+	</div>
+</div>
+<div class="center">
+	<form id="form2" name="form2" method="POST" action="<{link app='physical' ctl='site_exchange' act='index' args=array($type,3,$goods_id,$package_id,$card_no,$card_pass)}>">
+	<input type='hidden' name="st" value="1" />
+	<div class="mendian_title">
+		选择项目
+	</div>
+	<div class="mendian_main">
+		<div class="xm_top">基本项目</div>
+		<div class="xm_center">
+			<{foreach from=$projects item=item key=key}>
+				<a class="xm_center_list" title="<{$item.project_name}>">
+					<{$item.project_name|cut:16}>
+					<div class="intro"><{$item.introduction}></div>
+				</a>
+			<{/foreach}>
+		</div>
+		<div class="md_next">
+			<button class="btn md_prev" type="button"  onclick="back1();">
+				上一步
+			</button>
+			<button class="btn md_submit" type="button"  onclick="form_submit3();">
+				下一步
+			</button>
+		</div>
+	</div>
+	</form>
+</div>
+<script>
+function back1(){
+	var url = "<{link app='physical' ctl='site_exchange' act='index' args=array($type,1,$goods_id,$package_id,$card_no,$card_pass)}>";
+	window.location.href= url;
+}
+function form_submit3(){
+	$("form2").submit();
+}
+</script>

@@ -1,0 +1,41 @@
+<desktop>
+    <permissions>
+	<!--体检预约-->
+		<!--门店管理-->
+        <permission id="organization" display='true' parent='0' workground='physical.wrokground.physical'>查看机构列表</permission>
+		<permission id="store" display='true' parent='0' workground='physical.wrokground.physical'>查看门店列表</permission>
+		<permission id="store_status" display='true' parent='0' workground='physical.wrokground.physical'>查看门店预约时段列表</permission>
+		<permission id="organization_status" display='true' parent='0' workground='physical.wrokground.physical'>机构节假日管理</permission>
+        <!--健康管理-->
+		<permission id="subject" display='true' parent='0' workground='physical.wrokground.physical'>查看体检科目列表</permission>
+		<permission id="project" display='true' parent='0' workground='physical.wrokground.physical'>查看体检项目列表</permission>
+		<permission id="package_type" display='true' parent='0' workground='physical.wrokground.physical'>查看体检套餐类型列表</permission>
+		<permission id="package" display='true' parent='0' workground='physical.wrokground.physical'>查看体检套餐列表</permission>
+		<!--预约单管理-->
+		<permission id="orders" display='true' parent='0' workground='physical.wrokground.physical'>查看预约单列表</permission>
+
+    </permissions>
+ 
+    <workground name="体检预约" id="physical.wrokground.physical" app="physical" controller="admin_organization" action="index" order='3'>
+        <menugroup name="门店管理">
+            <menu controller='admin_organization' action='index' permission='organization' display='true' order='10'>机构列表</menu>
+            <menu controller='admin_store' action='index' permission='store' display='true' order='20'>门店列表</menu>
+			<menu controller='admin_store_status' action='index' permission='store_status' display='true' order='30'>门店时段列表</menu>
+			<menu controller='admin_organization_status' action='index' permission='organization_status' display='true' order='30'>机构节假日</menu>
+        </menugroup>
+        <menugroup name="健康管理">
+            <menu controller='admin_subject' action='index' permission='subject' display='true' order='10'>体检科目列表</menu>
+            <menu controller='admin_project' action='index' permission='project' display='true' order='20'>体检项目列表</menu>
+			<menu controller='admin_package_type' action='index' permission='package_type' display='true' order='30'>体检套餐类型列表</menu>
+			<menu controller='admin_package' action='index' permission='package' display='true' order='40'>体检套餐列表</menu>
+        </menugroup>
+		<menugroup name="预约单管理">
+            <menu controller='admin_orders' action='index' permission='orders' display='true' order='10'>预约单列表</menu>
+        </menugroup>
+		<menugroup name="设置">
+            <menu controller='admin_manage' action='imageset' permission='organization' display='true' order='10'>默认图片设置</menu>
+            <menu controller='admin_manage' action='o2oset' permission='organization' display='true' order='10'>参数配置</menu>
+        </menugroup>
+    </workground>
+
+</desktop>

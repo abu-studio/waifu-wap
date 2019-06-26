@@ -1,0 +1,42 @@
+<form method="POST" id='exchange_form' action="<{link app=qiyecenter ctl=site_member act=do_importRecharge}>" class="tableform" enctype="multipart/form-data" target="upload">
+    <div class="division">
+        <table>
+            <tr>
+                <th>选择文件:</th>
+                <td>
+                    <input type="file"  name="sandRecharge" id="sandRecharge" />
+                    <input type="hidden" name="EMP_NEW_PRICE" value="<{$PRICE}>"  id="EMP_NEW_PRICE"/>
+                    <a target='_blank' href="<{link app=qiyecenter ctl=site_member act=downRecharge}>">下载模板（请完整填写模板所需的各项信息）</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</form>
+<div class="division" id="humbas_list">
+</div>
+<div class="table-action">
+    <{button label=$___cardcoupons="确认"|t:'qiyecenter' type="button" id='exchange_form_submit' }>
+</div>
+
+<script type="text/javascript">
+
+    window.addEvent('domready', function(){
+        $("exchange_form_submit").addEvent('click', function(){
+            var upload = new File.Upload({
+                url: '<{link app=qiyecenter ctl=site_member act=do_importRecharge}>',
+                data: {
+                    foo: 'bar'
+                },
+                images: ['sandRecharge'],
+                onComplete: function(response){
+                    if(response){
+                        $('humbas_list').set('html',response);
+                    }
+                }
+            });
+
+            upload.send();
+        });
+    });
+
+</script>

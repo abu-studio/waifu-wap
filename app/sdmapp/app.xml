@@ -1,0 +1,17 @@
+<app version="1.0">
+  <name>水电煤</name>
+  <description>水电煤</description>
+  <author>
+	  <name>水电煤app</name>
+	  <email></email>
+	  <url></url>
+  </author>
+  <version>0.1</version>
+  <license>Commercial</license>
+
+	<depends>
+		<app>b2c</app>
+	</depends>
+
+
+</app>

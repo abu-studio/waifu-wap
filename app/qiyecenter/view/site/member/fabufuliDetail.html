@@ -1,0 +1,277 @@
+﻿<meta http-equiv="x-ua-compatible" content="IE=5">
+<{css src="qiye_zhongxin.css" app="qiyecenter"}>
+<script>
+    window.loadedPart = [1,0,(new Date).getTime()];
+    BREADCRUMBS ='0:0';
+    MODALPANEL = {
+        createModalPanel:function(){
+            var mp = new Element('div',{'id':'MODALPANEL'});
+            var mpStyles = {
+                'position': 'fixed',
+                'background': '#333333',
+                'width': '100%',
+                'display':'none',
+                'height': window.getScrollSize().y,
+                'top': 0,
+                'left': 0,
+                'zIndex': 65500,
+                'opacity': .4
+            };
+            this.element = mp.setStyles(mpStyles).inject(document.body);
+            return this.element;
+        },
+        show:function(){
+            var panel = this.element = this.element||this.createModalPanel();
+            panel.setStyles({
+                'width': '100%',
+                'height': window.getScrollSize().y
+            }).show();
+        },hide:function(){
+            if(this.element)this.element.hide();
+        }
+    };
+    Xtip = new Tips({tip:'tip_Xtip',fixed:true,offset: {x: 24, y: -15},onBound:function(bound){
+        if(bound.x2){
+            this.tip.getElement('.tip-top').addClass('tip-top-right');
+            this.tip.getElement('.tip-bottom').addClass('tip-bottom-right');
+        }else {
+            this.tip.getElement('.tip-top').removeClass('tip-top-right');
+            this.tip.getElement('.tip-bottom').removeClass('tip-bottom-right');
+        }
+    }});
+    var LAYOUT = {
+        container: $('container'),
+        side: $('side'),
+        workground: $('workground'),
+        content_main: $('main'),
+        content_head: $E('#workground .content-head'),
+        content_foot: $E('#workground .content-foot'),
+        side_r: $('side-r'),
+        side_r_content:$('side-r-content')
+    };
+</script>
+<{script src="load.js" app="qiyecenter" pdir="js"}>
+<{script src="wpage.js" app="qiyecenter" pdir="js"}>
+<script>
+    var W = new Wpage({});
+</script>
+<{script src="dialog.js" app="qiyecenter" pdir="js"}>
+<div class="qiye_list" style="margin-top: -17px;">
+	<div class="fafuli_width">
+    	<div class="fafuli_con">
+        	<div class="fafuli_tit">
+            	<p class="fafuli_titf">
+                	发放福利
+                </p>
+            </div>
+            
+            <input type="hidden" name="ORDER_ID" id="ORDER_ID" value="<{$fuliInfo['ORDER_ID']}>">
+            <div id="part1" style="display:block;">
+            <div class="mingmu">
+            	<div class="mingmu_left">
+                	发放名目
+                </div>
+                <div class="mingmu_center">
+                	<{$fuliInfo['GRANT_NAME']}>
+                </div>
+            </div>
+            <div class="zhichu">
+            	<div class="zhichu_one">
+                	<div class="zhichu_tit">支出账户</div>
+                	<div class="zhichu_qiye">
+                		<{if $fuliInfo['PAY_ACT_TYPE'] == 'I00102'}>
+                    	<label>企业账户</label>
+                    	<{elseif $fuliInfo['PAY_ACT_TYPE'] == 'I00103'}>
+                    	<label>部门账户</label>
+                    	<{else}>
+                    	<label>群组账户</label>
+                    	<{/if}>
+                    </div>                                    
+                </div>
+                <div id="companyList" style="float:left;">
+                <{foreach from=$fuliInfo['ITEM_LIST'] item=item}>
+                	<div id="<{$item.ITEM_ID}>" lang="<{$item.PAY_RELATION_ID}>" style="margin-left: 88px;height: 23px;margin-top: 13px;">
+					<div class="shaixuan">
+						<div class="shaixuan_font"><{$item.PAY_RELATION_NAME}></div>
+						<div class="XX"></div>
+					</div>	
+					<div class="yu_e">余额：<font color="#A11F45"><{$item.BALANCE}></font>福点</div>
+					<div class="yu_e">员工：<font color="#A11F45"><{$item.EMPLOYEE_NUM}></font>人</div>
+					</div>
+                <{/foreach}>
+                </div>
+            </div>
+            <div class="fafangfangshi">
+            	<div class="fafangfangshi_tit">收入账户性质</div>
+                <div class="fangshi_rad">
+               		<{if $fuliInfo['PAY_ACT_TYPE'] == 'I00104'}>
+                   	<label>员工账户</label>
+                   	<{elseif $fuliInfo['PAY_ACT_TYPE'] == 'I00103'}>
+                   	<label>部门账户</label>
+                   	<{else}>
+                   	<label>群组账户</label>
+                   	<{/if}>
+                </div>
+            </div>
+            
+            <div class="fafangfangshi">
+            	<div class="fafangfangshi_tit">收入账户类型</div>
+                <div class="fangshi_rad" style="width:300px;padding-top: 15px;">
+                	<{$fuliInfo['REC_SUB_ACT_TYPM_NAME']}>
+                </div>
+            </div>
+            
+            <div class="fafangfangshi">
+            	<div class="fafangfangshi_tit">发放方式</div>
+                <div class="fangshi_rad">
+                	<{if $fuliInfo['GRANT_TYPE'] == '1'}>
+                   	<label>等额发放</label>
+                   	<{else}>
+                   	<label>差额发放</label>
+                   	<{/if}>
+                </div>
+            </div>
+            
+             <div class="fafangfangshi">
+            	<div class="fafangfangshi_tit">发放范围</div>
+                 <div class="fangshi_rad">
+                 	<{if $fuliInfo['GRANT_RANGE'] == '1'}>
+                   	<label>所有员工</label>
+                   	<{else}>
+                   	<label>指定员工</label>
+                   	<{/if}>
+                </div>
+            </div>
+            <{if $fuliInfo['GRANT_TYPE'] == '1'}>
+            <div class="fafangfangshi" id='ffad'>
+            	<div class="fafangfangshi_tit">发放额度</div>
+                 <div class="fangshi_rad" style="padding-top: 16px;">
+                 	<{$fuliInfo['PRICE']}>
+                </div>
+            </div>
+            <{/if}>
+            </div>
+            <div class="fafangfangshi" style="padding-top: 30px;">
+            	<div class="fafangfangshi_tit">本次发放详情</div>
+                <div class="fangshi_rad" style="color: #0260A6;cursor:pointer" id="closeEmployee" onclick="closeEmployee();">
+                	收起
+                </div>
+                 <div class="fangshi_rad" style="color: #0260A6; cursor:pointer" id="showEmployee" onclick="showEmployeeList();">
+                 	人员详情
+                </div>
+            </div>
+             
+            
+            <div class="fafangfangshi" style="background: #EEEEEE;">
+            	<div class="fafangfangshi_tit" style="margin-left: 30px;">设置结果</div>
+            </div>
+            
+            
+             <div class="fafangfangshi" style="height: 40px;background:#F8F8F8">
+            	<div class="fuli_list">账户支出名称</div>
+                <div class="fuli_list">发放人数</div>
+                <div class="fuli_list">发放方式</div>
+                <div class="fuli_list">人均额度</div>
+                <div class="fuli_list">发放小计</div>
+                <div class="fuli_list">账户余额</div>
+                <div class="fuli_list">状态</div>
+            </div>
+            <div id="settingResult">
+            <{foreach from=$fuliInfo['ITEM_LIST'] item=item}>
+            <div class="fafangfangshi" style="height: 40px;background:#F8F8F8">
+            	<div class="fuli_list"><{$item.CUSTOMER_ID}></div>
+                <div class="fuli_list"><{$item.COUNT}></div>
+                <div class="fuli_list"><{$item.PAY_TYPE}></div>
+                <div class="fuli_list"><{$item.PRICE}></div>
+                <div class="fuli_list"><{$item.PAY_AMOUNT}></div>
+                <div class="fuli_list"><{$item.CURRENT_BALANCE}></div>
+                <div class="fuli_list"><{$item.STATUS}></div>
+            </div>
+            <{/foreach}>
+            </div>
+            
+            <div class="fafangfangshi" style="padding-top: 30px;float: left;margin-left: 50px;">
+            	<div class="fafangfangshi_tit">发放时间</div>
+                <div class="fangshi_rad">
+                	<{if $fuliInfo['EXEC_TYPE'] == 'I01601'}>
+                   	<label>及时发放</label>
+                   	<{else}>
+                   	<label>定时发放</label>
+                   	<{/if}>
+                </div>
+                <{if $fuliInfo['EXEC_TYPE'] == 'I01602'}>
+                 <div class="fangshi_rad" style="color: #C6C6C6;margin-top: -10px;">
+                 	
+                 	<{$fuliInfo['PLAN_EXEC_TIME']}>
+                </div>
+                <{/if}>
+            </div>
+            <div class="fafangfangshi">
+            	<div class="fafangfangshi_tit">消息通知</div>
+               
+                 <div class="fangshi_rad" style="padding-top: 16px;">
+                 	<input type="text" name="GRANT_MESSAGE" onclick="javascript:this.value='';" style="width: 299px;height: 24px;border: 1px solid #CDCDCD;" value="<{$fuliInfo['GRANT_MESSAGE']}>"/>
+                </div>
+                <div class="fangshi_rad" style="color: #C6C6C6;">
+                 	20个字符以内
+                </div>
+            </div>
+            <div style="height: 120px;">
+             	<div class="anniu" style="margin-top: 30px;background:#A02043;float:right;margin-right: 60px;" onclick="confirmSub();">确认提交</div> 
+            <!-- <div class="anniu" style="margin-top: 30px;float: right;background: white;color: black;border: 1px solid #CDCDCD;margin-right: 20px;" onclick="javascript:history.go(-1);">上一步</div> -->
+                              
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+//确认提交
+function confirmSub(){
+	var url="<{link app=qiyecenter ctl=site_member act=confirmSub}>";
+	var dataObj = {};
+	dataObj.ORDER_ID = document.getElementById('ORDER_ID').value;
+	new Request({
+		url:url,
+		method:'post',
+		data:dataObj,
+		onComplete: function(rs){
+			var url="<{link app=qiyecenter ctl=site_member act=welfareList}>";
+			window.location.href = url;
+		}
+	}).send();
+}
+//关闭收起
+function closeEmployee(){
+	if(document.getElementById("closeEmployee").innerHTML != "展开"){
+		document.getElementById("settingResult").style.display="none";
+		document.getElementById("closeEmployee").innerHTML = "展开";
+	}else{
+		document.getElementById("settingResult").style.display="block";
+		document.getElementById("closeEmployee").innerHTML = "收起";
+	}
+	
+	
+}
+//人员详情对话框
+function showEmployeeList(){
+	url = '<{link app=qiyecenter ctl=site_member act=showEmployeeList}>';
+	var dataObj = {};
+	dataObj.ORDER_ID = document.getElementById('ORDER_ID').value;
+	dialogObj = new Dialog(url,{
+	    width:802,
+	    height:502,
+	    resizeable:false,
+	    dragable:false,
+	    ajaxoptions:{
+            method: 'post',
+            data:dataObj,
+        }
+	});
+}
+
+</script>
+
+
+
+

@@ -1,0 +1,24 @@
+<{if $package.store}>
+<div class="gridlist rows-body">
+<{foreach from=$package.store key=subkey item=item}>
+<div class="row">
+	<div class="row-line">
+	<div class="span-auto">
+		<span class="opt">
+          <img app="desktop" src="<{$desktop_res_url}>/bundle/delecate.gif" onclick="$('list_datas').value=$('list_datas').value.split(',').erase($(this).getParent('.row').getElement('input[type=hidden]').value).join();$(this).getParent('.row').destroy();" />
+		</span>
+	</div>
+	<div class="span-auto">
+        <input type="hidden" name="store_id[]" item_id="<{$item.store_id}>" value="<{$item.store_id}>" /><{$item.store_name|cut:120}>
+	</div>
+  <div class="span-5" style="width:600px;">
+    <{t}>成本价: 男士<{/t}><input type="text" class="x-input" style="width:100px;" required="required" name="price[man][<{$item.store_id}>]" value="<{$package.cost_price[$item.store_id].man}>">
+    <{t}>未婚女士<{/t}><input type="text" class="x-input" style="width:100px;" required="required" name="price[unmdwoman][<{$item.store_id}>]" value="<{$package.cost_price[$item.store_id].unmdwoman}>">
+    <{t}>已婚女士<{/t}><input type="text" class="x-input" style="width:100px;" required="required" name="price[mdwoman][<{$item.store_id}>]" value="<{$package.cost_price[$item.store_id].mdwoman}>">
+    
+</div>
+	</div>
+</div>
+<{/foreach}>
+</div>
+<{/if}>

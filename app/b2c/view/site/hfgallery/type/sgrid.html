@@ -1,0 +1,70 @@
+
+<div class='sgrid clearfix' id="gallery-grid-list">
+  <{if count($products) > 0}>
+  <ul>
+    <{foreach from=$products key=key item=product name=goods}>
+    <li class="items-gallery <{$mask_webslice}> itemsList" product="<{$product.goods_id}>">
+    
+    <div class="goodpic">
+      <{if $product.tags}>
+      <{foreach from=$product.tags item=tags}>
+      <{assign var="tagImage" value=$tags.params.tag_image}>
+      <{if $tagImage}>
+      <div style="margin: 0 auto;">
+        <div class="goods-tip" style="filter:alpha(opacity=<{$tags.params.tag_opacity}>);position:absolute;">
+          <img src="<{$tagImage|storager}>" style="opacity:<{$tags.params.tag_opacity/100}>;filter:alpha(opacity=<{$tags.params.tag_opacity}>);" pos="<{$tags.params.pic_loc}>"/>
+        </div>
+      </div>
+      <{/if}>
+      <{/foreach}>
+      <{/if}>
+      <a target="_blank" href='<{if $product.goods_url}><{$product.goods_url}><{else}><{link app=b2c ctl=site_product act=index arg=$product.goods_id}><{/if}>'>
+        <{if $product.udfimg == 'true'}>
+        <{assign var="gimage" value=$product.thumbnail_pic}>
+        <{else}>
+        <{assign var="gimage" value=$product.image_default_id|default:$defaultImage}>
+        <{/if}>
+        <{img src="images/transparent.gif" style="width:78px;height:78px;" app="b2c" lazyload=$gimage|storager:'s' class="img-lazyload"  alt=$product.name|escape:html}>
+      </a>
+    </div>
+
+    <div class="goods-main">
+    
+    <div class="goodinfo">
+        <h3>
+        <a style="font-family: 微软雅黑,宋体;font-size: 10px;color: black;" target='_blank' href="<{if $product.goods_url}><{$product.goods_url}><{else}><{link app=b2c ctl=site_product act=index arg=$product.goods_id}><{/if}>" title="<{$product.name|escape:html}>" class="entry-title"><{$product.name|escape:"html"}></a>
+        <{if $product.tags}>
+        <{foreach from=$product.tags item=tags}>
+        <{if $tags.params.tag_showOnIndex}>
+        &nbsp;<span class="tag-label" style="background-color:<{$tags.tag_bgcolor}>;color:<{$tags.tag_fgcolor}>"><{$tags.tag_name}></span>
+        <{/if}>
+        <{/foreach}>
+        <{/if}>
+        </h3>
+    </div>
+      <div class="price-wrap">
+      <em class="rush-price">
+        <{$product.price|cur_odr}>
+      </em>
+    </div>
+    <{if $showBuyCount=='true'||$env.conf.b2c.gallery.comment.time=='true'}>
+    <div style="display:none; border: 1px solid #CDCDCD;font-family: 微软雅黑,宋体;font-size: 10px;height: 21px;width: 115px;">
+	<p class="productStatus">
+    <{if $showBuyCount=='true'}>月销量:<em><{$product.buy_m_count}></em><{/if}><{if $showBuyCount=='true' && $env.conf.b2c.gallery.comment.time=='true'}>|<{/if}><{if $env.conf.b2c.gallery.comment.time=='true'}><a target="_blank" href="<{if $product.goods_url}><{$product.goods_url}><{else}><{link app=b2c ctl=site_product act=index arg=$product.goods_id}><{/if}>#discuss_all_info" >累计评价:<{$product.comments_count}></a><{/if}>
+    </p>
+	</div>
+    <{/if}>
+    <!--
+    <div style="display: none;" class="productShop">
+        <a target='_blank'  class="productShop-name" href="<{link app=business ctl=site_shop act=view arg=$product.store_id}>">
+        <{$product.store_name|cut:35}>
+        </a>
+     </div>
+     -->
+    </div>
+    </li>
+    <{/foreach}>
+  </ul>
+  <{/if}>
+</div>
+

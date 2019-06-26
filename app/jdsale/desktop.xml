@@ -1,0 +1,47 @@
+<desktop>
+    <permissions>
+        <permission id="jdsaleorder" display='true' parent='0'  workground="jdsale.workground.order" >订单管理</permission>
+		<permission id="jdsaleorderlist" display='true' parent='jdsaleorder'  workground="jdsale.workground.order" >订单列表</permission>
+		<permission id="jdsaleorderlist_san" display='true' parent='jdsaleorder'  workground="jdsale.workground.order" >京东第三方订单列表</permission>
+		<permission id="jdsaleordersearch" display='true' parent='jdsaleorder'  workground="jdsale.workground.order" >京东订单信息查询</permission>
+		
+		<permission id="jdsalegoods" display='true' parent='0'  workground="jdsale.workground.order" >商品管理</permission>
+		<permission id="jdgoodslist" display='true' parent='jdsalegoods'  workground="jdsale.workground.order" >商品列表</permission>
+		<permission id="jdeditmarketable" display='true' parent='jdsalegoods'  workground="jdsale.workground.order" >商品上下架</permission>
+		<permission id="batcheditmarketable" display='true' parent='jdsalegoods'  workground="jdsale.workground.order" >商品上下架</permission>
+		<permission id="jdgoodscat" display='true' parent='jdsalegoods'  workground="jdsale.workground.order" >分类列表</permission>
+		
+		
+		<permission id="jdaftersales" display='true' parent='0'  workground="jdsale.workground.order" >售后管理</permission>
+		<permission id="jdaftersaleslist" display='true' parent='jdaftersales'  workground="jdsale.workground.order" >售后申请列表</permission>
+		
+		<permission id="jdbaseset" display='true' parent='0'  workground="jdsale.workground.order" >基本设置</permission>
+		<permission id="jdstore" display='true' parent='jdbaseset'  workground="jdsale.workground.order" >京东自营店铺</permission>
+		<permission id="jdregion" display='true' parent='jdbaseset'  workground="jdsale.workground.order" >地址列表</permission>
+		<permission id="jdbalance" display='true' parent='jdbaseset'  workground="jdsale.workground.order" >余额查询</permission>
+		<permission id="jdapi" display='true' parent='jdbaseset'  workground="jdsale.workground.order" >接口调用日志</permission>
+    <permission id="jdcron" display='true' parent='jdbaseset'  workground="jdsale.workground.order" >定时执行任务日志</permission>
+	 </permissions>
+ 
+    <workground name="京东特卖" id="jdsale.workground.order" app="jdsale" controller="admin_order" action="index" order='100'>
+        <menugroup name="订单管理" >
+           <menu controller='admin_order' action='index' permission='jdsaleorderlist' display='true' order='101'>订单列表</menu>
+           <menu controller='admin_jdorder' action='index' permission='jdsaleorderlist_san' display='true' order='102'>京东第三方订单列表</menu>
+		   <menu controller='admin_jdorder' action='search_info' permission='jdsaleordersearch' display='true' order='103'>京东订单信息查询</menu>
+        </menugroup>
+		    <menugroup name="商品管理">
+           <menu controller='admin_goods' action='index' permission='jdgoodslist' display='true' order='113'>商品列表</menu>
+		   <menu controller='admin_goods_cat' action='index' permission='jdgoodscat' display='true' order='114'>分类列表</menu>
+        </menugroup>
+      <menugroup name="售后管理">
+        <menu controller='admin_aftersales' action='index' permission='jdaftersaleslist' display='true' order='125'>售后申请列表</menu>
+      </menugroup>
+		    <menugroup name="基本设置">
+           <menu controller='admin_manage' action='index' permission='jdstore' display='true' order='133'>京东自营店铺</menu>
+           <menu controller='admin_regions' action='index' permission='jdregion' display='true' order='134'>地址列表</menu>
+           <menu controller='admin_balance' action='index' permission='jdbalance' display='true' order='135'>余额查询</menu>
+           <menu controller='admin_apicall' action='index' permission='jdapi' display='true' order='136'>接口调用日志</menu>
+           <menu controller='admin_cronlog' action='index' permission='jdcron' display='true' order='136'>定时执行任务日志</menu>
+        </menugroup>
+    </workground>
+</desktop>

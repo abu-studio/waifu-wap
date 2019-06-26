@@ -1,0 +1,89 @@
+<style>
+	.addopt .subopt{margin-left:10px;margin-top:10px;padding: 0px 5px;}
+	.addopt  input{height:20px}
+	.companyall{margin-left:20px}
+	.companyall td{border: 1px solid #ccc;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;}
+	
+	 .companyall .coll{
+		height: 200px;
+		overflow-y: scroll;
+		overflow-y: auto;
+		overflow-x: hidden;
+		table-layout: fixed;
+		word-wrap: break-word;
+		word-break: break-all;
+		width: 300px;
+		margin-top: 30px;
+	}
+</style>
+
+<h3 class="head-title"><{t}>基本设置 <{/t}></h3>
+<form action="index.php?app=sand&ctl=admin_sandProduct&act=to_setting" method="post" class="tableform">
+	<table>
+		<tr>
+			<th>杉德默认商品设置:</th>
+			<td><{input type="object" vtype="required" object="goods@b2c" value=$setting.product name="product" textcol="name" cols="name" filter=$goodsselect_filter}> &nbsp;</td>
+		</tr>
+	</table>
+	<div class="table-action">
+  <{button label=$___image="保存"|t:'image' class="btn-primary" type="submit"}>
+	</div>
+</form>
+
+
+<div class="companyall">
+<h3 class="head-title"><{t}>商社添加 <{/t}></h3>
+<div class="addopt">
+	<input type="text" id="company" name="company">  <input type="button" class="subopt" onclick="addCompany()" value="添加">
+</div>
+
+<div class="coll">
+<table style="width:300px;">
+	<tr>
+		<td>商社号</td>
+		<td>操作</td>
+	</tr>
+	<{foreach from=$setting.companys item=item}>
+	<tr>
+		<td><{$item}></td>
+		<td><input type="button" class="subopt" onclick="delCompany('<{$item}>')" value="删除"></td>
+	</tr>
+	<{/foreach}>
+</table>
+</div>
+</div>
+
+<script>
+  function addCompany(){
+	var company = $('company').value;
+	if(company == ''){
+		alert('请输入商社号！');
+		return false;
+	}
+	var url = "<{link app=sand ctl=admin_sandProduct act=addCompany}>";
+	new Request({
+		url:url,
+		method:'post',
+		data:'company='+company,
+		onComplete: function(rs){
+			location.reload(); 
+		}
+	}).send();
+  }
+  
+  function delCompany(company){
+	
+	var url = "<{link app=sand ctl=admin_sandProduct act=delCompany}>";
+	new Request({
+		url:url,
+		method:'post',
+		data:'company='+company,
+		onComplete: function(rs){
+			location.reload(); 
+		}
+	}).send();
+  }
+</script>

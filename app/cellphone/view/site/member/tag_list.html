@@ -1,0 +1,73 @@
+<div class="member-main">
+<script>
+  function checkAll(obj,box) {
+      var tag = obj.getElementsByTagName('input');
+      for(var i = 0;i < tag.length;i++){
+          tag[i].checked = box.checked;
+      }
+  }
+</script>
+<div class="title title2">标签管理</div>
+  <div>
+    <div id="tab-discus" class="section switch">
+      <ul class="switchable-triggerBox tab_member clearfix">
+          <li class="active"><a href="javascript:void(0);"><{t}>标签列表<{/t}></a></li>
+          <li><a href="<{link app=cellphone ctl=site_member act=edit_tags}>"><{t}>标签维护<{/t}></a></li>
+      </ul>
+      <div class="switchable-content switchable-content2">
+        <div class="switchable-panel">
+          <div id="message-tab" class="switch" style="padding-top:0">
+            <div class="site-mail">
+              <ul class="switchable-triggerBox2 clearfix" >
+                <li <{if !$type}>class="active"<{/if}>><a href="<{link app=cellphone ctl='site_member' act='tags'}>"><{t}>商品标签<{/t}></a></li>
+                <li <{if $type == 1}>class="active"<{/if}>><a href="<{link app=cellphone ctl='site_member' act='tags'}>?type=1"><{t}>活动标签<{/t}></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <form action="<{link app=cellphone ctl='site_member' act='delete_tags'}>?type=<{$type}>" method="post" id="form_id">
+          <table width="100%" cellspacing="0" cellpadding="0" class="gridlist border-top">
+            <col ></col>
+            <col ></col>
+            <col></col>
+            <thead>
+              <tr>
+                <th class="first">&nbsp;</th>
+                <th width="15%"><{t}>标签名称<{/t}></th>
+                <th width="50%"><{t}>标签备注<{/t}></th>
+                <th ><{t}>操作<{/t}></th>
+              </tr>
+            </thead>
+            <tbody>
+              <{if count($data)>0}>
+              <{foreach item=tag from=$data}>
+              <tr class="msgon">
+                <td class="selector textcenter no_bk"><input type="checkbox" value=<{$tag.tag_id}> name="delete[]"></td>
+                <td class="textleft"><font><{$tag.tag_name|nl2br}></font></td>
+                <td align="textleft"><font><{$tag.tag_abbr|nl2br}></font></td>
+                <td align="center"><a href="<{link app=cellphone ctl=site_member act=edit_tags arg0=$tag.tag_id}>" class="font-blue operate-btn"><{t}>编辑<{/t}></td>
+              </tr>
+              <{/foreach}>
+              <{else}>
+              <tr>
+                <td height="60" colspan="6" class="bg-white"><{t}> 暂无标签信息。<{/t}></td>
+              </tr>
+              <{/if}>
+            </tbody>
+          </table>
+          <table width="100%" cellspacing="0" cellpadding="0" class="liststyle-option">
+            <col class="span-1 textcenter"></col>
+            <col class=" textleft"></col>
+            <tr>
+              <th class="textcenter"><input type="checkbox" onclick="checkAll(this.form,this)" name="chkall" id="chkall" title="<{t}>全选<{/t}>"></th>
+              <td class="textleft" >
+                  <{button type="submit" name="pmsend" label=$___b2c="删除"|t:'b2c' rel="_request"}></td>
+              <td style="padding-right:10px; text-align:right"><{t}>共有标签:<{/t}>&nbsp;<em id="pmtotalnum" class="siteparttitle-orage"><{$total}></em></td>
+            </tr>
+          </table>
+          <{pagers data=$pager}>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

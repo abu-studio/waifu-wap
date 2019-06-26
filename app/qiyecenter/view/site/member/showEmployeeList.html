@@ -1,0 +1,125 @@
+<style>
+.show_fenye .feny a {
+		display: inline-block;
+		width: 15px;
+		height: 28px;
+		line-height: 28px;
+		padding: 0px 8px;
+		border: 1px solid #eee;
+		margin: 0 2px;
+		text-align: center;
+	}
+	.show_fenye .feny a.on {
+		background: #c40001;
+		color: #fff;
+		border-color: #c40001;
+	}
+</style>
+<div class="fafuli_tit" style="height:29px;border-bottom:1px solid #A02043;margin-left:25px">
+        <p class="fafuli_titf" style="font-size:17px">人员详情</p>
+    </div>
+<div class="show_list" style="margin-top:5px">
+	<{if !$employeeList}>
+	<div class="list_head" style="width:93%;margin-top:8px;border: 1px solid #CDCDCD;margin-left:25px">
+		<div class="head_font" style="width:9%;height: 28px;line-height: 28px;">姓名</div>
+		<div class="head_font" style="width:9%;height: 28px;line-height: 28px;">性别</div>
+		<div class="head_font" style="width:10%;height: 28px;line-height: 28px;">生日</div>
+		<div class="head_font" style="width:18%;height: 28px;line-height: 28px;">证件号</div>
+		<div class="head_font" style="width:18%;height: 28px;line-height: 28px;">企业</div>
+		<div class="head_font" style="width:10%;height: 28px;line-height: 28px;">入职时间</div>
+		<div class="head_font" style="width:10%;height: 28px;line-height: 28px;">职位</div>
+		<div class="head_font" style="width:9%;height: 28px;line-height: 28px;">发放福点</div>
+	</div>
+    <{foreach from=$employeeList item=item}>
+    <div class="list_con" style="width:93%;margin-left: 25px;border:1px solid #cdcdcd;border-top:none">
+        <div class="head_font" style="width:9%;height: 25px;line-height: 25px;"><{$item.NAME}></div>
+        <div class="head_font" style="width:9%;height: 25px;line-height: 25px;">
+            <{if $item.SEX==1}>
+            男
+            <{else}>
+            女
+            <{/if}>
+        </div>
+        <div class="head_font" style="width:10%;height: 25px;line-height: 25px;"><{$item.BIRTHDAY.time}></div>
+        <div class="head_font" style="width:18%;height: 25px;line-height: 25px;"><{$item.}></div>
+        <div class="head_font" style="width:18%;height: 25px;line-height: 25px;"><{$item.COMPANY_NO}></div>
+        <div class="head_font" style="width:10%;height: 25px;line-height: 25px;"><{$item.NODE_TYPE_NAME}></div>
+        <div class="head_font" style="width:10%;height: 25px;line-height: 25px;"><{$item.USER_ROLE_NAME}></div>
+        <div class="head_font" style="width:9%;height: 25px;line-height: 25px;"><input type="text" name='fudian' value=''/></div>
+    </div>
+    <{/foreach}>
+</div>
+<p style="clear:both"></p>
+	<input type='hidden' id='current_page' value='0' />
+	<div class="show_fenye" style="margin-left: 25px;margin-top: 15px;">
+		<div class="feny" id="page_navigation"></div>
+	</div>
+	<{else}>
+	<div style="border:1px solid #eee;height:40px;line-height:40px;text-align:center">没有找到相应的订单</div>
+	<{/if}>
+
+<script type="text/javascript">
+	var per_page = 10; 
+	var items = document.getElementsByClassName("list_con");
+	var pages = Math.ceil(items.length/per_page);
+	gotopage(0);
+	
+	function gotopage(page){
+		for(var i=0;i<items.length;i++){
+			items[i].style.display='none';
+		}
+		for(var i=page*per_page;i<(page+1)*per_page;i++){
+			if(i<items.length){
+			items[i].style.display='block';
+			}
+		}
+		var navigation_html = '<a class="page_link" title="上一页" href="javascript:prepage();">&lt;</a>';
+		
+		for(var current_link = 0; current_link < pages; current_link++){
+			current_link == page?navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>':navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';			
+		}
+		navigation_html += '<a class="page_link" title="下一页" href="javascript:nextpage();">&gt;</a>';
+		document.getElementById("page_navigation").innerHTML= navigation_html;
+		document.getElementById("current_page").value= page;
+		
+	}
+	function nextpage(){
+		var page = parseInt(document.getElementById("current_page").value);
+		if(page < pages -1){
+			gotopage((page+1));
+			document.getElementById("current_page").value= page+1;
+		}	
+	}
+	function prepage(){
+		var page = parseInt(document.getElementById("current_page").value);		
+		if(page > 0){
+			gotopage((page - 1));
+			document.getElementById("current_page").value= page - 1;
+		}
+	}
+</script>	
+<script>
+
+
+//全选反选
+function selectAll2(obj){
+	alert(22);
+	//var chkInput = document.getElementsByTagName('input');
+	var chkInput = document.getElementsByName("selectItem");
+	if(obj.checked){
+		for(var i=0; i<chkInput.length;i++){
+			if(!chkInput[i].checked){
+				chkInput[i].checked = true;
+			}
+		}
+	}else{
+		for(var i=0; i<chkInput.length;i++){
+			if(chkInput[i].checked){
+				chkInput[i].checked = false;
+			}
+		}
+	}
+	
+}
+</script>
+

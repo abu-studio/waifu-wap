@@ -1,0 +1,26 @@
+<div class="tableform">
+	<table width="100%" border="0" cellpadding="0" cellspacing="0" class="gridlist">
+		<thead>
+		<tr>
+		  <th><{t}>项目名称<{/t}></th>
+		  <th><{t}>项目编号<{/t}></th>
+		  <th><{t}>科目<{/t}></th>
+		  <th><{t}>医学编号<{/t}></th>
+		  <th><{t}>价格<{/t}></th>
+		  <th><{t}>简介<{/t}></th>
+		</tr>
+		</thead>
+		<tbody>
+		<{foreach from=$project_list item=item key=key}>
+		<tr>
+		   <td><{$item.project_name}></td>
+		   <td><{$item.project_code}></td>
+		   <td><{$item.subject_name}></td>
+		   <td><{$item.medical_code}></td>
+		   <td><{$item.price|cur}></td>
+		   <td style="text-align: left;"><{$item.introduction}></td>
+		</tr>
+		<{/foreach}>
+		</tbody>
+	</table>
+</div>

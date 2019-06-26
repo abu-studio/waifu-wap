@@ -1,0 +1,16 @@
+<h3 class="head-title"><{t}>基本设置 <{/t}></h3>
+<form action="index.php?app=cardcoupons&ctl=admin_manage&act=store_set" method="post" class="tableform">
+<input type="hidden" name="store[id]" value="<{$store.id}>"/>
+<input type="hidden" name="card[id]" value="<{$card.id}>"/>
+<input type="hidden" name="store_set" value="store_set"/>
+	<table>
+		<tr>
+			<th>店铺设置:</th>
+			<td><{input  type="object" vtype="required"  object="storemanger@business" multiple="true" value=$store.value name="store[value]" textcol="store_name" cols="store_name" filter="disabled=false"}> &nbsp;</td>
+		</tr>
+	  
+	</table>
+	<div class="table-action">
+  <{button label=$___image="保存"|t:'image' class="btn-primary" type="submit"}>
+	</div>
+</form>

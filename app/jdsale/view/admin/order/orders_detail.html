@@ -1,0 +1,92 @@
+  <{foreach from=$data item=orders name="oitem"}>
+   <div class="tableform" <{if  $smarty.foreach.oitem.last !="1"}>style="margin-bottom:60px" <{/if}>>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td style="vertical-align:top">
+        <div class="tableform" style="margin:0px 15px">
+			<table border="0" cellpadding="0" style="margin-top:10px" cellspacing="0" class="orderdetails_basic">
+				 <tr>
+					<th ><{t}>京东订单号：<{/t}></th>
+					<td><{$orders.jdOrderId}></td>
+					<th ><{t}>订单总额：<{/t}></th>
+					<td><span class="price0">￥<{$orders.orderPrice+$orders.freight}></span></td>
+					<th ><{t}>配送费用：<{/t}></th>
+					<td>￥<{$orders.freight}></td>
+					<th ><{t}>订单税费：<{/t}></th>
+					<td>￥<{$orders.orderTaxPrice}></td>
+				  </tr>
+				  <tr>
+					<th ><{t}>商品总额：<{/t}></th>
+					<td>￥<{$orders.orderPrice}></td>
+					<th ><{t}>订单状态：<{/t}></th>
+					<td>
+					<{if $orders.orderState == 0}>
+						取消订单
+					<{else}>
+						有效订单
+					<{/if}>
+					</td>
+					<th ><{t}>下订状态：<{/t}></th>
+					<td>
+					<{if $orders.submitState == 0}>
+						未确认下单订单
+					<{else}>
+						已确认下单订单
+					<{/if}>
+					</td>
+					<th ><{t}>物流状态：<{/t}></th>
+					<td>
+					<{if $orders.state == 0}>
+						新建
+					<{elseif  $orders.state}>
+						妥投
+					<{elseif  $orders.state}>
+						拒收
+					<{/if}>
+					</td>
+				  </tr>
+			</table>
+		</div>
+	 </td>
+    </tr>
+    <tr>
+      <td>
+      <div class="tableform">
+      <h3><{t}>商品信息<{/t}></h3>
+      <table cellpadding="0" class="gridlist" cellspacing="0" width="100%" border="0">
+	<col style="width:10%"/>
+	<col style="width:25%"/>
+	<col style="width:5%"/>
+	<col style="width:10%"/>
+	<col style="width:5%"/>
+      <thead>
+		  <tr>
+			<th><{t}>货品编号<{/t}></th>
+			<th><{t}>货品名称<{/t}></th>
+			<th><{t}>单价<{/t}></th>
+			<th><{t}>购买数量<{/t}></th>
+			<th><{t}>合计金额<{/t}></th>
+		  </tr>
+      </thead>
+      <tbody>
+	<{if count($orders.sku) > 0}>
+	  <{foreach from=$orders.sku item=aGoods name="item"}>
+		<tr>
+          <td width="10%"><{$aGoods.skuId}></td>
+          <td class="textleft" width="25%">
+			<a href='<{$aGoods.link}>' target="_blank"><{$aGoods.name}>
+          </td>
+          <td width="9%" >￥<{$aGoods.price}></td>
+		  <td class="Colamount"><{$aGoods.num}></td>
+          <td class="Colamount" width="9%">￥<{$aGoods.num*$aGoods.price}></td>
+        </tr>
+	 <{/foreach}>
+	 <{/if}>
+	 </tbody>
+	</table>
+		</td>
+      </tr>
+    </table>
+	</div>
+   <{/foreach}>
+	  

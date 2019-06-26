@@ -1,0 +1,64 @@
+<form id="subject_form" class="tableform" action="index.php?app=physical&ctl=admin_subject&act=save"  method="POST" >
+    <input type="hidden" name="subject_id" value="<{$subject_info.subject_id}>">
+    <div class="division">
+        <table width="100%" >
+            <tr>
+                <th><em class="red">*</em><{t}>科目编号：<{/t}></th>
+                <td><{input type="text" name="subject_code" vtype="required" value=$subject_info.subject_code}></td>
+            </tr>
+            <tr>
+                <th><em class="red">*</em><{t}>科目名称：<{/t}></th>
+                <td><{input type="text" name="subject_name" vtype="required" value=$subject_info.subject_name}></td>
+            </tr>
+			<tr>
+                <th><{t}>医学编号：<{/t}></th>
+                <td><{input type="text" name="medical_code" value=$subject_info.medical_code}></td>
+            </tr>
+        </table>
+    </div>
+
+</form>
+
+<{area inject='.mainFoot'}>
+<div class="table-action"><{button type="submit"  label=$___physical="保存"|t:'physical' id='subject_form_submit'}></div>
+<{/area}>
+
+<script>
+    (function(){
+        var _form = $('subject_form');
+        var btn =$('subject_form_submit');
+       
+        _form.store('target',{
+            onComplete:function(){
+
+            },
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                       
+                    }
+                }
+                else
+                {
+                    //alert(hash_res_obj.error);
+                }
+            }
+        });
+
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+
+
+
+        });
+
+    })();
+</script>

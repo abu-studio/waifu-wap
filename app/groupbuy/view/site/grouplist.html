@@ -1,0 +1,230 @@
+<div class="group_mall">
+    <div class="group_title">
+		<span class="group_title_icon"><img src=""></span>
+		<span class="group_title_name">最新推荐</span>
+	</div>  
+	<div class="group_list" id="group_list">
+		<ul>
+			<{if $activity}>
+            <{foreach from=$activity item=item key=key}>
+			<li>
+				<div class="group_product_main">
+					<div class="group_product_img">
+						<a href="<{link app=groupbuy ctl=site_product act=index args=$item.args}>" class="group_a_img" target="_blank">
+						  <{assign var="cimage" value=$item.image_codeid|default:$item.image|storager:'m'}>
+						  <{assign var="gimage" value=$cimage|default:$defaultImage|storager:'m'}>
+						  <{img class="img-lazyload" src="images/transparent.gif" lazyload="{$gimage}" alt="{$item.g_name}" style="width=275px;height=185px"}>
+						</a>
+					</div>
+					<div class="group_clock_num">
+						<span class="group_clock_icon"></span>
+						<span class="group_time" starttime="<{$item.start_time}>" endtime="<{$item.end_time}>" gid="<{$item.gid}>">
+							<span class="day">0</span><span>天</span>
+							<span class="hour">0</span><span>小时</span>
+							<span class="minute">0</span><span>分</span>
+							<span class="second">0</span><span>秒</span>
+						</span>
+						<span class="group_sall_num">已有<font class="red"><{$item.nums - $item.remainnums}></font>人购买</span>
+					</div>
+					<div class="group_product">
+						<div class="group_product_name" style="height:34px"><a href="<{link app=groupbuy ctl=site_product act=index args=$item.args}>" class="group_a_name" target="_blank"><{$item.g_name}></a></div>
+						<div class="group_product_desc"></div>
+						<div class="group_product_price"><b>￥</b>
+                              <script>
+                                  var price = parseFloat("<{$item.last_price}>");
+                                  price = price.toFixed(2);
+                                  document.write(price);
+                              </script></div>
+						<div class="fr">
+							<{if $now >= $item.start_time && $now <= $item.end_time}>
+                                  <{if $item.remainnums != '' && $item.remainnums <= 0}>
+                                      <input type="button" value="已售完" class="group_product_btn"/>
+                                  <{else}>
+									  <a href="<{link app=groupbuy ctl=site_product act=index args=$item.args}>" target="_blank" ><input type="button" value="我要团" class="group_product_btn" /></a>
+                                      <!--<a href="<{link app=groupbuy ctl=site_product act=index args=$item.args}>" target="_blank" class="group_product_btn"></a>-->
+                                  <{/if}>
+                              <{elseif $now < $item.start_time}>
+                                  <input type="button" value="未开始" class="group_product_btn"/>
+                              <{elseif $now > $item.end_time}>
+                                  <input type="button" value="已结束" class="group_product_btn"/>
+                              <{/if}>
+						</div>
+						<div class="group_product_real_price"><b><{$item.g_mktprice|cur}></b>&nbsp;&nbsp;&nbsp;省:<{$item.g_mktprice-$item.last_price|cur}></div>
+						<div class="clear"></div>
+					</div>
+				</div>
+			</li>
+			
+			<{/foreach}>
+			<{else}><div class="group_error">非常抱歉，没有找到相关商品</div><{/if}>
+		</ul>
+		<div class="clear"></div>
+	</div>
+</div>
+<div class="fr"><{pagers data=$pager}></div>
+<script>
+window.addEvent('domready', function() { 
+	$('group_list').getElements('li').addEvent('mouseenter', function(){
+		$(this).addClass('active'); 
+	}); 
+	
+	$('group_list').getElements('li').addEvent('mouseleave', function(){
+		$(this).removeClass('active'); 
+	}); 
+}); 
+
+(function() {
+    var timestamp_statues = (new Date()).valueOf();
+    var timeCount=timestamp_statues;
+    var timeCount = this.timeCount = {
+        init:function(nowtime,endtime,dom,item){
+            var diff = Math.abs((nowtime - endtime)/1000);
+            var secondDiff = diff % 60;
+            var minuteDiff = ((diff - secondDiff)/60) % 60;
+            var hourDiff = ((diff - secondDiff  - minuteDiff*60)/3600) % 24;
+            var dayDiff = (diff - secondDiff  - minuteDiff*60 - hourDiff*3600) / 86400;
+            var timeDiff = [dayDiff,hourDiff,minuteDiff,secondDiff];
+            this.s = (function(){this.calcTime.periodical(1000,this,{
+                    time:timeDiff,
+                    dom:dom,
+                    item:item
+                })}).delay(100,this);
+        },
+        addZero:function(timeDiff){
+            for(var i=0;i<timeDiff.length;i++){
+                if(timeDiff[i].toString().length<2){
+                    timeDiff[i] = "0" + timeDiff[i].toString();
+                    return timeDiff;
+                }
+            }
+        },
+        formatToInt : function(timeDiff){
+            for(var i=0;i<timeDiff.length;i++){
+                parseInt(timeDiff[i]);
+            };
+            return timeDiff;
+        },
+        judgeTime : function(timeDiff,item){
+            if(timeDiff[3]< 0  && timeDiff[2]>0){
+                timeDiff[3] = 59;
+                timeDiff[2]--;
+                return timeDiff;
+            }else if(timeDiff[3] <0 && timeDiff[2]==0 && timeDiff[1]>0){
+                timeDiff[3] = 59
+                timeDiff[2] = 59;
+                timeDiff[1]--;
+                return timeDiff;
+            }else if(timeDiff[3] <0 && timeDiff[2]==0 && timeDiff[1]==0 && timeDiff[0]>0){
+                timeDiff[3] = 59
+                timeDiff[2] = 59;
+                timeDiff[1] = 23;
+                timeDiff[0]--;
+                return timeDiff;
+            }else if(timeDiff[3]==0 && timeDiff[2]==0 && timeDiff[1]==0 && timeDiff[0]==0){
+                item.empty();
+                reloadTime(item);
+                return;
+            }
+        },
+        calcTime : function (obj){
+            if(!obj.dom) return;
+            var _timeDiff = obj.time;
+            //this.addZero(_timeDiff);
+            this.formatToInt(_timeDiff);
+            _timeDiff[3]--;
+            this.judgeTime(_timeDiff,obj.item);
+            //this.addZero(_timeDiff);
+            var dom = obj.dom;
+            dom.second.innerHTML = _timeDiff[3];
+            dom.minute.innerHTML = _timeDiff[2];
+            dom.hour.innerHTML = _timeDiff[1];
+            dom.day.innerHTML = _timeDiff[0];
+        }
+    }
+})();
+
+
+(function(){
+    // var timeNow = "<{$data.nowtime}>"*1000;
+    var random = parseInt(10000000000*Math.random());
+    var timeNow;
+    new Request({
+      url: '<{link app=b2c ctl=site_product act=getCurrentTime}>', 
+      method: 'post',
+      async:false,
+      onSuccess:function(re){
+        timeNow = new Date(re*1000);;
+      }
+    }).send('random='+random);
+    
+    $ES('.group_time').each(function(item){
+        var timeEnd= item.get('endtime') * 1000;
+        var timeStart = item.get('starttime') * 1000;
+        var dom = {
+            second: item.getElement('.second'),
+            minute:item.getElement('.minute'),
+            hour:item.getElement('.hour'),
+            day:item.getElement('.day')
+        };
+        if(timeStart > timeNow){
+            timeCount.init(timeStart,timeNow,dom,item);
+        }else if(timeNow >= timeStart && timeNow <timeEnd){
+            timeCount.init(timeNow,timeEnd,dom,item);
+        }
+    });
+})();
+
+function reloadTime(item){
+    new Element('span',{'html':0,'class':'day'}).inject(item,'bottom');
+    new Element('span',{'html':'天'}).inject(item,'bottom');
+    new Element('span',{'html':0,'class':'hour'}).inject(item,'bottom');
+    new Element('span',{'html':'小时'}).inject(item,'bottom');
+    new Element('span',{'html':0,'class':'minute'}).inject(item,'bottom');
+    new Element('span',{'html':'分'}).inject(item,'bottom');
+    new Element('span',{'html':0,'class':'second'}).inject(item,'bottom');
+    new Element('span',{'html':'秒'}).inject(item,'bottom');
+    // var timeNow = Date.parse(new Date());
+
+    var random = parseInt(10000000000*Math.random());
+    var timeNow;
+    new Request({
+      url: '<{link app=b2c ctl=site_product act=getCurrentTime}>', 
+      method: 'post',
+      async:false,
+      onSuccess:function(re){
+        timeNow = new Date(re*1000);;
+      }
+    }).send('random='+random);
+
+    var timeEnd= item.get('endtime') * 1000;
+    var timeStart = item.get('starttime') * 1000;
+    var dom = {
+        second: item.getElement('.second'),
+        minute:item.getElement('.minute'),
+        hour:item.getElement('.hour'),
+        day:item.getElement('.day')
+    };
+
+    var btn = item.getParent('li').getElement('.groupBtn');
+    var gid = item.get('gid');
+    if(timeStart > timeNow){
+        btn.removeClass('group_pro_buy');
+        btn.addClass('group_pro_buy_01');
+        btn.getElement('a').removeProperty('href');
+        btn.getElement('a').innerHTML = '未开始';
+        timeCount.init(timeStart,timeNow,dom,item);
+    }else if(timeNow >= timeStart && timeNow <timeEnd){
+        btn.removeClass('group_pro_buy_01');
+        btn.addClass('group_pro_buy');
+        btn.getElement('a').set('href',"<{link app=groupbuy ctl=site_product act=index arg0='"+gid+"'}>");
+        btn.getElement('a').innerHTML = '我要团';
+        timeCount.init(timeNow,timeEnd,dom,item);
+    }else if(timeNow >= timeEnd) {
+        btn.removeClass('group_pro_buy');
+        btn.addClass('group_pro_buy_01');
+        btn.getElement('a').removeProperty('href');
+        btn.getElement('a').innerHTML = '已结束';
+
+    }
+}
+</script>

@@ -1,0 +1,32 @@
+<div container='true'>
+	<div class="tableform">
+		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="gridlist">
+			<thead>
+			<tr>
+			  <th><{t}>门店名称<{/t}></th>
+			  <th><{t}>门店编号<{/t}></th>
+			  <th><{t}>机构<{/t}></th>
+			  <th><{t}>地区<{/t}></th>
+			  <th><{t}>详细地址<{/t}></th>
+			  <th><{t}>男士成本价<{/t}></th>
+			  <th><{t}>未婚女士成本价<{/t}></th>
+			  <th><{t}>已婚女士成本价<{/t}></th>
+			</tr>
+			</thead>
+			<tbody>
+			<{foreach from=$attach_list item=item key=key}>
+			<tr>
+			   <td><{$item.store_name}></td>
+			   <td><{$item.store_code}></td>
+			   <td><{$item.organization_name}></td>
+			   <td><{$item.area|region}></td>
+			   <td><{$item.address}></td>
+			   <td><{$item.man}></td>
+			   <td><{$item.unmdwoman}></td>
+			   <td><{$item.mdwoman}></td>
+			</tr>
+			<{/foreach}>
+			</tbody>
+		</table>
+	</div>
+</div>

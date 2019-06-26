@@ -1,0 +1,139 @@
+<div class="member-main" id="J_DataTable"> 
+	<div class="orderlist-warp">
+		<div class="title title2"><{t}>我的福利<{/t}></div>
+		<div class="Plate">
+                   <h4>
+					<a href="javascript:void(0);" <{if $status == ''}>class="current"<{/if}> onclick="go_url('')">全部</a>
+					<a href="javascript:void(0);" <{if $status == 'I01101'}>class="current"<{/if}> onclick="go_url('I01101')">待领取</a>
+					<a href="javascript:void(0);" <{if $status == 'I01102'}>class="current"<{/if}> onclick="go_url('I01102')">已领取</a>
+					<a href="javascript:void(0);" <{if $status == 'I01103'}>class="current"<{/if}> onclick="go_url('I01103')">已过期</a>
+                   </h4>
+        </div> 
+		<div class="lineh b4">
+		 <span>
+		  慰问名称：<{input type="text" name="grant_name" value=$grant_name size="10" id="grant_name"}>
+		  <{button type="button" class="btn-secondary" label="搜索" id="btnsearch"}>
+		  
+		 </span>
+		</div>
+		<div class="gift_center_info">
+			<{if $condolences}>
+			<div class="giftlist gridlist">
+				<ul class="title1">
+					<li>礼物名称</li>
+					<li>数量</li>
+					<li style="width: 15%;">礼品形式</li>
+					<li style="width: 35%;">操作</li>
+					<div class="clear"></div>
+				</ul>
+				<{foreach from=$condolences item=item}>
+				<ul class="title2">
+					<li class="li_first" style="width:45%;">慰问名称：<{$item.GRANT_NAME}></li>					
+					<li style="width: 15%;"></li>
+					<li style="letter-spacing: 0px; width: 35%;">领取截至时间/ Expiry Date：<{$item.OVERDUE_TIME}></li>
+					<div class="clear"></div>
+				</ul>
+				<ul class="gift_info_list">
+					<li class="gift_info_obj">
+						<ul class="gift">
+							<li>
+								<div class='product-list-img member-gift-pic goodpic' style="float:left;" isrc="<{$item.image_default_id|default:$env.conf.site.default_thumbnail_pic|storager:'s'}>" ghref="javascript:void(0);">
+									<img src='<{$res_url}>/images/loading.gif'/> 
+								</div>
+                                <span><{$item.name}></span>
+							</li>
+							<li>1</li>
+							<li class="li_line" style="width: 15%;"><{if $item.type_id == '01'}>礼品<{else}>体检<{/if}></li>
+							<li style="width: 30%;">
+							<{if $item.REC_STATUS == 'I01101'}>
+								<a href="javascript:login('<{$item.CARD_NUMBER}>','<{$item.PASSWORD}>');">领取</a>
+							<{elseif $item.REC_STATUS == 'I01102'}>
+								<{$item.REC_STATUS_NAME}>
+							<{elseif $item.REC_STATUS == 'I01103'}>
+								<{$item.REC_STATUS_NAME}>
+							<{/if}>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<{/foreach}>
+			<div>
+			<{else}>
+			无福利数据
+			<{/if}>
+		</div>
+
+	</div>
+</div>
+
+<script>
+	function login(card_num,password){
+        new Request.JSON({
+            url:"<{link app='cardcoupons' ctl='site_cards1' act='login'}>",
+            method:'POST',
+            data:"card_num="+card_num+"&password="+password,
+            onComplete:function(res){
+                if(res.status == "failed"){
+                    alert(res.msg);
+                }
+                if(res.status == "success"){
+                    window.open(res.url);
+                }
+            }
+        }).send();
+    }
+
+	function  go_url(REC_STATUS){
+		window.location.href='<{link app=b2c ctl=site_member act=condolences args=array("'+REC_STATUS+'")}>';
+	}
+
+	$('btnsearch').addEvent('click',function(){
+        var grant_name = $('grant_name').value.trim();
+		window.location.href='<{link app=b2c ctl=site_member act=condolences args=array("'+grant_name+'")}>';
+	});
+
+	/*小图mouseenter效果*/
+    window.addEvent('domready',function(){
+
+        var cart_product_img_viewer=new Element('div',{styles:{'position':'absolute','zIndex':500,'opacity':0,'border':'1px #666 solid'}}).inject(document.body);
+
+        var cpiv_show=function(img,event){
+
+            if(!img)return;
+            cart_product_img_viewer.empty().adopt($(img).clone().removeProperties('width','height').setStyle('border','1px #fff solid')).fade(1);
+
+            var size = window.getSize(), scroll = window.getScroll();
+            var tip = {x: cart_product_img_viewer.offsetWidth, y: cart_product_img_viewer.offsetHeight};
+            var props = {x: 'left', y: 'top'};
+            for (var z in props){
+                var pos = event.page[z] + 10;
+                if ((pos + tip[z] - scroll[z]) > size[z]) pos = event.page[z] - 10 - tip[z];
+                cart_product_img_viewer.setStyle(props[z], pos);
+            }
+
+        };
+
+        $$('.gridlist .product-list-img').each(function(i){
+
+            new Asset.image(i.get('isrc'),{onload:function(img){
+                    if(!img)return;
+                    var _img=img.zoomImg(70,70);
+                    if(!_img)return;
+                    _img.setStyle('cursor','pointer').addEvents({
+                        'mouseenter':function(e){
+                            cpiv_show(_img,e);
+                        },
+                        'mouseleave':function(e){
+                            cart_product_img_viewer.fade(0);
+                        }
+                    });
+                    i.empty().adopt(new Element('a',{href:i.get('ghref'),target:'_blank',styles:{border:0}}).adopt(_img));
+                    },onerror:function(){
+                    i.empty();
+
+            }});
+
+        });
+
+    });
+</script>

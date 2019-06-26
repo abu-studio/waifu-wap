@@ -1,0 +1,81 @@
+<!-- right-->
+<{css src="member.css" app="b2c" pdir="css_mini"}>
+<div class="bianzhifuContent-right">
+    <div class="content-title" id="shuifei">
+        <div class="tb"></div>
+        <h1 class="fl"><{$title}></h1>
+        <h4 class="fl"><{$otitle}></h4>
+    </div>
+    <div class="tx_step2"></div>
+    <div style="height:200px;margin-left:20px;">
+        <div class="pinl_tt2">
+            <div class="jfcx_tt" style="margin-left:0px;">账单信息确认</div>
+        </div>
+        <form method="post" action="<{link app=b2c ctl=site_lifecost act=utilitypay}>">
+            <input type="hidden" name="order_amount" value="<{$data.ORDER_AMOUNT}>">
+            <input type="hidden" name="order_id" value="<{$data.ORDER_ID}>">
+            <input type="hidden" name="organization_type" value="<{$data.ORGANIZATION_TYPE}>">
+            <input type="hidden" name="counter_fee" value="<{$data.COUNTER_FEE}>">
+            <input type="hidden" name="payment_amount" value="<{$data.PAYMENT_AMOUNT}>">
+            <input type="hidden" name="organization_code" value="<{$data.ORGANIZATION_CODE}>">
+            <input type="hidden" name="organization_name" value="<{$data.ORGANIZATION_NAME}>">
+            <input type="hidden" name="barcode" value="<{$data.BARCODE}>">
+            <div class="jfcx_lists" style="border:none;">
+                <div class="jfcx_lists_tt" style="height: auto;">
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        <tbody>
+                            <tr>
+                                <td width="50" height="40" align="center">
+                                    <label id="checkbox_xw" style="display: none;"><input type="checkbox" name="allbox" id="checkbox"></label>
+                                </td>
+                                <td width="155" align="left" class="jfcx_ft1">机构名称</td>
+                                <td width="117" align="left" class="jfcx_ft1">账单编号</td>
+                                <td width="119" align="left" class="jfcx_ft1">账期</td>
+                                <td width="119" align="left" class="jfcx_ft1">账单金额</td>
+                                <td width="126" align="left" class="jfcx_ft1">手续费</td>
+                                <td width="126" align="left" class="jfcx_ft1">实付金额</td>
+						    </tr>
+                            <tr style="background: #ffffff;">
+                                <td width="50" height="40" align="center" class="jfcx_boder1">
+                                    <input type="hidden" name="expires" value="1">
+                                    <input type="checkbox" amount="413.00" name="billbox" id="0-bills" style="display: none;" onclick="jQuery.shfftSingleBillPay.getBillInfo('billbox',this.value)" value="00001029640000102964:3:0121371456:::41300:888883200302900" statuscode="00">
+                                    <div id="0-bill">
+                                        <input type="hidden" name="order_id" value="<{$data.ORDER_ID}>">
+                                    </div>
+                                </td>
+                                <td width="155" height="40" align="left" class="jfcx_boder1"><{$data.ORGANIZATION_NAME}></td>
+                                <td width="117" align="left" class="jfcx_boder1"><{$data.BARCODE}></td>
+                                <td width="119" align="left" class="jfcx_boder1"><{$data.MONTH}></td>
+                                <td width="126" align="left" class="jfcx_boder1"><font style="color:#FB5E00;font-weight: bold;"><{$data.PAYMENT_AMOUNT}></font></td>
+                                <td width="126" align="left" class="jfcx_boder1"><font style="color:#FB5E00;font-weight: bold;"><{$data.COUNTER_FEE}></font></td>
+                                <td width="126" align="left" class="jfcx_boder1"><font style="color:#FB5E00;font-weight: bold;"><{$data.ORDER_AMOUNT}></font></td>
+                            </tr>
+						</tbody>
+                    </table>
+                </div>
+                <div class="jfcx_price_tip">
+                    <span class="jfcx_price_tip1">已选账单笔数:
+                        <span class="jfcx_price_tip2" id="billCountTip">1</span>笔，已选账单总计:
+                        <span class="jfcx_price_tip2" id="amountTip">￥<{$data.ORDER_AMOUNT}></span>
+                    </span>
+                </div>
+                <div class="clear"></div>
+				<{if $RESULT_CODE=='10001'}>
+                <div style="float: right;">
+                    <button type="submit" class="sdm_sel_button" rel="_request">结算</button>
+                </div>
+				<{else}>
+				<div style="width:160px;float: right;background:white;border: 1px solid #d8d8d8;padding: 15px;text-align: center;"><span style="margin:0 auto;color:red;font-size:20px;font-weight: bold;">订单已支付</span></div>
+				<{/if}>
+            </div>
+        </form>
+    </div>
+	<div>
+		<!-- 缴费规则 -->
+		<div class="payment_rules" style="margin:20px auto;width: 795px;">
+			<{if $type=="water"}><{$water_rules.value|default:'水费缴费规则（可在后台配置）'}><{/if}>
+			<{if $type=="electricity"}><{$electricity_rules.value|default:'电费缴费规则（可在后台配置）'}><{/if}>
+			<{if $type=="gas"}><{$gas_rules.value|default:'燃气费缴费规则（可在后台配置）'}><{/if}>
+		</div>
+	</div>
+</div>

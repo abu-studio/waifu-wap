@@ -1,0 +1,40 @@
+<{if count($data.orderTrack) > 0}> 
+ <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+      <div class="tableform">
+      <h3><{t}>订单配送信息<{/t}></h3>
+      <table cellpadding="0" class="gridlist" cellspacing="0" width="100%" border="0">
+		<col style="width:5%"/>
+		<col style="width:15%"/>
+		<col style="width:10%"/>
+		<col style="width:60%"/>
+      <thead>
+		  <tr>
+			<th><{t}>序号<{/t}></th>
+			<th><{t}>时间<{/t}></th>
+			<th><{t}>操作人<{/t}></th>
+			<th><{t}>备注<{/t}></th>
+		  </tr>
+      </thead>
+      <tbody>
+	  <{foreach from=$data.orderTrack item=track key=key name="item"}>
+		<tr>
+          <td style="width:5%"><{$key+1}></td>
+          <td style="width:15%">
+			<{$track.msgTime}>
+          </td>
+          <td style="width:10%"><{$track.operator}></td>
+		  <td style="width:60%"><{$track.content}></td>
+        </tr>
+	 <{/foreach}>
+	 </tbody>
+	</table>
+	</td>
+   </tr>
+</table>
+<{else}>
+暂无物流信息
+<{/if}>
+
+

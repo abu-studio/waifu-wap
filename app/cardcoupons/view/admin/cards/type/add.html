@@ -1,0 +1,71 @@
+<{if $card_type_id eq null}>
+<form action="index.php?app=cardcoupons&ctl=admin_cards_type&act=toAdd" method="post" id="ruleorderstatus_form">
+<{else}>
+<form action="index.php?app=cardcoupons&ctl=admin_cards_type&act=toEdit" method="post" id="ruleorderstatus_form">
+<{/if}>
+    <div class="tableform">
+        <input type=hidden name='cardtype[card_type_id]' value=<{$cardtype_data.card_type_id}>>
+        <div class="division">
+            <table class="forform" width="100%" border="0" cellspacing="0" cellpadding="0">
+				<tr>  <th><em class="red">*</em><{t}>名称<{/t}></th>
+                    <td>
+                        <{input type='text' name='cardtype[name]'  vtype='required' required="required" value=$cardtype_data.name}>
+                    </td>
+                </tr>
+                <tr>  <th><em class="red">*</em><{t}>句柄值<{/t}></th>
+                    <td>
+                        <{input type="number" key="store" value=$cardtype_data.handle name="cardtype[handle]"   vtype='required' required="required" style="width:60px" maxlength="2" }>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th><{t}>备注<{/t}></th>
+                    <td>
+                        <textarea name="cardtype[memo]" rows="4" style="width:90%" class="inputstyle" cols="35" maxlength="255/" ><{$cardtype_data.memo}></textarea>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="table-action"><{button id="ruleorderstatus_btn" type="submit" label=$___b2c="保存"|t:'b2c' }></div>
+    </div>
+</form>
+<script>
+    (function(){
+        var _form = $('ruleorderstatus_form');
+        var btn =$('ruleorderstatus_btn');
+        var finder = finderGroup['<{if $card_type_id eq null}><{$env.get._finder.finder_id}><{else}><{$cardtype_findid}><{/if}>'];
+
+        _form.store('target',{
+            onComplete:function(){
+
+            },
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                        finder.refresh.delay(400,finder);
+                    }
+                }
+                else
+                {
+                    //alert(hash_res_obj.error);
+                }
+            }
+        });
+
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+
+
+
+        });
+
+    })();
+</script>

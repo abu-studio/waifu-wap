@@ -1,0 +1,57 @@
+<div class="member-main member-main2">
+<div class="title">修改运单号</div>
+<form class="tableform" method='post' action="<{link app=business ctl='site_order' act='change_logi_no'}>" id="order-delivery-form">
+  <input type='hidden' name='order_id' value='<{$order.order_id}>'/>
+
+<{if $order.is_delivery eq "Y"}>
+<div class="mt_10">
+<table cellpadding="0" cellspacing="0" class="pplist" width="100%">
+<tr>
+    <th width="48"><{t}>订单号：<{/t}></th>
+    <td colspan="2" class="textleft"><{$order.order_id}> 【<{if $order.ship_status == 0}><{t}>未发货<{/t}><{elseif $order.ship_status == 1}><{t}>已发货<{/t}><{elseif $order.ship_status == 2}><{t}>部分发货<{/t}><{elseif $order.ship_status == 3}><{t}>部分退货<{/t}><{elseif $order.ship_status == 4}><{t}>已退货<{/t}><{/if}>】</td>
+    <th width="60"><{t}>下单日期：<{/t}></th>
+    <td colspan="2"><{$order.createtime|cdate:'SDATE_STIME'}></td>
+</tr>
+</table>
+</div>
+<div>
+<h3 class="lineheight-30"><{t}>收货人信息：<{/t}></h3>
+<div class="lineblock1"><{$order.consignee.area_show}>/<{$order.consignee.addr}>，<{$order.consignee.zip}>，<{$order.consignee.name}>，<{if $order.consignee.mobile}><{$order.consignee.mobile}><{else}><{$order.consignee.telephone}><{/if}></div>
+<table class="gridlist3 mt_10" cellpadding="0" cellspacing="0" width="100%">
+
+	<tr>
+	  <th><{t}>原运单号码<{/t}></th>
+	  <th><{t}>新运单号码<{/t}></th>
+	  <th style="border-right:1px solid #ddd"><{t}>操作<{/t}></th>
+	</tr>
+        <{foreach from=$data.deliveries item=item key=key}>
+            <tr>
+              <td><{t}><{$item.logi_no}><{/t}></td>
+              <input type="hidden" id="delivery_id_<{$key}>" value="<{$item.delivery_id}>"/>
+              <td><{t}><input type="text" id="logi_no_<{$key}>" /><{/t}></td>
+              <td style="border-right:1px solid #ddd"><input type="button" name="button_<{$key}>" id="button" class="order-btn2"  onclick="do_chg(<{$key}>)" value="确定"/></td>
+            </tr>	
+        <{/foreach}>
+</table>
+<input type="hidden" name="delivery_id" id="delivery_id" value=""/>
+<input type="hidden" name="logi_no" id="logi_no" value=""/>
+</div>
+<{/if}>
+
+</form>
+</div>
+<script type="text/javascript">
+function do_chg(k){
+	var logi_no = $('logi_no_'+k).value;
+    if(logi_no == ''){
+        Message.error('请填写相应的运单号！');
+        return false;
+    }else{
+        var delivery_id = $('delivery_id_'+k).value;
+        var _form = $('order-delivery-form');
+        $('delivery_id').value = delivery_id;
+        $('logi_no').value = logi_no;
+        _form.submit();
+    }
+}
+</script>

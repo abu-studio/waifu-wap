@@ -1,0 +1,196 @@
+<div class="action-bar">
+
+<script>
+$$('.order-ctls button[act]').each(function(btn){
+
+	   var flow = btn.getPrevious('input[name="flow"]'),
+		disabled = btn.getPrevious('input[name="disabled"]'),
+		cfm_str = btn.get('confirm'),
+		_dialog = null,
+		_app	= btn.get('app'),
+		act_url = "index.php?app="+_app+"&ctl=admin_order&act={action}&p[0]=<{$order.order_id}>";
+	   if(disabled){
+		   return btn.set({'opacity':.5,styles:{'cursor':'not-allowed'}});
+	   }
+
+	   btn.addEvent('click',function(){
+		   if(cfm_str&&!confirm(cfm_str)){ return;  }
+		   if(flow){
+			 _dialog = new Dialog( act_url.substitute({'action':'go'+btn.get('act')}),
+			{title:btn.get('text')+":<{$order.order_id}>",width:.7,height:.8,onLoad:function(){
+
+					  var _dialog_form = this.dialog;
+					  this.dialog.getElement('form').store('target',{
+					  onRequest:function(){
+						_dialog_form.getElement('.table-action .order-action').set('disabled','disabled');
+					  },
+					  onComplete:function(){
+
+						 <{if !$env.get.singlepage}>
+								<{if $env.get.finder_id}>
+									finderGroup['<{$env.get.finder_id}>'].request({
+										method:'post',
+										onComplete:function(){
+										   _dialog.close();
+										   this.loadPacket();//refersh finder packet(tabs);
+										}});
+								<{/if}>
+						  <{else}>
+								_dialog.close();
+								if (opener.finderGroup&&opener.finderGroup['<{$env.get.finder_id}>'])
+									opener.finderGroup['<{$env.get.finder_id}>'].refresh();
+								 location.reload();
+						  <{/if}>
+					  }});
+
+
+			 }});
+
+		   }else{
+			  W.page( act_url.substitute({'action':'do'+btn.get('act')}),{onComplete:function(re){
+					try{re = JSON.decode(re)}catch(e){}
+					if(re&&re.error){return;}
+					<{if !$env.get.singlepage}>
+					   <{if $env.get.finder_id}>
+							finderGroup['<{$env.get.finder_id}>'].refresh();
+					   <{/if}>
+					<{else}>
+						if (opener.finderGroup&&opener.finderGroup['<{$env.get.finder_id}>'])
+							opener.finderGroup['<{$env.get.finder_id}>'].refresh();
+						location.reload();
+					<{/if}>
+
+				}});
+		   }
+
+	   });
+
+  });
+</script>
+</div>
+
+
+
+
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td style="vertical-align:top">
+        <div class="tableform">
+			<table border="0" cellpadding="0" style="margin-top:10px" cellspacing="0" class="orderdetails_basic">
+			
+				 <tr>
+					<th ><{t}>京东订单号：<{/t}></th>
+					<td><{$data.jdOrderId}></td>
+					<th ><{t}>订单总额：<{/t}></th>
+					<td><span class="price0">￥<{$data.orderPrice+$data.freight}></span></td>
+					<th ><{t}>配送费用：<{/t}></th>
+					<td>￥<{$data.freight}></td>
+					<th ><{t}>订单税费：<{/t}></th>
+					<td>￥<{$data.orderTaxPrice}></td>
+				  </tr>
+				  <tr>
+					<th ><{t}>商品总额：<{/t}></th>
+					<td>￥<{$data.orderPrice}></td>
+					<th ><{t}>订单状态：<{/t}></th>
+					<td>
+					<{if $data.orderState == 0}>
+						取消订单
+					<{else}>
+						有效订单
+					<{/if}>
+					</td>
+					<th ><{t}>下订状态：<{/t}></th>
+					<td>
+					<{if $data.submitState == 0}>
+						未确认下单订单
+					<{else}>
+						已确认下单订单
+					<{/if}>
+					</td>
+					<th ><{t}>物流状态：<{/t}></th>
+					<td>
+					<{if $data.state == 0}>
+						新建
+					<{elseif  $data.state}>
+						妥投
+					<{elseif  $data.state}>
+						拒收
+					<{/if}>
+					</td>
+				  </tr>
+			</table>
+		</div>
+	 </td>
+    </tr>
+    <tr>
+      <td>
+      <div class="tableform">
+      <h3><{t}>商品信息<{/t}></h3>
+      <table cellpadding="0" class="gridlist" cellspacing="0" width="100%" border="0">
+	<col style="width:10%"/>
+	<col style="width:25%"/>
+	<col style="width:5%"/>
+	<col style="width:10%"/>
+	<col style="width:5%"/>
+      <thead>
+		  <tr>
+			<th><{t}>货品编号<{/t}></th>
+			<th><{t}>货品名称<{/t}></th>
+			<th><{t}>单价<{/t}></th>
+			<th><{t}>购买数量<{/t}></th>
+			<th><{t}>合计金额<{/t}></th>
+		  </tr>
+      </thead>
+      <tbody>
+	<{if count($data.sku) > 0}>
+	  <{foreach from=$data.sku item=aGoods name="item"}>
+		<tr>
+          <td width="10%"><{$aGoods.skuId}></td>
+          <td class="textleft" width="25%">
+			<a href='<{$aGoods.link}>' target="_blank"><{$aGoods.name}>
+          </td>
+          <td width="9%" >￥<{$aGoods.price}></td>
+		  <td class="Colamount"><{$aGoods.num}></td>
+          <td class="Colamount" width="9%">￥<{$aGoods.num*$aGoods.price}></td>
+        </tr>
+	 <{/foreach}>
+	 <{/if}>
+	 </tbody>
+	</table>
+		</td>
+      </tr>
+    </table>
+<script>
+
+
+if($('order_receiver_copy')){
+$('order_receiver_copy').addEvent('click',function(e){
+    if($('order_receiver_copy').get('receiver_copy_status') == "Y"){
+        copy_code($('order_receiver_copy').get('info'));
+        $('order_receiver_copy').set('receiver_copy_status','N');
+    }
+});
+}
+
+function copy_code(copyText){
+    if (window.clipboardData){
+        window.clipboardData.setData("Text", copyText);
+    }else{
+        prompt('<{t}>请复制收货人信息：<{/t}>',copyText);
+    }
+    $$('#order_receiver_copy span')[1].setText('<{t}>信息已经复制到剪切板中<{/t}>');
+    (function(){
+        if(!$('order_receiver_copy'))return;
+        $$('#order_receiver_copy span')[1].setText('<{t}>复制收货人信息<{/t}>');
+        $('order_receiver_copy').set('receiver_copy_status','Y');
+    }).delay(2000);
+}
+
+
+$$('.x-view-img').each(function(item){
+		 item.store('tip:text','<div style="width:220px;height:220px;overflow:hidden;"><img  src="'+item.get('imgsrc')+'" onload="$(this).zoomImg(220,220);" /></div>');
+	     Xtip.attach(item);
+});
+
+
+</script>

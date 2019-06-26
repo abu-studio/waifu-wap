@@ -1,0 +1,150 @@
+<div class="top">
+	<div class="left">
+		预约套餐：<a href="javascript:void(0);"><{$package_info.package_name}></a>
+	</div>
+	<div class="right" >
+		<div class="xm_step4">						
+		</div>
+	</div>
+</div>
+<div class="center">
+	<form id="form4" name="form4" method="POST" action="<{link app='physical' ctl='site_exchange' act='index' args=array($type,5,$goods_id,$package_id,$card_no,$card_pass)}>">
+	<input type='hidden' name="st" value="1" />
+	<div class="mendian_title">
+		体检预约信息
+	</div>
+	<div class="mendian_main">
+		<div class="xx_top">
+			<span>体检人信息</span>
+		</div>
+		<div class="xx_table_list">
+			<table class="liststyle data width1" width="100%" border="0" cellspacing="0" cellpadding="0" style="border:none">
+				<colgroup>
+					<col style="width:7%">
+					<col style="width:93%">								
+				</colgroup>
+				<tr>
+					<th>
+						<em>*</em>体检人：
+					</th>
+					<td>
+						<input name="person_name" type="text" vtype="required" class="x-input" value="<{$info.person_name}>">
+						<span>此处填写体检人姓名</span>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<em>*</em>性别：
+					</th>
+					<td>
+						<select name="sex" type="select" vtype="required" class="x-input-select inputstyle" style="width:160px;">
+							<option value="">请选择</option>
+							<option value="1" <{if $info.sex eq 1}>selected="selected"<{/if}>>男</option>
+							<option value="2" <{if $info.sex eq 2}>selected="selected"<{/if}>>女</option>
+						</select>
+					</td>								
+				</tr>
+				<tr>
+					<th>
+						<em>*</em>是否已婚：
+					</th>
+					<td>
+						<select name="marry" type="select" vtype="required" class="x-input-select inputstyle" style="width:160px;">
+							<option value="">请选择</option>
+							<option value="1" <{if $info.marry eq 1}>selected="selected"<{/if}>>已婚</option>
+							<option value="2" <{if $info.marry eq 2}>selected="selected"<{/if}>>未婚</option>
+						</select>
+					</td>								
+				</tr>
+				<tr>
+					<th>
+						<em>*</em>年龄：
+					</th>
+					<td>
+						<input name="age" type="text" class="x-input" vtype="required&&unsignedint" value="<{$info.age}>" style="width:50px;">									
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<em>*</em>证件类型：
+					</th>
+					<td>
+						<select name="c_type" type="select" vtype="required" class="x-input-select inputstyle" style="width:160px;">
+							<option value="">请选择</option>
+							<option value="1" <{if $info.c_type eq 1}>selected="selected"<{/if}>>身份证</option>
+							<option value="2" <{if $info.c_type eq 2}>selected="selected"<{/if}>>军官证</option>
+							<option value="3" <{if $info.c_type eq 3}>selected="selected"<{/if}>>团员证</option>
+						</select>
+					</td>								
+				</tr>
+				<tr>
+					<th>
+						<em>*</em>证件号码：
+					</th>
+					<td>
+						<input name="c_no" type="text" class="x-input" vtype="required" value="<{$info.c_no}>" style="width:300px;">	
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<em>*</em>联系手机：
+					</th>
+					<td>
+						<input name="mobile" type="text" class="x-input" vtype="required&&mobile" value="<{$info.mobile}>" style="width:300px;">
+					</td>
+				</tr>
+				<tr>
+					<th>
+						联系地址：
+					</th>
+					<td>
+						<input name="address" type="text" class="x-input" value="<{$info.address}>" style="width:300px;">				
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="xx_top">
+			体检预约信息
+		</div>
+		<div class="xx_list_label">
+			<div>预约机构：<{$store_info.organization_name}></div>
+			<div>预约地点：<{$store_info.address}></div>
+			<div>预约电话：<{$store_info.phone}></div>
+			<div>预约时间：
+				<{foreach from=$order_time_arr item=item key=key name=name}>
+					<{$item}>
+					<{if $key eq 0}>
+						(期望时间)；
+					<{else}>
+						<{if $smarty.foreach.name.last}>
+							(备用时间) 
+						<{else}>
+							,
+						<{/if}>
+					<{/if}>
+				<{/foreach}>
+			</div>
+		</div>
+		<div class="xx_top">
+			体检套餐信息
+		</div>
+		<div class="xx_list_label">
+			<div>套餐名称：<{$package_info.package_name}></div>						
+		</div>
+		<div class="md_next">
+			<button class="btn md_prev" type="button" onclick="back3();" >
+				上一步
+			</button>
+			<button class="btn md_submit" type="submit">
+				下一步
+			</button>
+		</div>
+	</div>
+	</form>
+</div>
+<script>
+function back3(){
+	var url = "<{link app='physical' ctl='site_exchange' act='index' args=array($type,3,$goods_id,$package_id,$card_no,$card_pass)}>";
+	window.location.href= url;
+}
+</script>

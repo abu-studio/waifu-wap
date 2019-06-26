@@ -1,0 +1,62 @@
+<form id="orders_form" class="tableform" action="index.php?app=physical&ctl=admin_orders&act=save"  method="POST" >
+    <input type="hidden" name="id" value="<{$order_info.id}>">
+    <div class="division">
+        <table width="100%" >
+            <tr>
+                <th><em class="red">*</em><{t}>预约时间1：<{/t}></th>
+                <td><{input type="date" name='order_time_1' vtype="required" value=$order_info.order_time_arr.0}></td>
+            </tr>
+			<tr>
+                <th><em class="red">*</em><{t}>预约时间2：<{/t}></th>
+                <td><{input type="date" name='order_time_2' vtype="required" value=$order_info.order_time_arr.1}></td>
+            </tr>
+			<tr>
+                <th><em class="red">*</em><{t}>预约时间3：<{/t}></th>
+                <td><{input type="date" name='order_time_3' vtype="required" value=$order_info.order_time_arr.2}></td>
+            </tr>
+        </table>
+    </div>
+
+</form>
+
+<{area inject='.mainFoot'}>
+<div class="table-action"><{button type="submit"  label=$___physical="保存"|t:'physical' id='orders_form_submit'}></div>
+<{/area}>
+
+<script>
+    (function(){
+        var _form = $('orders_form');
+        var btn =$('orders_form_submit');
+        var finder = finderGroup['<{$env.get._finder.finder_id}>'];
+
+        _form.store('target',{
+            onComplete:function(){
+
+            },
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                        finder.refresh.delay(400,finder);
+                    }
+                }
+                else
+                {
+                    //alert(hash_res_obj.error);
+                }
+            }
+        });
+
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+        });
+
+    })();
+</script>

@@ -1,0 +1,83 @@
+<form id="package_form" class="tableform" action="index.php?app=physical&ctl=admin_package&act=save"  method="POST" >
+    <input type="hidden" name="package_id" value="<{$package_info.package_id}>">
+    <div class="division">
+        <table width="100%" >
+			<tr>
+                <th><em class="red">*</em><{t}>类型：<{/t}></th>
+                <td><{input type='select' name='type_id' vtype="required" required="true" options=$type_list value=$package_info.type_id}></td>
+            </tr>
+            <tr>
+                <th><em class="red">*</em><{t}>套餐编号：<{/t}></th>
+                <td><{input type="text" name="package_code" vtype="required" value=$package_info.package_code}></td>
+            </tr>
+            <tr>
+                <th><em class="red">*</em><{t}>套餐名称：<{/t}></th>
+                <td><{input type="text" name="package_name" vtype="required" value=$package_info.package_name}></td>
+            </tr>
+			<tr>
+                <th><em class="red">*</em><{t}>图片：<{/t}></th>
+                <td><{input type='image' name='image' vtype="required" width=200 height=150 value=$package_info.image}></td>
+            </tr>
+			<tr>
+                <th><em class="red">*</em><{t}>销售价：<{/t}></th>
+                <td><{input type="text" name="price" vtype="required&&positive" value=$package_info.price}></td>
+            </tr>
+			<tr>
+                <th><em class="red">*</em><{t}>市场价：<{/t}></th>
+                <td><{input type="text" name="mktprice" vtype="required&&positive" value=$package_info.mktprice}></td>
+            </tr>
+			<tr>
+                <th><em class="red">*</em><{t}>包含体检项目：<{/t}></th>
+                <td>
+					<{input type="object_select" object="project@physical" multiple="true" rowselect="true" textcol="project_name" name="project_ids" linkid=$project_info.linkid obj_name='project_info[info]' value=$project_info.info}>
+				</td>
+            </tr>
+        </table>
+    </div>
+
+</form>
+
+<{area inject='.mainFoot'}>
+<div class="table-action"><{button type="submit"  label=$___physical="保存"|t:'physical' id='package_form_submit'}></div>
+<{/area}>
+
+<script>
+    (function(){
+        var _form = $('package_form');
+        var btn =$('package_form_submit');
+       
+
+        _form.store('target',{
+            onComplete:function(){
+
+            },
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                       
+                    }
+                }
+                else
+                {
+                    //alert(hash_res_obj.error);
+                }
+            }
+        });
+
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+
+
+
+        });
+
+    })();
+</script>

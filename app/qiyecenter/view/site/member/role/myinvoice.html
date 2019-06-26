@@ -1,0 +1,194 @@
+<!-- right-->
+<{css src="member.css" app="qiyecenter" pdir="css"}>
+<div class="member-main">
+    <div>
+        <div class="title title2">
+			<span style="float:left"><{t}>发票信息<{/t}><span class="disc">|</span>
+			<span id='add_com' class="disc add-icon" ><a href="javascript:void(0);" ><{t}>添加普通发票信息<{/t}></a></span>
+			<span class="disc">|</span>
+			<span id='add_vat' class="disc add-icon" ><a href="javascript:void(0);" ><{t}>添加增值发票信息<{/t}></a></span>
+		    </span>
+            <!-- <span style="float: right;">
+                <span class="disc"><a href="<{link app=qiyecenter ctl='site_member' act='my_apple_invoice'}>" ><{t}>我的发票记录<{/t}></a></span>
+            </span> -->
+        </div>
+        <{if !$data}>
+        <div class="noinfo"><{t}>暂无发票信息<{/t}></div>
+        <{/if}>
+        <!--普通发票信息新增——start-->
+        <div id='addr_div_com' style="display:none">
+            <form method="post" action="<{link app=qiyecenter ctl='site_member' act='insert_invoice'}>" id="addr_from_com">
+                <input type="hidden" name="invoice_type" value="com">
+                <div class="division" style="border:none; border-bottom:1px dashed #ddd">
+                    <table cellpadding="0" class="forform" cellspacing="0" border="0">
+                        <tr>
+                            <th><{t}>发票抬头：<{/t}></th>
+							<td><{input class="inputstyle" name="invoice_title" type="text" required="true" id="invoice_title" size="30" vtype="required" value=$invoice_title|escape:'html'}></td>
+						</tr>
+                    </table>
+                </div>
+                <div class="member-editwrap"><span class="float-span" >
+                        <{button class="btn submit-btn" type="submit" rel="_request" label=$___b2c="保存"|t:'b2c'}></span>
+                    <span class="float-span" style="float:left; margin-left:8px">
+                        <{button id="unset" type="button" label=$___b2c="取消"|t:'b2c'}></span>
+                </div>
+            </form>
+        </div>
+        <!--普通发票信息新增——end-->
+        <!--增值发票信息新增——start-->
+        <div id='addr_div_vat' style="display:none">
+            <form method="post" action="<{link app=qiyecenter ctl='site_member' act='insert_invoice'}>" id="addr_from_vat">
+                <input type="hidden" name="invoice_type" value="vat">
+                <div class="division" style="border:none; border-bottom:1px dashed #ddd">
+                     <table cellpadding="0" class="forform" cellspacing="0" border="0">
+                        <tr>
+                            <th><{t}>单位名称：<{/t}></th>
+                            <td><{input placeholder="请注意前后不要有空格！" class="inputstyle" name="company_name" type="text" required="true" id="company_name" size="30" maxlength="20" vtype="required" value=$company_name|escape:'html'}><span style="padding-left:10px;color: #777777;">内容长度不得超过20(包含文字,数字,字符)</span></td>
+                        </tr>
+                        <tr>
+                            <th><{t}>纳税人识别号：<{/t}></th>
+                            <td><{input  placeholder="请注意前后不要有空格！" class="inputstyle" vtype="number" required="true" name="vat_number" size="30" maxlength="20" value=$vat_number|escape:'html'}><span style="padding-left:10px;color: #777777;">内容长度不得超过20(包含文字,数字,字符)</span></td>
+                            <td style="padding:8px 0 0 0"><input type="hidden" vtype="number" /></td>
+                        </tr>
+                        <tr>
+                            <th><{t}>注册地址：<{/t}></th>
+                            <td><{input placeholder="请注意前后不要有空格！" class="inputstyle" name="vat_addr" type="text" required="true" id="vat_addr" size="30" maxlength="20" vtype="required" value=$vat_addr|escape:'html'}><span style="padding-left:10px;color: #777777;">内容长度不得超过20(包含文字,数字,字符)</span></td>
+                        </tr>
+                        <tr>
+                            <th><{t}>注册电话：<{/t}></th>
+                            <td><{input placeholder="请注意前后不要有空格！" class="inputstyle"  name="vat_tel" vtype="number&&mobile" id="vat_tel" size="15" maxlength="11" value=$vat_tel|escape:'html'}><span style="padding-left:10px;color: #777777;">号码长度不得超过11位</span></td>
+                            <td style="padding:8px 0 0 0"><input type="hidden" vtype="mobile_or_phone" /></td>
+                        </tr>
+                        <tr>
+                            <th><{t}>开户银行：<{/t}></th>
+                            <td><{input placeholder="请注意前后不要有空格！" class="inputstyle" name="vat_bank" type="text" required="true" id="vat_bank" size="30" maxlength="20"  vtype="required" value=$vat_bank|escape:'html'}><span style="padding-left:10px;color: #777777;">内容长度不得超过20(包含文字,数字,字符)</span></td>
+                        </tr>
+                        <tr>
+                            <th><{t}>银行账号：<{/t}>&nbsp;</th>
+                            <td><{input placeholder="请注意前后不要有空格！" class="inputstyle" vtype="number" required="true" name="bank_number" size="30" maxlength="20" value=$bank_number|escape:'html'}><span style="padding-left:10px;color: #777777;">内容长度不得超过20(包含文字,数字,字符)</span></td>
+                            <td style="padding:8px 0 0 0"><input type="hidden" vtype="number" /></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="member-editwrap"><span class="float-span" >
+                        <{button class="btn submit-btn" type="submit" rel="_request" label=$___b2c="保存"|t:'b2c'}></span>
+                    <span class="float-span" style="float:left; margin-left:8px">
+                        <{button id="unset" type="button" label=$___b2c="取消"|t:'b2c'}></span>
+                </div>
+            </form>
+        </div>
+        <!--增值发票信息新增——end-->
+
+
+        <{if $data}>
+        <table class="gridlist gridlist_member border-all mt10" width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed;">
+            <tr>
+                <th><{t}>开票内容<{/t}></th>
+                <th style="word-wrap:break-word;" width="8%"><{t}>发票类型<{/t}></th>
+                <th><{t}>单位名称<{/t}></th>
+                <th><{t}>纳税人识别号<{/t}></th>
+                <th style="word-wrap:break-word;" width="15%"><{t}>是否默认<{/t}></th>
+                <th><{t}>操作<{/t}></th>
+            </tr>
+
+            <tbody>
+                <{foreach from=$data item=items key=key}>
+                <tr>
+                    <td class="textwrap textleft no_bk" style="word-break: break-all; word-wrap:break-word;"><{$items.invoice_title|escape:'html'}></td>
+                    <td class="textcenter" style="word-break: break-all; word-wrap:break-word;">
+                        <{if $items.invoice_type == 'com'}><span class="font-red">普通</span><{else}><span class="font-blue">增值税</span><{/if}>
+                    </td>
+                    <td class="textcenter"><{$items.company_name}></td>
+                    <td class="textcenter"><{$items.vat_number}></td>
+                    <td class="textcenter"><{if $items.invoice_default == 1}>
+                        <!-- <span class="set-tacitly"><a href='<{link app=qiyecenter ctl=site_member act=set_default_invoice arg0=$items.invoice_id arg1=0 arg2=$invoice_type}>' ><{t}>取消默认<{/t}></a></span> -->
+                        <span class="set-tacitly"><a onclick="setdefault('<{$items.invoice_id}>','0','<{$invoice_type}>')" rel="_request"><{t}>取消默认<{/t}></a></span>
+                        <{else}>
+                       <!--  <span class="tacitly-add"><a href='<{link app=qiyecenter ctl=site_member act=set_default_invoice arg0=$items.invoice_id arg1=1 arg2=$invoice_type}>' ><{t}>设为默认<{/t}></a></span> -->
+                        <span class="tacitly-add"><a onclick="setdefault('<{$items.invoice_id}>','1','<{$invoice_type}>')" rel="_request"><{t}>设为默认<{/t}></a></span> 
+                        <{/if}>
+                    </td>
+                    <td align="center">
+                        <a href="###" class="btn-bj-hover operate-btn" onclick="edit('<{$items.invoice_id}>','<{$items.invoice_type}>');"><span><{t}>修改<{/t}></span></a>
+                        <a class="btn-bj-hover operate-btn" href="<{link app=qiyecenter ctl=site_member act=del_invoice arg0=$items.invoice_id}>" rel="_request"><span><{t}>删除<{/t}></span></a>
+                    </td>
+                </tr>
+                <{/foreach}>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+<{/if}>
+
+<script type="text/javascript">
+
+    //lpc
+    function setdefault(invoice_id,disabled,invoice_type) {
+            new Request.HTML({
+            url:'<{link app=qiyecenter ctl=site_member act=set_default_invoice}>',
+            data:'invoice_id='+invoice_id+'&disabled='+disabled+'&invoice_type='+invoice_type,
+            method:'post',
+            onComplete:function(rs){
+                location.reload();
+            }
+            }).send();
+            
+    }
+
+    function delrec(invoice_id) {
+        if(!confirm('<{t}>确定删除?<{/t}>')) return false;
+            new Request.HTML({
+            url:'<{link app=qiyecenter ctl=site_member act=del_invoice}>',
+            data:'invoice_id='+invoice_id,
+            method:'post',
+            onComplete:function(rs){
+                location.reload();
+            }
+            }).send();
+            
+    }
+
+    function edit(invoice_id,invoice_type){
+        if(invoice_type == 'com'){
+            new Request.HTML({
+                url:'<{link app=qiyecenter ctl=site_member act=edit_invoice}>',
+                update:$('addr_from_com'),
+                data:'invoice_id='+invoice_id,
+                method:'post',
+                onComplete:function(rs){
+
+                    $('addr_div_com').setStyle('display','block');
+                    $('addr_div_vat').setStyle('display','none');
+                    $('addr_from_com').action='<{link app=qiyecenter ctl="site_member" act="save_invoice"}>';
+                }
+            }).send();
+        }else{
+            new Request.HTML({
+                url:'<{link app=qiyecenter ctl=site_member act=edit_invoice}>',
+                update:$('addr_from_vat'),
+                data:'invoice_id='+invoice_id,
+                method:'post',
+                onComplete:function(rs){
+                    $('addr_div_vat').setStyle('display','block');
+                    $('addr_div_com').setStyle('display','none');
+                    $('addr_from_vat').action='<{link app=qiyecenter ctl="site_member" act="save_invoice"}>';
+                }
+            }).send();
+        }
+
+    }
+
+    (function(){
+		$("add_com").addEvent('click',function(e){
+			$('addr_div_com').setStyle('display','inline');
+            $('addr_div_vat').setStyle('display','none');
+		});
+
+		$("add_vat").addEvent('click',function(e){
+			$('addr_div_vat').setStyle('display','inline');
+            $('addr_div_com').setStyle('display','none');
+		});
+
+    })();
+</script>

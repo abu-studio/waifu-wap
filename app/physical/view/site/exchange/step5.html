@@ -1,0 +1,95 @@
+<div class="top">
+	<div class="left">
+		预约套餐：<a href="javascript:void(0);"><{$package_info.package_name}></a>
+	</div>
+	<div class="right" >
+		<div class="xm_step5">						
+		</div>
+	</div>
+</div>
+<div class="center">
+	<form id="form5" name="form5" method="POST" action="<{link app='physical' ctl='site_exchange' act='index' args=array($type,6,$goods_id,$package_id,$card_no,$card_pass)}>">
+	<input type='hidden' name="st" value="1" />
+	<{if $type eq 0}>
+		<input type="hidden" name="purchase[member_id]"  value="<{$member_id}>">
+		<input type="hidden" name="purchase[addr_id]"  value="0">
+		<input type="hidden" name="purchase[def_area]"  value="0">
+		<input type="hidden" name="delivery[ship_id]"  value="">
+		<input type="hidden" name="payment[currency]"  value='CNY'>
+		<input type="hidden" name="payment[pay_app_id]"  value='sfscpay'>
+		<input type="hidden" name="business_goods"  value='<{$aCart.business_goods}>'>
+		<input type="hidden" name="split_order"  value='<{$aCart.json_order_split}>'>
+		<{foreach from=$aCart.order_split item=store key=store_key name=store_name}>
+			<{foreach from=$store.slips item=slip key=slip_key name=slip_name}>
+				<{if $slip.shipping}>
+					<{foreach from=$slip.shipping item="shipping" key="key" name="shippings"}>
+					<{/foreach}>
+					<input type="hidden" name="shipping[<{$store_key}>][<{$slip_key}>][shipping_id]" value="<{$shipping.dt_id}>">
+				<{/if}>
+			<{/foreach}>
+		<{/foreach}>
+	<{/if}>
+	<div class="mendian_title">
+		确认并支付
+	</div>
+	<div class="mendian_main">
+		<div class="xx_top">
+			<span>体检预约信息</span>					
+		</div>							
+		<div class="xx_list_label">
+			<div>预约人：<{$info.person_name}></div>
+			<div>性别:<{if $info.sex eq 1}>男<{elseif $info.sex eq 2}>女<{/if}></div>
+			<div>是否结婚：<{if $info.marry eq 1}>已婚<{elseif $info.marry eq 2}>未婚<{/if}></div>
+			<div>年龄：<{$info.age}></div>
+			<div><{if $info.c_type eq 1}>身份证<{elseif $info.c_type eq 2}>军官证<{elseif $info.c_type eq 3}>团员证<{/if}>：<{$info.c_no}></div>
+			<div>联系手机：<{$info.mobile}></div>
+			<div>联系地址：<{$info.address}></div>						
+		</div>
+		<div class="xx_top">
+			<span>体检预约信息</span>
+		</div>
+		<div class="xx_list_label">
+			<div>预约机构：<{$store_info.organization_name}></div>
+			<div>预约地点：<{$store_info.address}></div>
+			<div>预约电话：<{$store_info.phone}></div>
+			<div>预约时间：
+				<{foreach from=$order_time_arr item=item key=key name=name}>
+					<{$item}>
+					<{if $key eq 0}>
+						(期望时间)；
+					<{else}>
+						<{if $smarty.foreach.name.last}>
+							(备用时间) 
+						<{else}>
+							,
+						<{/if}>
+					<{/if}>
+				<{/foreach}>
+			</div>
+		</div>
+		<div class="xx_top">
+			体检套餐信息
+		</div>
+		<div class="xx_list_label">
+			<div>套餐名称：<{$package_info.package_name}></div>						
+		</div>
+		<div class="md_next">
+			<button class="btn md_prev" type="button" onclick="back4();" >
+				上一步
+			</button>
+			<button class="btn md_submit" type="button" onclick="form_submit6();" >
+				提 交
+			</button>
+		</div>
+	</div>
+	</form>
+</div>
+<script>
+function back4(){
+	var url = "<{link app='physical' ctl='site_exchange' act='index' args=array($type,4,$goods_id,$package_id,$card_no,$card_pass)}>";
+	window.location.href= url;
+}
+function form_submit6(){
+	$("form5").submit();
+}
+</script>

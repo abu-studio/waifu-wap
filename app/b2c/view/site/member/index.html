@@ -1,0 +1,19 @@
+<div class="companyTop">
+    <a href="<{link app=b2c ctl=site_member act=condolences}>"><img class="pic" src="<{$_THEME_}>/images/<{$top_pic}>" /></a>
+    <div class="content">
+        <div class="left">
+            <img src="<{$_THEME_}>/images/grsyimg01.png" />
+        </div>
+        <div class="right">
+            <div class="userName"><a><{$member_name}></a><!--<span>企业管理员</span><i></i><b>高级会员</b>--></div>
+            <div class="comName"><{$company_name}></div>
+            <div class="comFL"></div>
+            <div class="myFL">
+                <a href="<{link app=b2c ctl=site_member act=fupoint}>"><p><span>我的福点：</span><b><{$headerdata['my_fd']}></b><span>点</span></p></a>
+                <a href="<{link app=b2c ctl=site_member act=my_point}>"><p><span>我的积分：</span><b><{$member.point}></b><span>点</span></p></a>
+                <a href="<{link app=business ctl=site_msg act=my_msg}>"><p><span>我的消息：</span><b><{$headerdata['message']}></b><span>封</span></p></a>
+                <a href="<{link app=b2c ctl=site_member act=orders}>"><p><span>我的订单：</span><b><{$headerdata['my_dd']}></b><span>条</span></p></a>
+            </div>
+        </div>
+    </div>
+</div>

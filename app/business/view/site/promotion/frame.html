@@ -1,0 +1,26 @@
+
+<form action="<{link app=business ctl=site_promotion act=toAddOrder}>" method="post" id="promotion_form" name="promotion_form">
+  <input type="hidden" name="rule[rule_id]" value="<{$rule.rule_id}>"/>
+  <input type="hidden" name="rule[store_id]" value="<{$storeid}>"/>
+
+  <div>
+     <{include file="site/promotion/page.html" app=business}>
+  </div>
+</form>
+<script>
+$('promotion_form').retrieve('setTabs',function(){
+		 var gtabs=$ES('#menu-desktop .spage-side-nav li.l-handle');
+		 new ItemAgg(gtabs,$ES('#promotion_form .spage-main-box'),{
+			activeName:'cur',
+			onActive:function(tab,item){
+				 var anotherItems=$$($A(this.items).remove(item));
+                  if(tab.hasClass('all')){
+                     anotherItems.show();
+                  }else{
+                     anotherItems.hide();
+                  }
+        	}
+		 });
+}());
+
+</script>

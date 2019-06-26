@@ -1,0 +1,58 @@
+<form id="orders_form_5" class="tableform" action="index.php?app=physical&ctl=admin_orders&act=update_status"  method="POST" >
+    <input type="hidden" name="id" value="<{$order_info.id}>">
+	<input type="hidden" name="status" value="<{$status}>">
+    <div class="division">
+        <table width="100%" >
+			<tr>
+                <th><em class="red">*</em><{t}>备注：<{/t}></th>
+                <td><{input type="textarea" name="remarks" vtype="required" rows="5" cols="50"}></td>
+            </tr>
+        </table>
+    </div>
+
+</form>
+
+<{area inject='.mainFoot'}>
+<div class="table-action"><{button type="submit"  label=$___physical=$act_name|t:'physical' id='orders_form_submit'}></div>
+<{/area}>
+
+<script>
+    (function(){
+        var _form = $('orders_form_5');
+        var btn =$('orders_form_submit');
+        var finder = finderGroup['<{$env.get._finder.finder_id}>'];
+
+        _form.store('target',{
+            onComplete:function(){
+
+            },
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                        finder.refresh.delay(400,finder);
+                    }
+                }
+                else
+                {
+                    //alert(hash_res_obj.error);
+                }
+            }
+        });
+
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+
+
+
+        });
+
+    })();
+</script>

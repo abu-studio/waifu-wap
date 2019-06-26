@@ -1,0 +1,115 @@
+<div class="top">
+	<div class="left">
+		预约套餐：<a href="javascript:void(0);"><{$package_info.package_name}></a>
+	</div>
+	<div class="right" >
+		<div class="xm_step1">						
+		</div>
+	</div>
+</div>
+<div class="center">
+	<form id="form1" name="form1" method="POST" action="<{link app='physical' ctl='site_exchange' act='index' args=array($type,$step,$goods_id,$package_id,$card_no,$card_pass)}>">
+	<input type='hidden' name="st" value="1" />
+	<input type='hidden' id="page" name="page" value="<{$env.post.page}>" />
+	<input type='hidden' id="store_name" name="store_name" value="<{$info.store_name}>" />
+	<div class="mendian_title">
+		选择门店
+	</div>
+	<div class="mendian_main">
+		<div class="mendian_area">
+			<span class="mendian_label">地区：</span>
+			<span id="selectArea">
+				<{input app=ectools id="area" type="region"  name="area" vtype='area' value=$Parea}>
+			</span>
+		</div>
+		<div class="mendian_mechanism">
+			<span class="mendian_label">体检机构：</span>
+			<{foreach from=$organization_list item=item key=key}>
+			<a href="javascript:void(0);"><{$item}></a>
+			<{/foreach}>
+		</div>
+		<div class="mendian_list_section">
+			<table class="mendian_table">
+				<colgroup>
+					<col style="width:8%">
+					<col style="width:17%">
+					<col style="width:20%">
+					<col style="width:25%">
+					<col style="width:20%">	
+					<col style="width:10%">
+				</colgroup>
+				<thead>
+					<tr>
+					  <th class="md_table_th"></th>	
+					  <th class="md_table_th">地区</th>
+					  <th class="md_table_th">体检门店</th>
+					  <th class="md_table_th">地址</th>
+					  <th class="md_table_th">营业时间</th>
+					  <th class="md_table_th">联系方式</th>                       
+					</tr>
+					<{foreach from=$store_list item=item key=key}>
+					<tr>
+						<td class="md_table_center">
+							  <input type="radio" class="store_id" name="store_id" value="<{$item.store_id}>" rel="<{$item.store_name}>" <{if $item.store_id eq $info.store_id}>checked="checked"<{/if}> />
+						</td>
+						<td><{$item.area|region}></td>
+						<td><{$item.store_name}></td>
+						<td><span title="<{$item.address}>"><{$item.address}></span></td>
+						<td><{$item.weekday_html}>&nbsp;&nbsp;<{$item.open}>-<{$item.close}></td>
+						<td><{$item.phone}></td>
+					</tr>
+					<{/foreach}>
+			  </thead>
+			</table>
+		</div>
+		<{pagers data=$pager}>
+		
+		<div class="md_next">	
+			<button class="btn md_submit" type="button" onclick="form_submit2();">
+				下一步
+			</button>
+		</div>
+	</div>
+	</form>
+</div>
+<script>
+window.addEvent('domready', function(){
+	$("selectArea").addEvent('change', function(){
+		$("page").setProperty('value', 1);
+		form_submit1();
+	});
+	$$(".pager a").addEvent('click', function(){
+		var val = $(this).getText();
+		if(!isNaN(val)){
+			$("page").setProperty('value', val); 
+		}else{
+			if($(this).hasClass('prev')){
+				$("page").setProperty('value', parseInt("<{$page}>")-1); 
+			}
+			if($(this).hasClass('next')){
+				$("page").setProperty('value', parseInt("<{$page}>")+1); 
+			}
+		}
+		form_submit1();
+	});
+});
+function form_submit1(){
+	var url = "<{link app='physical' ctl='site_exchange' act='index' args=array($type,1,$goods_id,$package_id,$card_no,$card_pass)}>";
+	$("form1").action = url;
+	$("form1").submit();
+}
+function form_submit2(){
+	var store_id = $$(".store_id:checked").getProperty("value");
+	if(isNaN(store_id)){
+		alert("请选择门店!");
+		return false;
+	}else{
+		var text = $$(".store_id:checked").getProperty("rel");
+		$("store_name").setProperty('value', text); 
+	}
+	var url = "<{link app='physical' ctl='site_exchange' act='index' args=array($type,2,$goods_id,$package_id,$card_no,$card_pass)}>";
+	$("form1").action = url;
+	$("form1").submit();
+}
+</script>
+

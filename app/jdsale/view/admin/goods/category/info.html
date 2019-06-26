@@ -1,0 +1,29 @@
+<form method="post" action="index.php?app=jdsale&ctl=admin_goods_cat&act=save" id='add-category-form'>
+<input type="hidden" name="cat[cat_id]" value="<{$data.cat_id}>">
+<div class="tableform">
+    <div class="division">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <th><{t}>在前台隐藏：<{/t}></th>
+          <td>
+			<input type='radio' name='cat[disabled]' value='true' <{if $data.disabled eq 'true'}>checked<{/if}> />是
+			<input type='radio' name='cat[disabled]' value='false' <{if $data.disabled eq 'false'}>checked<{/if}> />否
+		  </td>
+        </tr>
+      </table>
+    </div>
+</div>
+<div class="table-action">
+	<{button label=$___b2c="保存"|t:'b2c'  type="submit" }>
+	<{button class="btn-secondary " label=$___b2c="取消"|t:'b2c' isclosedialogbtn="true" onclick="W.page('index.php?app=jdsale&ctl=admin_goods_cat&act=index')" }>
+</div>
+
+<script>      
+$('add-category-form').store('target',{
+	onComplete:function(){
+		if($('add-category-form').getParent('.dialog'))
+		$('add-category-form').getParent('.dialog').retrieve('instance').close();
+	}
+});
+</script>
+</form>

@@ -1,0 +1,256 @@
+<script>
+    window.loadedPart = [1,0,(new Date).getTime()];
+    BREADCRUMBS ='0:0';
+    MODALPANEL = {
+        createModalPanel:function(){
+            var mp = new Element('div',{'id':'MODALPANEL'});
+            var mpStyles = {
+                'position': 'fixed',
+                'background': '#333333',
+                'width': '100%',
+                'display':'none',
+                'height': window.getScrollSize().y,
+                'top': 0,
+                'left': 0,
+                'zIndex': 65500,
+                'opacity': .4
+            };
+            this.element = mp.setStyles(mpStyles).inject(document.body);
+            return this.element;
+        },
+        show:function(){
+            var panel = this.element = this.element||this.createModalPanel();
+            panel.setStyles({
+                'width': '100%',
+                'height': window.getScrollSize().y
+            }).show();
+        },hide:function(){
+            if(this.element)this.element.hide();
+        }
+    };
+    Xtip = new Tips({tip:'tip_Xtip',fixed:true,offset: {x: 24, y: -15},onBound:function(bound){
+        if(bound.x2){
+            this.tip.getElement('.tip-top').addClass('tip-top-right');
+            this.tip.getElement('.tip-bottom').addClass('tip-bottom-right');
+        }else {
+            this.tip.getElement('.tip-top').removeClass('tip-top-right');
+            this.tip.getElement('.tip-bottom').removeClass('tip-bottom-right');
+        }
+    }});
+    var LAYOUT = {
+        container: $('container'),
+        side: $('side'),
+        workground: $('workground'),
+        content_main: $('main'),
+        content_head: $E('#workground .content-head'),
+        content_foot: $E('#workground .content-foot'),
+        side_r: $('side-r'),
+        side_r_content:$('side-r-content')
+    };
+</script>
+<{script src="load.js" app="qiyecenter" pdir="js"}>
+<{script src="wpage.js" app="qiyecenter" pdir="js"}>
+<script>
+    var W = new Wpage({});
+</script>
+<{script src="dialog.js" app="qiyecenter" pdir="js"}>
+<{script src="loader.js" app="desktop" pdir="js"}>
+<{script src="uploader.js" app="qiyecenter" pdir="js"}>
+<{script src="modedialog.js" app="qiyecenter" pdir="js"}>
+<div class="qiye_list">
+    <div class="right_top">
+        <div class="r_tit" style="width:60%;">
+            <div class="guanlibumen">订单创建</div>
+        </div>
+    </div>
+    <div class="r_list">
+        <div class="show_list">
+            <form method="post" id="jifen_order" action="<{link app=qiyecenter ctl=site_member act=save_jifen_order}>">
+                <div class="list_con">
+                    <input type="hidden" name="uuid" id="uuid" value="<{$sfscdata.uuid}>">
+                    <input type="hidden" name="orderType" value="<{$sfscdata.orderType}>">
+                    <input type="hidden" name="ORDER_NO" value="<{$sfscdata.ORDER_NO}>">
+
+                    <input type="hidden" name="CONTRACT_NO"  value="YOOFUU">
+                    <input type="hidden" name="GRANT_NAME" value="1">
+                    <input type="hidden" name="ORDER_SOURCE" value="I00704">
+                    <div class="head_font" style="width: 25%; background: #F2F2F2;">订单编号（自动生成）</div>
+                    <div class="head_font" style="width: 25%;"><{$sfscdata.ORDER_NO}></div>
+                  <!--   <div class="head_font" style="width: 25%; background: #F2F2F2;">合同号（*）</div>
+                    <div class="head_font" style="width: 25%;"><input name="CONTRACT_NO" style="border: 1px solid #cccccc;width: 180px; margin-top: 5px;"></div> -->
+                </div>
+               <!--  <div class="list_con">
+                    <div class="head_font" style="width: 25%; background: #F2F2F2;">业务部</div>
+                    <div class="head_font" style="width: 25%;"><input name="BUSINESS_DEPT" style="border: 1px solid #cccccc;width: 180px; margin-top: 5px;"></div>
+                    <div class="head_font" style="width: 25%; background: #F2F2F2;">业务员</div>
+                    <div class="head_font" style="width: 25%;"><input name="BUSINESS_MAN" style="border: 1px solid #cccccc;width: 180px; margin-top: 5px;"></div>
+                </div> -->
+                <div class="list_con">
+                    <!-- <div class="head_font" style="width: 25%; background: #F2F2F2;">发放名目（*）</div>
+                    <div class="head_font" style="width: 25%;"><input name="GRANT_NAME" style="border: 1px solid #cccccc;width: 180px; margin-top: 5px;"></div> -->
+                    <div class="head_font" style="width: 25%; background: #F2F2F2;">发放金额</div>
+                    <div class="head_font" style="width: 25%;"><input name="PRICE" id="PRICE" value="" style="border: 1px solid #cccccc;width: 180px; margin-top: 5px;"></div>
+                </div>
+                <div class="list_con">
+                  <!--   <div class="head_font" style="width: 25%; background: #F2F2F2;">订单来源</div>
+                    <div class="head_font" style="width: 25%;">
+                        <select style="border: 1px solid #cccccc;width: 150px; margin-top: 5px;"  name="ORDER_SOURCE" id="ORDER_SOURCE"></select>
+                    </div> -->
+                    <div class="head_font" style="width: 25%; background: #F2F2F2;">业务类型</div>
+                    <div class="head_font" style="width: 25%;">
+                        <select style="border: 1px solid #cccccc;width: 150px; margin-top: 5px;" name="BIZ_TYPE">
+                            <option value="I00803">企业自有积分</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="width: 100%; border-bottom:1px solid #ddd;height: 80px;">
+                    <div style="width: 25%; height: 80px; background: #F2F2F2; text-align:center;font-size:12px; float:left;line-height:80px;color:#747474;">支付账户</div>
+                    <div style="width: 75%; height: 29px; float: left; border-bottom:1px solid #ddd;font-size:12px; text-align:center; line-height:29px;"><a onclick="accountSelect(this)">支付账户选择</a></div>
+                    <div class="payment_select" id="payment_select"></div>
+                </div>
+                <div class="list_con">
+                    <div class="head_font" style="width: 25%; background: #F2F2F2;">接收账户</div>
+                    <div class="head_font"><a onclick="bumenSelect(this)"><input name="zhanghu_type" type="radio" value="" />部门账户</a></div>
+                    <div class="head_font"><a onclick="qunzhuSelect(this)" ><input name="zhanghu_type" type="radio" value="" />群组账户</a></div>
+                    <div class="head_font"><a onclick="guyuanSelect(this)" ><input name="zhanghu_type" type="radio" value="" />雇员账户</a></div>
+                </div>
+                <div class="list_con" id="employeeselect" style="height: auto;">
+
+                    <div style="clear:both;"></div>
+                </div>
+                <div class="list_con" style="height: 50px;">
+                    <div class="head_font" style="width: 20%; height: 40px; line-height: 40px;"><input style="display:inline-block;zoom: 1;color:#ffffff;font-size: 12px; cursor:pointer;vertical-align:middle;height: 24px;line-height: 24px;background:red; padding:0 15px; overflow:visible;text-decoration:none;margin:13px 5px 0px;border-radius:5px; " type="button" onclick="save_jifen_order();" value="创建&发放"/></div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript">
+    /*
+    function accountSelect(el){
+        var el=$(el);
+        Ex_Loader('modedialog',function(){
+            new ModeDialog(
+                //index.php?app=ectools&ctl=regions&act=showRegionTreeList
+                'index.php?app=ectools&ctl=qiyecenter&act=getAccountSelect',
+                {
+                    width:600,
+                    height:600,
+                    params:{
+                        iptText:el,
+                        iptHidden:el.getParent().getElement('input[type=hidden]')
+                    }
+                }
+            );
+        });
+
+    }
+    */
+    function accountSelect(el) {
+        Ex_Loader('modedialog', function () {
+            new ModeDialog('<{link app=qiyecenter ctl=site_member act=getaccount_balance}>?ORDER_ID='+$('uuid').getValue(), {
+                width: 1000, height: 600, params: {iptText: $('payment_select'), iptHidden: $('payment_select')}
+            });
+        });
+    }
+
+    function bumenSelect(el){
+        var COMPANY_NO_LIST = zhanghu_select(el);
+        if(!COMPANY_NO_LIST){
+            //提示信息
+            Ex_Dialog.alert('请选择支付账户！');
+            return false;
+        }
+        Ex_Loader('modedialog', function () {
+            new ModeDialog('<{link app=qiyecenter ctl=site_member act=bumenselect}>?CUSTOMER_ID='+COMPANY_NO_LIST+'&PRICE='+$("PRICE").getValue(), {
+                width: 1000, height: 600, params: {iptText: $('employeeselect'), iptHidden: $('employeeselect')}
+            });
+        });
+    }
+
+    function qunzhuSelect(el){
+        var COMPANY_NO_LIST = zhanghu_select(el);
+        if(!COMPANY_NO_LIST){
+            //提示信息
+            Ex_Dialog.alert('请选择支付账户！');
+            return false;
+        }
+        Ex_Loader('modedialog', function () {
+            new ModeDialog('<{link app=qiyecenter ctl=site_member act=qunzhuselect}>?CUSTOMER_ID='+COMPANY_NO_LIST+'&PRICE='+$("PRICE").getValue(), {
+                width: 1000, height: 600, params: {iptText: $('employeeselect'), iptHidden: $('employeeselect')}
+            });
+        });
+    }
+
+    function guyuanSelect(el){
+        var COMPANY_NO_LIST = zhanghu_select(el);
+        if(!COMPANY_NO_LIST){
+            //提示信息
+            Ex_Dialog.alert('请选择支付账户！');
+            return false;
+        }
+        Ex_Loader('modedialog', function () {
+            var time = Date.parse(new Date());
+            new ModeDialog('<{link app=qiyecenter ctl=site_member act=guyuanselect}>?CUSTOMER_ID='+COMPANY_NO_LIST+'&PRICE='+$("PRICE").getValue(), {
+                width: 1000, height: 700, params: {iptText: $('employeeselect'), iptHidden: $('employeeselect')}
+            });
+        });
+    }
+
+
+    function zhanghu_select(el){
+        el.getElements("input[name='zhanghu_type']")[0].set('checked',true);
+        var COMPANY_NO_LIST = "";
+        $('payment_select').getElements("input[name='payment_account[]']").each(function(item){
+            if(item.getValue() != ''){
+                COMPANY_NO_LIST += item.getValue()+'_';
+            }
+        });
+        if(COMPANY_NO_LIST == ''){
+            return false;
+        }else{
+            return COMPANY_NO_LIST;
+        }
+
+
+    }
+
+
+
+    function del_payment_select(el){
+        el.getParent(".payment_select_div").remove();
+    }
+
+
+    function save_jifen_order(){
+        var postArgs = $('jifen_order').toQueryString();
+        new Request.JSON({
+            url:'<{link app=qiyecenter ctl=site_member act=save_jifen_order}>',
+            method:'POST',
+            data:postArgs,
+            onComplete:function(res){
+                if (res.success == 'true'){
+                    Message.success("处理成功！");
+                    location.href = '<{link app=qiyecenter ctl=site_member act=jifen_orders}>';
+                }else{
+                    Message.error(res.error);
+                    location.reload();
+                }
+            }
+        }).send();
+
+    }
+
+    window.addEvent('domready',function(){
+        new Request.HTML({
+            url:'<{link app=qiyecenter ctl=site_member act=get_order_source}>',
+            update:$('ORDER_SOURCE'),
+            method:'POST',
+            data:'',
+            onComplete:function(res){}
+        }).send();
+
+    });
+
+</script>

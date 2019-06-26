@@ -1,0 +1,32 @@
+<!-- right-->
+ <!-- right-->
+<div class="member-main">
+	<div class="title title2"><{t}>杉德卡充值列表<{/t}></div>
+	<div id="tab-favorite" class="section switch">
+		<ul class="switchable-triggerBox tab_member clearfix">
+			<li <{if $active ==''}> class="active"<{/if}> ><a href='<{link app="b2c" ctl="site_member" act=sandlist}>'><{t}>全部<{/t}></a></li>
+			<li <{if $active =='1'}> class="active"<{/if}>><a href='<{link app="b2c" ctl="site_member" act=sandlist arg0="1"}>'><{t}>已充值列表<{/t}></a></li>
+			<li <{if $active =='f'}> class="active"<{/if}>><a href='<{link app="b2c" ctl="site_member" act="sandlist" arg0="f"}>'><{t}>未充值列表<{/t}></a></li>
+		</ul>
+
+
+	<{if !$data}>
+	<div class="noinfo"><{t}>暂无该类型兑换记录<{/t}></div>
+	<{else}>
+	<div class="GoodsSearchWrap" id="mbc-my-fav">
+	<div class="ItemsWarp clearfix">
+      <div id="b2c-member-fav-list">
+        <{include file="site/member/sandlist_items.html" app="b2c"}>
+	  </div>
+	</div>
+	<input type="hidden" id="b2c-fav-current-page" value="<{$current_page}>" />
+</div>
+ 
+<{pagers data=$pager}>
+<{/if}>
+<!--<{script src='goodscupcake.js' app='b2c'}>-->
+
+
+</div>
+</div>
+<!-- right-->

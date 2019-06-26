@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>测试窗口</title>
+ <script type="text/javascript">
+
+ //测试
+ returnParentParams();
+ 
+//返回父窗口相关的值
+function returnParentParams(){
+	//测试从父类获取参数
+	//var obj = window.dialogArguments
+	//alert(obj.name);
+
+	
+	//定义返回父类的参数对象
+	var returnValueObj = {};
+	
+	//测试showDialog 返回值
+	if (window.opener){
+		//for chrome
+		window.opener.returnValue = returnValueObj;
+	}else{
+		window.returnValue = returnValueObj;
+	}
+	//window.close();//关闭子窗口
+}
+</script>
+
+
+<script type="text/javascript">
+//页面加载完毕的时候执行此方法
+function initParams(){
+	var frm1Obj = document.getElementById('frm1');
+	top.frames['frm1'].tch1();
+}
+
+function top1(){
+	alert('top1');
+}
+
+</script>
+</head>
+<frameset cols="20%, *" frameborder="1" framespacing="1" onload="initParams();">
+<frame id="frm1" name="frm1" src="<{link app=qiyecenter ctl=site_member act=testLeft}>"/>
+<frame id="frm2" name="frm2" src="<{link app=qiyecenter ctl=site_member act=testRight}>"/>
+<noframes></noframes>
+</frameset>
+</html>

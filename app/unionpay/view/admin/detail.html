@@ -1,0 +1,33 @@
+<h3 class="head-title">日志详情</h3>
+<div class="tableform">
+  <div class="division">
+    <table width="100%" cellspacing="0" cellpadding="0" border="0" >
+      <tbody>
+        <tr>
+          <th>操作时间：</th>
+          <td><{$arr_logs.dateline|cdate}></td>
+        </tr>
+        <tr>
+          <th>关键字：</th>
+          <td><{$arr_logs.operate_key}></td>
+        </tr>
+        <tr>
+          <th>结果状态：</th>
+          <td><{$arr_logs.resp_result}></td>
+        </tr>
+        <tr>
+          <th>订单号:</th>
+          <td><{$arr_logs.order_id}></td>
+        </tr>
+        <tr>
+          <th>单据号:</th>
+          <td><{$arr_logs.bill_id}></td>
+        </tr>
+        <tr>
+          <th>中国银联(Unionpay)交互数据:</th>
+          <td><{$arr_logs.memo|escape:'html'}></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

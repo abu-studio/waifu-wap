@@ -1,0 +1,80 @@
+<form method="POST" id='exchange_form' action="<{if $card_id&&$batch}>
+index.php?app=cardcoupons&ctl=admin_excards_pass_exchangelog&act=update
+<{else}>index.php?app=cardcoupons&ctl=admin_excards_pass_exchangelog&act=create
+<{/if}>" class="tableform"
+enctype="multipart/form-data">
+    <div class="division">
+	<table>
+       <tr>
+				<th>选择卡券:</th>
+				<td>
+					<{if $card_id&&$batch}>
+					<{$card_name}>
+					<input type="hidden" name="card_id" value="<{$card_id}>"/>
+					<input type="hidden" name="batch" value="<{$batch}>"/>
+					<{else}>
+					<{input type="object" vtype="required" object="cards@cardcoupons" name="card_id"  filter="source=external"}> &nbsp;
+					<{/if}>
+				</td>
+		</tr>
+		<tr>
+				<th>选择文件:</th>
+				<td>
+					<input type="file"  name="exchange_cards" /><a target='_blank' href="index.php?app=cardcoupons&ctl=admin_excards_pass_exchangelog&act=downpass">下载模板</a>
+				</td>
+		</tr>
+	</table>
+    </div>
+</form>
+<{area inject='.mainFoot'}>
+<div class="table-action">
+	<{button label=$___cardcoupons="保存"|t:'cardcoupons' type="submit" id='exchange_form_submit' }>
+</div>
+<{/area}>
+
+<script>
+    (function(){
+        var _form = $('exchange_form');
+        var btn =$('exchange_form_submit');
+		_form.store('target',{
+            onComplete:function(response){         
+				var hash_res_obj = JSON.decode(response);
+				if (hash_res_obj.success != undefined && hash_res_obj.success != ""){
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                    }
+               }else{
+                    //alert(hash_res_obj.error);
+                }            
+            },
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+               if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+              {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                    }
+               }
+               else
+                {
+                    //alert(hash_res_obj.error);
+                }            
+            }
+        });
+		
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+        });
+
+    })();
+</script>

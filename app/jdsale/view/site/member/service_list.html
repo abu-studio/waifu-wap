@@ -1,0 +1,65 @@
+<div id="member-main" class="member-main">
+    <table cellspacing="0" cellpadding="0"  width="100%">
+        <tr>
+            <td>
+                <h1 class="head-title"><{t}>京东售后服务单列表(本订单号：<{/t}><{$order_id}>)</h1>
+            </td>
+            <td>
+                <form action="<{link app=jdsale ctl=site_aftersales act=order_skus arg0=$order_id}>"  method="post" name="x-return-back-form" id="x-return-back-form">
+                    <{button id="return_back" type="submit"  label=$___jdsale="返回"|t:'jdsale'}>
+                </form>
+            </td>
+        </tr>
+    </table>
+    <br/>
+
+    <table cellspacing="0" cellpadding="0" class="gridlist" width="100%">
+        <thead>
+            <th width="10%" align="center"><{t}>服务单号<{/t}></th>
+            <th width="10%" align="center"><{t}>服务类型<{/t}></th>
+            <th width="10%" align="center"><{t}>服务申请时间<{/t}></th>
+            <th width="10%" align="center"><{t}>商品编号<{/t}></th>
+            <th width="40%" align="center"><{t}>商品名称<{/t}></th>
+            <th width="10%" align="center"><{t}>服务单环节<{/t}></th>
+            <th width="10%" align="center"><{t}>操作<{/t}></th>
+        </thead>
+        <tbody>
+            <{foreach from=$afsServiceList item=item key=keyNo name="item"}>
+            <form action="<{link app='jdsale' ctl='site_aftersales' act='cancel_apply' arg0=$item.afsServiceId arg1=$jdOrderId arg2=$order_id}>" id="form<{$item.afsServiceId}>" method="post" class="tableform">
+                <tr >
+                    <td  align="center" >
+                    <a href="<{link app=jdsale ctl=site_aftersales act=service_detail arg0=$item.afsServiceId arg1=$order_id arg2=$jdOrderId arg3=$hasSubOrder }>"
+                       class='font-blue operate-btn' ><{$item.afsServiceId}></a>
+                    </td>
+                    <td align="center" >
+                        <{$item.customerExpectName}>
+                    </td>
+                    <td align="center" >
+                        <{$item.afsApplyTime}>
+                    </td>
+                    <td align="center" >
+                        <{$item.wareId}>
+                    </td>
+                    <td align="center" >
+                        <{$item.wareName}>
+                    </td>
+                    <td align="center" >
+                        <{$item.afsServiceStepName}>
+                    </td>
+                    <td align="center" >
+                        <{if ($item.afsServiceStep == 10 || $item.afsServiceStep == 21) }>
+                        <div class="table-action" style="margin-top:10px;">
+                            <{button id="x-submit" type="submit"  label=$___jdsale="取消"|t:'jdsale'}>
+                        </div>
+                        <{else}>
+                        <{t}>不可取消<{/t}>
+                        <{/if}>
+                    </td>
+                </tr>
+                </form>
+            <{/foreach}>
+        </tbody>
+
+    </table>
+        <{pagers data=$pager}>
+</div>

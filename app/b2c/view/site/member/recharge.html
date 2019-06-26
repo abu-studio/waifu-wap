@@ -1,0 +1,138 @@
+<!-- right-->
+<{css src="member.css" app="b2c" pdir="css_mini"}>
+ <div class="bianzhifuContent-right">
+	<div class="content-title"> <{$title}> -- <{$otitle}> </div>
+	<div style="height:230px;margin-left:40px;margin-top:60px;margin-bottom: 40px;">
+		<div style="float: left;width: 520px; margin-bottom: 47px;">
+			<form id="frmId" method="post" action="<{link app=sand ctl=site_sand act=sandOrderList}>">
+				<input type="hidden" id="organization_code" name="organization_code" value="">
+			<div class="sdm_tr">
+				<div class="sdm_td_left" style="margin-left:0px">
+					<span style="display:block;font-size: 15px;line-height:40px;">福点余额：</span>
+				</div>
+				<div class="sdm_td_right">
+					<span style="height: 40px;line-height: 40px;font-size: 15px;margin-left: 20px;"><font style="color:#FB5E00;font-weight: bold;font-size: 16px;"><{$my_fd}></font> 福点</span>
+				</div>
+			</div>
+			<{if $memdata.sandopen == '0'}>
+			<div class="sdm_tr"> 
+				<div class="sdm_td_left" style="margin-left:0px">
+					<span style="display:block;font-size: 15px;line-height:40px;">电话号码：</span>
+				</div>
+				<div class="sdm_td_right">
+					<input class="sdm_input_l" vtype="required&&phone" id="phone" name="mobile" onBlur="chkphone(this)" value="<{$memdata.mobile}>"  type="text"/><span style="margin-left: 20px;color:red;" id='phonePro'></span>
+				</div>
+			</div>
+			<{/if}>
+			<div class="sdm_tr"> 
+				<div class="sdm_td_left" style="margin-left:0px">
+					<span style="display:block;font-size: 15px;line-height:40px;">充值金额：</span>
+				</div>
+				<div class="sdm_td_right">
+					<input class="sdm_input_l" vtype="required&&unsignedint" style="width:100px" id="money" name="money" type="text" value="100" onBlur="getpayfd(this);"/><span style="font-size: 15px;padding: 0px 10px;">元</span><span style="margin-left: 20px;color:red;" id='mtips'></span>
+				</div>
+			</div>
+			
+			<div class="sdm_tr"> 
+		
+				<div class="sdm_td_left" style="margin-left:0px">
+					<span style="display:block;font-size: 15px;line-height:40px;">支付福点：</span>
+				</div>
+				<div class="sdm_td_right">
+					<span style="height: 40px;line-height: 40px;font-size: 15px;margin-left: 20px;"><font style="color:#FB5E00;font-weight: bold;font-size: 16px;" id="curMoney">0</font> 福点</span>
+				</div>
+			</div>
+			</form>
+			<div class="sdm_tr"> 
+		
+				<div class="sdm_td_left" style="margin-left:0px">
+					
+				</div>
+				<button class="sdm_sel_button" onClick="validateBtn(this)">立即充值</button>
+			</div>
+		</div>
+		
+		<div style="margin: 30px 0px 20px 0px;float: left;width: 400px;">
+			<div style="height: 25px;line-height: 25px;font-size: 14px;font-weight: bold;">杉德卡兑换规则：</div>
+			<div style="height: 25px;line-height: 25px;font-size: 14px;font-weight: bold;">*	积分兑换杉德卡，最低兑换金额为100，只能兑换100倍数</div>
+			<div style="height: 25px;line-height: 25px;font-size: 14px;font-weight: bold;">*	兑换在2个工作日内完成，成功后，不接受退换</div>
+			<div style="line-height: 25px;font-size: 14px;font-weight: bold;word-wrap: break-word;">*	兑换成功后，您将会收到上海外服短信发送的杉德账号，您可以通过www.sandlife.com.cn登入我的账户查看</div>
+			<div style="height: 25px;line-height: 25px;font-size: 14px;font-weight: bold;">*	悠福网只提供兑换电子杉德卡服务，不提供其他额外服务</div>
+		</div>
+		
+	</div>
+</div>
+
+<script type="text/javascript">
+
+
+function chkphone(){
+	phone = $('phone').value;
+	if (!(/^1[3458][0-9]{9}$/.test(phone))||phone =='') { 
+		$('phonePro').set('html','请输入正确的手机号码');
+		return false;
+	}else{
+		$('phonePro').set('html','');
+	}
+}
+
+
+
+function getpayfd(){
+	var money = $('money').value;
+	var fdnum = <{$my_fd}>;
+	var counterFee = <{$CounterFee}>;
+	
+	if(money%100||money == ''||money ==0) { 
+		$('mtips').set('html','请输入100的倍数');
+	　　return false; 
+	}else{
+		$('mtips').set('html','');
+	}
+	var payfd = Math.ceil(counterFee*money/100)+parseInt(money);
+	$('curMoney').set('html',payfd);
+}
+
+
+function validateBtn(obj){
+	var fdnum = <{$my_fd}>;
+	var money = $('money').value;
+	var frmObj = $('frmId');
+	<{if $memdata.sandopen == '0'}>
+	phone = $('phone').value;
+	if (!(/^1[3458][0-9]{9}$/.test(phone))||phone =='') { 
+		$('phonePro').set('html','请输入正确的手机号码');
+		return false;
+	}else{
+		$('phonePro').set('html','');
+	}
+	<{/if}>
+	if (money%100||money == ''||money ==0) { 
+		$('mtips').set('html','请输入100的倍数');
+	　　return false; 
+	}else{
+		$('mtips').set('html','');
+	}
+	
+	
+	var url="<{link app=sand ctl=site_sand act=chkfd}>";
+	new Request.JSON({
+		url:url,
+		method:'post',
+		data:'money='+money+'&point='+fdnum,
+		onComplete: function(rs){
+			if(rs.result == 'error'){
+				$('mtips').set('html','福点余额不足');
+				return false;
+			}else{
+				frmObj.submit();
+			}
+		}
+	}).send();
+}
+</script>
+		
+		
+		
+		
+		

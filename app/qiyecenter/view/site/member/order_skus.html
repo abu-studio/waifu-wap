@@ -1,0 +1,77 @@
+<div id="member-main" class="member-main">
+    <table cellspacing="0" cellpadding="0"  width="100%">
+        <tr>
+            <td>
+                <h1 class="head-title"><{t}>京东售后-订单商品列表(本订单号：<{/t}><{$order_id}>)</h1>
+            </td>
+            <td rowspan="2">
+                <form action="<{link app=qiyecenter ctl=site_member act=orders }>"  method="post" name="x-return-back-form" id="x-return-back-form">
+                    <{button id="return_back" type="submit"  label=$___jdsale="返回"|t:'jdsale'}>
+                </form>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <{if $availableMsg }>
+                <{$availableMsg}>
+                <{elseif $hasService == '1' }>
+                <{t}><a href="<{link app=qiyecenter ctl=site_member act=service_list arg0=$jdOrderId arg1=$order_id arg2=$hasSubOrder}>"
+                        class='font-blue operate-btn' >已申请服务记录<{/t}></a>
+                <{else}>
+                <{t}>该订单暂无售后服务单<{/t}>
+                <{/if}>
+
+            </td>
+
+        </tr>
+    </table>
+    <br/>
+
+</h3><p>
+    <table cellspacing="0" cellpadding="0" class="gridlist" width="100%">
+    <thead>
+        <th width="20" align="center"><{t}>商品编号<{/t}></th>
+        <th width="50" align="center"><{t}>商品名称<{/t}></th>
+        <th width="10" align="center"><{t}>数量<{/t}></th>
+        <th width="19" align="center"><{t}>操作<{/t}></th>
+    </thead>
+    <tbody>
+        <{foreach from=$skus item=item key=keyNo name="item"}>
+        <form action="<{link app='jdsale' ctl='site_aftersales' act='apply'}>" id="form<{$item.bn}>" method="post" class="tableform">
+            <input type="hidden" id="order_id" name="order_id" value="<{$order_id}>">
+            <input type="hidden" id="jdOrderId" name="jdOrderId" value="<{$jdOrderId}>">
+            <{if $item.jd_suborder_id }>
+            <input type="hidden" id="jd_suborder_id" name="jd_suborder_id" value="<{$item.jd_suborder_id}>">
+            <{/if}>
+            <input type="hidden" id="sku_id" name="sku_id" value="<{$item.bn}>">
+            <input type="hidden" id="sku_name" name="sku_name" value="<{$item.name}>">
+            <input type="hidden" id="nums" name="nums" value="<{$item.nums}>">
+            <tr >
+                <td  align="center" >
+                    <{$item.bn}>
+                </td>
+                <td align="center" >
+                    <{$item.name}>
+                </td>
+                <td align="center" >
+                    <{$item.nums}>
+                </td>
+                <td align="center" >
+                    <{if $item.afterSales == '1' }>
+                    <div class="table-action" style="margin-top:10px;">
+                        <{button id="x-submit" type="submit"  label=$___jdsale="申请"|t:'jdsale'}>
+                    </div>
+                    <{else}>
+                    <{t}>不可以申请售后<{/t}>
+                    <{/if}>
+                </td>
+
+            </tr>
+        </form>
+        <{/foreach}>
+    </tbody>
+
+</table>
+
+</div>

@@ -1,0 +1,79 @@
+<div class="division" style="margin:0;position:relative">
+	<!--flash按钮展示层-->
+		<div class="clearfix">
+		 <!--上传的图片展示层-->
+			<div class="pic-area" id="pic-area">
+				 <input type="hidden" name="image_default" value="<{$goods.image_default_id}>" />
+				 <div id='all-pics' style="width:100%">
+					 <div class="gpic-box">
+						<{include file="site/member/upload/gimage.html" app='qiyecenter'}>
+					 </div>
+				</div>
+			</div>
+		<div id="default_img">
+		<img src="<{$log_url}>" width="88" height="88" style="border:1px solid #ccc"/>
+		</div>
+         <span id="pic-uploader">
+              <{button app="desktop" class="btn-upload" label=$___b2c="添加图片"|t:'b2c' icon="image_new.gif"}>
+         </span>
+     </div>
+	<!--上传的图片展示层-->
+</div>
+<script>
+
+var goodsEditFrame = (function(){
+  Ex_Loader('uploader',function(){
+        new Swiff.Uploader( {
+            allowDuplicates: true,
+            verbose: true,
+            zIndex:'65535',
+            height:30,
+            url:'<{link app=qiyecenter ctl=site_member act=save_qiye_stylesetting arg0=logo}>',
+            path: '<{$file_dir}>/uploader.swf',
+            typeFilter: {
+                'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png'           
+            },
+            fileSizeMax:<{$IMAGE_MAX_SIZE}>,
+            target:'pic-uploader',
+            onSelect:function(rs){
+                if(rs)
+                rs.each(function(v){
+                    if(v.size>this.fileSizeMax){
+                        alert(v.name+'<{t}>\n\n文件超出大小<{/t}>');
+                    };
+                },this);
+            },
+            onSelectFail:function(rs){
+                rs.each(function(v){
+                    if(v.validationError=='sizeLimitMax'){
+                        alert(v.name+'<{t}>\n\n文件超出大小<{/t}>');
+                    };
+                });
+            },
+            onSelectSuccess:function(rs){
+                var PID='up_';
+                var _this=this;
+                rs.each(function(v,i){
+                     new Element('div',{'class':'gpic-box','id':PID+v.id}).inject($('all-pics'));
+                });
+                this.start();
+            },
+            onFileOpen:function(e){
+                $('up_'+e.id).setHTML('<em style="font-size:13px;font-family:Georgia;">0%</em>');
+            },
+            onFileProgress:function(e){
+                $('up_'+e.id).getElement('em').set('text',e.progress.percentLoaded+'%');
+            },
+            onFileComplete: function(res){
+                if(res.response.error){
+                    return  new MessageBox.error('<{t}>文件<{/t}>'+res.name+'<{t}>上传失败<{/t}>');
+                }
+                $('all-pics').setHTML(res.response.text);
+				$('default_img').hide();
+            }
+        });
+
+    });
+
+})();
+</script>

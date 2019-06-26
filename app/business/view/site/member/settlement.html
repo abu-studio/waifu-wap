@@ -1,0 +1,80 @@
+<{script src="zDialog.js" app="financial" pdir="Dialog"}>
+<{script src="zDrag.js" app="financial" pdir="Dialog"}>
+
+<div class="member-main" id="J_DataTable">
+     <div class="orderlist-warp">
+        <div class="title title2">
+             <{t}>会员中心 > 结算报表<{/t}>
+        </div>
+     <!--列表-->      
+         <table class="gridlist table-goods-list gridlist_member " style="border-bottom:none" width="100%" border="0" cellspacing="0"  cellpadding="0">
+               <tr>
+                    <th class="first"><{t}>结算报表单号<{/t}></th>
+                    <th><{t}>结算时间<{/t}></th>
+                    <th><{t}>订单金额<{/t}></th>
+					<th><{t}>使用积分<{/t}></th>
+                    <th><{t}>结算金额<{/t}></th>
+                    <th><{t}>平台抽成金额<{/t}></th>
+                    <th><{t}>售前退款金额<{/t}></th>
+                    <th><{t}>售后退款金额<{/t}></th>                    
+                    <th><{t}>赠送积分<{/t}></th>
+                    <th><{t}>往期负结算<{/t}></th>
+                    <th><{t}>往期售后退款<{/t}></th>
+                    <th><{t}>是否结算<{/t}></th>
+                </tr>
+                <tbody>
+                <{if $count > 0}>
+                <{foreach from=$data item="item" key="key"}>
+                    <tr <{if ($key+1)%2 == 0}>class="order-list-tr"<{/if}>>
+                       <td><a target='_blank' href="<{link app='business' ctl='site_member' act='settlement_item' arg=$item.settlement_no }>"><{$item.settlement_no}></a></td>
+                       <td><{$item.create_time|cdate:FDATE_STIME}></td>
+                       <td><{$item.order_money|cur}></td>
+					   <td><{$item.score_use|cur}></td>
+                       <td><{$item.account|cur}></td>
+                       <td><{$item.order_cut|cur}></td>
+                       <td><{$item.refund|cur}></td>
+                       <td><{$item.total_recut|cur}></td>
+                       <td><{$item.score_give|cur}></td>
+                       <td><{$item.pre_settlement_cut|cur}></td>
+                       <td><{$item.pre_refund_recut|cur}></td>
+                       <td><{if $item.is_balance == '1'}>是<{else}>否<{/if}></td>
+                    </tr>
+                <{/foreach}>
+                <{else}>
+                   <tr><td><p>没有检索到结算报表。</p></td></tr>
+                <{/if}>
+                </tbody>
+         </table>
+     <{pagers data=$pager}>
+   </div>
+</div>
+
+<script language='javascript'>
+//检查日期
+function check_date(value){
+   var date = value;
+   var result = date.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/);
+
+   if (result == null)
+       return false;
+       
+   var d = new Date(result[1], result[3] - 1, result[4]);
+   return (d.getFullYear() == result[1] && (d.getMonth() + 1) == result[3] && d.getDate() == result[4]);
+
+}
+
+//为了方便显示在地址栏，重新格式化日期格式
+function format_date(value){
+   
+   var ret = "";
+   if(value.trim() != ""){
+      var arr = value.split('-');
+      ret = encodeURIComponent(arr[0]+"@"+arr[1]+"@"+arr[2]);
+   }
+   return ret;
+}
+
+function goto_c_bill(){
+    location.href= "<{link app='financial' ctl='site_member' act='goto_create_sbill'}>";
+}
+</script>

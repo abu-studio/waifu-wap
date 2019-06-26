@@ -1,0 +1,60 @@
+<{if $type == "qiye_zhanghuxinxi"}>
+		<style>
+		.zzright_list .fd_ye .fd_one{font-size:14px;width:8%}
+		</style>
+        <div class="fd_ye">
+            <div class="fd_one">收支类型</div>
+            <div class="fd_one" style="width: 11%;">
+                <input  type="text" style="width: 80px; border: 1px solid #a9a9a9;"/>
+            </div>
+            <div class="fd_one" style="margin-left:20px">对方账户</div>
+            <div class="fd_one" style="width: 16%;" >
+                <select  style="width:120px;font-family: 微软雅黑,宋体;font-size: 12px;">
+                    <option>请选择</option>
+                </select>
+            </div>
+            <div class="fd_one" style="margin-left:20px">发生时间</div>
+            <div class="fd_one" style="width: 23%;">
+                <input type="text" style="border: 1px solid #a9a9a9; width:80px"/>-<input type="text" style="border: 1px solid #a9a9a9; width:80px"/>
+            </div>
+            <div class="fd_one" style="margin-left:20px">
+				<input type="button" value="搜索" style="background: #c40001;padding: 0 15px;border: none;display: inline-block;zoom: 1;overflow: visible;color: #FFFFFF;cursor: pointer;vertical-align: middle;height: 24px;line-height: 24px;border-radius: 5px;font-family: 微软雅黑,宋体;font-size: 14px;"/>
+            </div>
+        </div>
+        <div class="show_list">
+            <div class="list_head" style="width: 93%;margin-left: 26px;line-height:30px">
+                <div class="head_font">账户</div>
+                <div class="head_font">状态</div>
+                <div class="head_font" style="width: 22%;">福点余额</div>
+                <div class="head_font">操作</div>
+            </div>
+            <{foreach from=$zhanghuxinxi item=item}>
+            <div class="list_con" style="width: 93%;margin-left: 26px;line-height:30px">
+                <div class="head_font"><{$item.SUB_ACT_NAME}></div>
+                <div class="head_font"><{$item.STATUS_NAME}></div>
+                <div class="head_font" style="width: 22%;"><{$item.BALANCE}></div>
+                <div class="head_font">--</div>
+            </div>
+            <{/foreach}>
+        </div>
+<{else}>
+    <div class="show_list">
+        <div class="list_head" style="width: 93%;margin-left: 26px;line-height:30px">
+            <div class="head_font">收支类型</div>
+            <div class="head_font">账户类型</div>
+            <div class="head_font" style="width: 22%;">记录时间</div>
+            <div class="head_font">事件/备注</div>
+            <div class="head_font">额度</div>
+        </div>
+        <{foreach from=$zhanghuxinxi item=item}>
+            <div class="list_con" style="width: 93%;margin-left: 26px;line-height:30px">
+                <div class="head_font"><{$item.TRANSACTION_NAME}></div>
+                <div class="head_font"><{$item.SUB_ACT_NAME}></div>
+                <div class="head_font" style="width: 22%;"><{$item.TRANSACTION_TIME}></div>
+                <div class="head_font"><{$item.DESCRIPTION}></div>
+                <div class="head_font"><{$item.BALANCE}></div>
+            </div>
+        <{/foreach}>
+    </div>
+
+<{/if}>

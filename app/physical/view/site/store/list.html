@@ -1,0 +1,74 @@
+<div class="tijian_main_leftSl clb">  
+	<div class="one clb">
+		<div class="addr">
+			<img src="<{$res_url}>/image/tjlb_01.png"/>   
+			<span>您所在的位置：</span>
+			<a href="<{link app=physical ctl=site_index act=index}>">体检首页</a>
+			<span>></span>
+			<span style="color: black;">体检门店</span>                
+		</div>
+	</div>
+	
+	<div class="two clb">
+		<form id="store_list" name="store_list" method="GET" action="<{link app='physical' ctl='site_index' act='storelist' args=array($goods_id,$order)}>">
+			<span class="lb">地区</span>
+			<span>
+				<{input app=ectools id="area" type="region"  name="area" vtype='area' value=$area}>
+			</span>
+			<span class="lb">
+				机构
+			</span>
+			<span>
+				<{input type='select' name='organization_id' required="true" vtype="required" options=$organization_list value=$organization_id|default:0}>
+			</span>
+			<span class="lb">
+				适用套餐
+			</span>
+			<span>
+				<input type="text" name="package_name" value="<{$package_name}>" style="width:100px;" placeholder="输入套餐名称"/>
+			</span>
+			<span class="lb">
+				门店
+			</span>
+			<span>
+			   <input type="text" name="store_name" value="<{$store_name}>" style="width:100px;" placeholder="输入门店名称"/>
+			</span>
+			<span class="tijian_search" onclick="document.getElementById('store_list').submit();">
+				搜索
+			</span>
+		</form>
+	</div>
+	
+	<div class="three clb">
+		<div class="lt">	
+			找到体检门店<span><{$count}></span>家
+		</div>
+		<div class="rt">	
+			<span>排序</span>
+			<a class="<{if $order eq 0}>act<{/if}>" href="javascript:void(0);">默认↓</a>
+		</div>   
+	</div>
+	
+	
+	<div class="list clb">
+		<ul>
+		<{foreach from=$store_list item=item key=key}>
+			<li>
+				<div class="left">
+					<img src="<{$item.image|storager:'s'}>"/>
+				</div>
+				<div class="middle">
+					<span class="name"><{$item.store_name}></span><br/>
+					<span class="lb">营业时间：</span><{$item.open}>-<{$item.close}>&nbsp;&nbsp;<{$item.restday_html}>休息<br/>
+					<span class="lb">机构地址：</span><{$item.area|region}>&nbsp;&nbsp;<{$item.address}>
+				</div>
+				<div class="right">
+					<a href="<{link app=physical ctl=site_index act=storedetail args=array($item.store_id)}>">查看详情</a>
+				</div>
+			</li>
+		<{/foreach}>
+		</ul>
+		<{pagers data=$pager}>
+
+	</div> <!--列表介绍-->
+</div>

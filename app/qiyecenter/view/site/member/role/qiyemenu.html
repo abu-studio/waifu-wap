@@ -1,0 +1,65 @@
+<div class="tree_head">
+    <div class="head_center">
+        <div class="con">
+            <font class="zuzhijiegou">组织结构</font>
+            <!-- <input class="sfsc_menu_type" name="sfsc_menu_type" type="radio" value="I01303" <{if $sfsc_menu_type == "I01303"}>checked="checked"<{/if}>/>部门
+            <input class="sfsc_menu_type" name="sfsc_menu_type" type="radio" value="I01304" <{if $sfsc_menu_type == "I01304"}>checked="checked"<{/if}> />群组 -->
+        </div>
+    </div>
+    <div class="tree">
+        <div class="head_tree" id="head_tree">
+            <{$sfsc_menu}>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    window.addEvent('domready', function(){
+        new Tree('both');
+        new Collapse('both');
+
+        $$(".sfsc_menu_type").addEvent('click', function() {
+            if(this.get("value") != ""){
+                new Request.HTML({
+                    url:'<{link app=qiyecenter ctl=site_member act=getqiyemenu}>',
+                    update:$('head_tree'),
+                    method:'POST',
+                    data:"menu_type="+this.get("value"),
+                    onComplete:function(res){
+                        $('head_tree').show();
+                        new Tree('both');
+                        new Collapse('both');
+                    }
+                }).send();
+            }
+        });
+    });
+    function switch_sfscmenu(id,sfscthis,type){
+        sfscthis.getFirst().set("checked",'checked');
+        var sfsc_type = "";
+        if(id != ""){
+            if(type == "I01302"){
+                sfsc_type = "&qiyeguanli_edit=true";
+            }else if(type == "I01303"){
+                sfsc_type = "&bumenguanli_edit=true";
+            }else if(type == "I01304"){
+                sfsc_type = "&qunzuguanli_edit=true";
+            }else{
+                sfsc_type = "";
+            }
+            if(sfsc_type != ""){
+                new Request.HTML({
+                    url:'<{link app=qiyecenter ctl=site_member act=meuneditinput}>',
+                    update:$('zzright_list'),
+                    method:'POST',
+                    data:'type='+encodeURIComponent(type)+'&id='+id+sfsc_type+'&customer_no='+id,
+                    onComplete:function(res){
+                        $('zzright_list').show();
+                    }
+                }).send();
+            }
+
+        }
+    }
+</script>
+

@@ -1,0 +1,21 @@
+<form class="tableform" method='post' action='index.php?app=b2c&ctl=admin_order&act=goback_finish_order_edit' id="order-delivery-form">
+  <input type='hidden' name='order_id' value='<{$order_id}>'>
+	<div>此功能为了自动脚本关闭[已付款][已发货]并且超时状态的订单，<b>确认修改</b>后前台客户确认订单时长可以为当前时间延后一年</div>
+</form>
+
+<{area inject='.mainFoot'}>
+<div class="table-action">
+	<{button label=$___b2c="确认修改"|t:'b2c' id="order-delivery-form-submit" class="order-action" type="button"}>
+</div>
+<{/area}>
+
+<script type="text/javascript">
+(function(){
+	var _form = $('order-delivery-form');
+	var btn =$('order-delivery-form-submit');
+	btn.addEvent('click',function(){
+		_form.fireEvent('submit',{stop:$empty});
+	});
+	
+})();
+</script>

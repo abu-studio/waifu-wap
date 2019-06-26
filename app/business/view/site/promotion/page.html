@@ -1,0 +1,105 @@
+<{foreach from=$sections item=section}>
+<div class="spage-main-box">
+  <{include file=$section.file app=$section.app}>
+</div>
+<{/foreach}>
+<table cellspacing="0" cellpadding="0" class="table-action">
+      <tbody><tr valign="middle">
+        <td>
+        <{assign var="___a"  value="关  闭"}>
+        <{assign var="___c"  value=$___b2c='确定退出?'|t:'b2c'}>
+            <!--<{button label=$___b2c="保存并关闭窗口"|t:'b2c' class="btn-primary" type="button" id="submitForm" onclick="submitForm(event,2)"}>-->
+			<{button label="保  存" class="btn-primary" onclick="submitForm(event,1)"}>
+            <{button label=$___content=$___a|t:'content' class="btn-secondary" type="button" onclick="if(confirm('{$___c}'))$('addr_div').setStyle('display','none');"}>
+        </td>
+        </tr>
+        </tbody>
+</table>
+
+<script>
+validatorMap['requiredradio'] = [LANG_Validate['requiredonly'], function(element) {
+    var parent =  element.getParent('ul'),radio;
+    if(element.get('name')) radio = parent.getElements('input[type=radio][name="'+element.get('name')+'"]');
+    else radio = parent.getElements('input[type=radio]');
+    return radio.some(function(rd) {
+        return rd.checked == true;
+    });
+}];
+var submitForm = function (event,sign){
+       var _form=$('promotion_form');
+	   
+	 var Ytime = $$('input[name=from_time]').get('value');
+	 var Htime = $$("select[name='_DTIME_[H][from_time]']").get('value');
+	 var Mtime = $$("select[name='_DTIME_[M][from_time]']").get('value');
+	 var alltime = Ytime+' '+Htime+':'+Mtime+':00';
+	 var timestamp1 = Date.parse(new Date(alltime));
+	 	 timestamp1 = timestamp1 / 1000;
+	
+	var Ytime = $$('input[name=to_time]').get('value');
+	 var Htime = $$("select[name='_DTIME_[H][to_time]']").get('value');
+	 var Mtime = $$("select[name='_DTIME_[M][to_time]']").get('value');
+	 var alltime = Ytime+' '+Htime+':'+Mtime+':00';
+	 var timestamp2 = Date.parse(new Date(alltime));
+	 	timestamp2 = timestamp2 / 1000;
+	var tempnum = timestamp2-timestamp1;
+	if(tempnum<0){
+		alert('<{t}>开始时间不能大于结束时间<{/t}>');
+		return false;
+	}
+	
+		var rulename = $('rule[name]').value
+        if(!rulename) {
+			alert('<{t}>请填写规则名称<{/t}>');
+			return false;
+        }
+	   
+	   
+	   
+       var flag = false;
+       
+       $ES('input[type=radio]','stpl_list').each(function(el){
+            if( el.get('disabled')!=true ) {
+                if(el.checked) flag = el.checked;
+            }
+        });
+        
+        
+        if(!flag) {
+			alert('<{t}>请选择优惠方案<{/t}>');/*alert('<{t}>请选择过滤条件<{/t}>');*/
+			window.location.hash = "#stpl_list";  
+			return false;
+        }
+		var mLev_input=$('mLev').getElements('input[name^=rule[member_lv_ids]]');
+		var is_check=false;
+		$ES('input[type=checkbox]','mLev').each(function(el){
+			if(el.checked) is_check =true;
+            
+			});
+		if(!is_check) {
+            alert('<{t}>请选择适用会员级别<{/t}>');
+			window.location.hash = "#mLev";  
+			return false;
+        }
+        switch (sign){
+            case 1:
+                var target={
+                    onComplete:function(){
+                        location.reload();
+                }};
+            break;
+            case 2:
+                var target={
+                    onComplete:function(rs){
+                        if(rs&&!!JSON.decode(rs).success){
+                          try{
+                              window.opener.finderGroup['<{$env.get.finder_id}>'].refresh();
+							  window.close();
+                          }catch(e){}
+                        }
+                    }};
+            break;
+       }
+       _form.store('target',target);
+	   _form.submit();
+    };
+</script>

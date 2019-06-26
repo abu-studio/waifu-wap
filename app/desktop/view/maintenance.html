@@ -1,0 +1,29 @@
+<form action="index.php?app=desktop&ctl=roles&act=maintenance" method="post" id="x-maintenance"  target="{update:'messagebox'}">
+<div class="tableform">  
+  <h4><{t}>维护页面<{/t}></h4>
+
+<div class="division"> 
+<table cellspacing="0" cellpadding="0" border="0">
+  <tr>
+  	<th><{t}>是否开启维护页面<{/t}></th>
+    <td>
+	<{if $maintenance.is_open}>
+		<label><input type=radio name="maintenance" value="true" checked /><{t}>开启<{/t}></label> &nbsp; &nbsp; 
+		<label><input type=radio name="maintenance" value="false" /><{t}>关闭<{/t}></label>
+	<{else}>
+		<label><input type=radio name="maintenance" value="true" /><{t}>开启<{/t}></label> &nbsp; &nbsp; 
+		<label><input type=radio name="maintenance" value="false" checked /><{t}>关闭<{/t}></label>
+	<{/if}> &nbsp; &nbsp; <{help}><{t}>维护页面开启后，访问商城前台页面将自动跳转到维护页面。<{/t}><{/help}>
+	</td>
+	
+  </tr>
+
+</table>
+</div>  
+
+  <div class="table-action">
+	<{button id="x-submit" type="submit"  label=$___ectools="保存"|t:'ectools'}>
+</div>
+  
+
+</form>

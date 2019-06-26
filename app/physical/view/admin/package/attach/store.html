@@ -1,0 +1,12 @@
+<br/>
+<{capture name="listHeader"}>
+  <div class="span-2"><{t}>门店成本价<{/t}></div>
+<{/capture}>
+<{capture name="listBody"}>
+  <div class="span-5" style="width:600px;">
+    <{t}>成本价: 男士<{/t}><input type="text" style="width:100px;" class="x-input" required="required" name="price[man][<{$item.store_id}>]" value="<{$package.cost_price[$item.store_id].man}>">
+    <{t}>未婚女士<{/t}><input type="text" style="width:100px;" class="x-input" required="required" name="price[unmdwoman][<{$item.store_id}>]" value="<{$package.cost_price[$item.store_id].unmdwoman}>">
+    <{t}>已婚女士<{/t}><input type="text" style="width:100px;" class="x-input" required="required" name="price[mdwoman][<{$item.store_id}>]" value="<{$package.cost_price[$item.store_id].mdwoman}>">
+    
+</div>
+<{/capture}>

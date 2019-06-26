@@ -1,0 +1,348 @@
+<div class="clb" style="position: relative; z-index: 10;">
+    <div style="margin:0 auto; width: <{$cardinfo.card_style.top.width}>px; height:<{$cardinfo.card_style.top.height}>px;    background: url('<{$cardinfo.card_style.top.image|storager:'b'}>') 50% 50% no-repeat;"></div>
+    <div class="card_left" style=" width: <{$cardinfo.card_style.left.width}>px; height: <{$cardinfo.card_style.left.height}>px; position: absolute; left: 0px; z-index: -1; background: url('<{$cardinfo.card_style.left.image|storager:'b'}>') 50% 50% no-repeat;"></div>
+    <div class="card_right" style=" width: <{$cardinfo.card_style.right.width}>px; height: <{$cardinfo.card_style.right.height}>px; position: absolute; right: 0px; z-index: -1; background: url('<{$cardinfo.card_style.right.image|storager:'b'}>') 50% 50% no-repeat;"></div>
+    <div class="showcard webwidth">
+        <div class="top">
+            <div class="fl">
+                <span class="lb">卡名称/Card Name：</span>
+                <span><{$cardinfo.name}></span>
+            </div>
+            <div class="fr">
+                <span>可选择<span id="cardrules"><{$cardinfo.rules}></span>份</span>
+                <span>Please select<span id="cardrules"><{$cardinfo.rules}></span>gift</span>
+                <a class="exchange_notice">兑换须知 Exchange Notes</a>
+            </div>
+        </div>
+        <form action="<{link app=cardcoupons ctl=$ctl_name act=card_data}>" id="card_post" method="post" autocomplete="off">
+        <input type="hidden" name="card_id" value="<{$cardinfo.card_id}>">
+        <input type="hidden" name="card_pass_no" value="<{$cardinfo.card_no}>">
+        <input type="hidden" id="card_change_mode" name="card_change_mode" value="<{$cardinfo.change_mode}>">
+        <div style="margin-bottom:20px;">
+        <{if $cardinfo.card_type == "01"}>
+            <div class="title" style="height: 15px;"><!--实物商品--></div>
+            <div class="content clb">
+                <ul>
+                    <{foreach from=$cardinfo.item item=item}>
+                    <li class="goods-card">
+                        <div>
+                            <div class="pic">
+								<a href="<{link app=cardcoupons ctl=site_cardproduct act=index args=array($item.goods_id,'','',$ctl_name)}>">
+                                <img src="<{$item.image_default_id|storager:'s'}>"/>
+								</a>
+                            </div>
+                            <input type="hidden" name="goods[<{$item.goods_id}>]" value="<{$item.goods_id}>">
+                            <div class="info">
+                                <div class="price" style="display: none;"><{$item.price|cur_odr}></div>
+                                <div class="name"><{$item.name}></div>
+                                <div class="select_box clb">
+                                    <{if $item.card_type == "01"}>
+                                        <div class="by">
+                                            实物券/Real Coupon
+                                            <input value="0" name="goods[<{$item.goods_id}>][goods_card]" class="card-num-input" readonly="readonly" type="text"/>
+                                            <div class="up_down">
+                                                <div class="card_up"></div>
+                                                <div class="card_down"></div>
+                                            </div>
+                                        </div>
+                                        <div class="by">
+                                            电子券/Virtual Coupon
+                                            <input value="0" name="goods[<{$item.goods_id}>][virtual_card]"  class="card-num-input" readonly="readonly" type="text"/>
+                                            <div class="up_down">
+                                                <div class="card_up"></div>
+                                                <div class="card_down"></div>
+                                            </div>
+                                        </div>
+                                    <{else}>
+                                        <div class="by" style="font-size: 12px; width:auto;">
+                                            实物/Real Object
+                                            <input value="0" name="goods[<{$item.goods_id}>][goods]" class="card-num-input" readonly="readonly" type="text"/>
+                                            <div class="up_down">
+                                                <div class="card_up"></div>
+                                                <div class="card_down"></div>
+                                            </div>
+                                        </div>
+                                    <{/if}>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <{/foreach}>
+                </ul>
+            </div>
+
+
+        <{elseif $cardinfo.card_type == "02"}>
+            <input id="cardgoods" type="hidden" name="cardgoods" value="0">
+            <input type="hidden" name="goods[0][goods]" value="1">
+            <div class="title" style="height: 15px;"><!--生活服务--></div>
+            <div class="content clb">
+                <ul>
+                    <{foreach from=$cardinfo.item item=item}>
+                    <li class="fuheka">
+                        <div>
+                            <div class="pic">
+                                <img src="<{$item.image|storager:'s'}>"/>
+                            </div>
+                            <span style="display: none;" class="fuheka_span"><{$item.package_id}></span>
+                            <div class="info">
+                                <div class="price" style="display: none;"><{$item.price|cur_odr}></div>
+                                <div class="name"><{$item.package_name}></div>
+                                <div class="btn1" onclick="card_data1('<{$itemtype.package_id}>');"></div>
+                            </div>
+                        </div>
+                    </li>
+                    <{/foreach}>
+                </ul>
+            </div>
+        <{elseif $cardinfo.card_type == "03"}>
+            <{if $cardinfo.item != ""}>
+            <div class="title" style="height: 15px;"><!--实物商品--></div>
+            <div class="content clb">
+                <ul>
+                    <{foreach from=$cardinfo.item item=item}>
+                    <li class="goods-card">
+                        <div>
+                            <div class="pic">
+								<a href="<{link app=cardcoupons ctl=site_cardproduct act=index args=array($item.goods_id,'','',$ctl_name)}>">
+                                <img src="<{$item.image_default_id|storager:'s'}>"/>
+								</a>
+                            </div>
+                            <input type="hidden" name="goods[<{$item.goods_id}>]" value="<{$item.goods_id}>">
+                            <div class="info">
+                                <div class="price" style="display: none;"><{$item.price|cur_odr}></div>
+                                <div class="name"><{$item.name}></div>
+                                <div class="select_box">
+                                   <{if $item.card_type == "01"}>
+                                        <div class="by">
+                                            实物券/Real Coupon
+                                            <input value="0" name="goods[<{$item.goods_id}>][goods_card]" class="card-num-input" readonly="readonly" type="text"/>
+                                            <div class="up_down">
+                                                <div class="card_up"></div>
+                                                <div class="card_down"></div>
+                                            </div>
+                                        </div>
+                                        <div class="by">
+                                            电子券/Virtual Coupon
+                                            <input value="0" name="goods[<{$item.goods_id}>][virtual_card]"  class="card-num-input" readonly="readonly" type="text"/>
+                                            <div class="up_down">
+                                                <div class="card_up"></div>
+                                                <div class="card_down"></div>
+                                            </div>
+                                        </div>
+                                    <{else}>
+                                        <div class="by">
+                                            实物/Real Object
+                                            <input value="0" name="goods[<{$item.goods_id}>][goods]" class="card-num-input" readonly="readonly" type="text"/>
+                                            <div class="up_down">
+                                                <div class="card_up"></div>
+                                                <div class="card_down"></div>
+                                            </div>
+                                        </div>
+                                    <{/if}>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <{/foreach}>
+                </ul>
+            </div>
+            <{/if}>
+            <{if $cardinfo.itemtype != ""}>
+            <input id="cardgoods" type="hidden" name="cardgoods" value="0">
+            <div class="title" style="height: 15px;"><!--生活服务--></div>
+            <div class="content clb">
+                <ul>
+                    <{foreach from=$cardinfo.itemtype item=itemtype}>
+                    <li class="fuheka">
+                        <div>
+                            <div class="pic">
+                                <img src="<{$itemtype.image|storager:'s'}>"/>
+                            </div>
+                            <span style="display: none;" class="fuheka_span"><{$itemtype.package_id}></span>
+                            <div class="info">
+                                <div class="price" style="display: none;"><{$itemtype.price|cur_odr}></div>
+                                <div class="name"><{$itemtype.package_name}></div>
+                                <div class="btn1" onclick="card_data1('<{$itemtype.package_id}>');"></div>
+                            </div>
+                        </div>
+                    </li>
+                    <{/foreach}>
+
+                </ul>
+            </div>
+            <{/if}>
+        <{/if}>
+            <div class="clear"></div>
+        </div>
+        </form>
+        <div class="card_next" onclick="card_data();" style="background:url('<{$_THEME_}>/images/kq_10_1.png') no-repeat; background-size:100% 100%; width:200px;"></div>
+        <div style="width:100px; height:20px; margin:20px auto;"></div>
+        <div id="mask_layer"></div>
+        <div id="card_notice" style="width:770px; margin-left:-385px;">
+            <div style="height: 320px; width: 200px; float: left;">
+                <img src="<{$_THEME_}>/images/wf_card_title.jpg" style="width: 200px; height: 320px;">
+            </div>
+            <div class="con" style="width: 480px; float: left;">
+                <{$cardinfo.card_style.message}>
+            </div>
+            <div class="btn_box" style="float: left; width: 570px;">
+                <div class="know" style="background:url('<{$_THEME_}>/images/kq_13_1.png') no-repeat;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+	var totalnum = <{$cardinfo.rules|default:0}>;
+	window.addEvent('domready',function(){
+		$$("#card_notice .btn_box .know").addEvent("click",function(){
+			$("mask_layer").setStyles({'display':'none'});
+			$("card_notice").setStyles({'display':'none'});
+		});
+		$$(".exchange_notice").addEvent("click",function(){
+			$("mask_layer").setStyles({'display':'block'});
+			$("card_notice").setStyles({'display':'block'});
+		});
+
+		var cardnewElementVar = new Element('div',{'class': 'selected'});
+		
+		$$(".card_up").addEvent('click',function(){
+			//判断选择的总数量
+			if(getcardnum()){
+				var num_object= this.getParent("div").getPrevious("input");
+				num_object.set("value",parseInt(num_object.get("value"))+parseInt(1));
+				$('cardrules').set("text",parseInt($('cardrules').get("text"))-1);
+				
+				var goods_card = this.getParent(".goods-card");
+				if(!goods_card.getElement('.selected')){
+					cardnewElementVar.clone().inject(goods_card,"top");
+				}
+				
+				//判断是否达到数量要求
+				if(getcard_readnum()){
+					$$(".card_next").setStyles({
+						'background': 'url("<{$_THEME_}>/images/kq_11_1.png") no-repeat'
+					});
+					}else{
+						$$(".card_next").setStyles({
+							'background': 'url("<{$_THEME_}>/images/kq_10_1.png") no-repeat'
+						});
+				}
+			}
+		});
+		
+		
+		
+		$$(".card_down").addEvent('click',function(){
+			var num_object= this.getParent("div").getPrevious("input");
+			if(num_object.get("value") > 0){
+				num_object.set("value",parseInt(num_object.get("value"))-parseInt(1));
+				$('cardrules').set("text",parseInt($('cardrules').get("text"))+1);
+				
+				if(parseInt(num_object.get("value"))==0){
+					var goods_card = this.getParent(".goods-card");
+					goods_card.getElement('.selected').remove();
+				}
+				//判断是否达到数量要求
+				if(getcard_readnum()){
+				$$(".card_next").setStyles({
+					'background': 'url("<{$_THEME_}>/images/kq_11_1.png") no-repeat'
+				});
+				}else{
+					$$(".card_next").setStyles({
+						'background': 'url("<{$_THEME_}>/images/kq_10_1.png") no-repeat'
+					});
+				}
+			}
+		});
+		
+		
+		
+		
+		
+		
+		$$(".card_down").addEvent('mousedown',function(){this.setStyles({'background':'url(<{$_THEME_}>/images/kq_09.png)'});});
+		$$(".card_down").addEvent('mouseup',function(){this.setStyles({'background':'url(<{$_THEME_}>/images/kq_08.png)'});});
+		$$(".card_up").addEvent('mousedown',function(){this.setStyles({'background':'url(<{$_THEME_}>/images/kq_12.png)'});});
+		$$(".card_up").addEvent('mouseup',function(){this.setStyles({'background':'url(<{$_THEME_}>/images/kq_07.png)'});});
+
+		$$(".card-num-input").addEvent("blur",function(){
+			var num = 0;
+			$$(".card-num-input").each(function(item){
+				num =  parseInt(num)+parseInt(item.get('value'));
+			});
+
+			if(!this.get("value").test(/^[0-9]$/,'i')){
+				this.set("value",0);
+			}
+
+			if(totalnum <= num){
+				this.set("value",(totalnum-(num-this.get("value"))));
+			}
+		});
+		
+		function getcard_readnum(){
+			var num = 0;
+			$$(".card-num-input").each(function(item){
+				num =  parseInt(num)+parseInt(item.get('value'));
+			});
+
+            //获取卡券选取类型
+            var mode = $('card_change_mode').get('value');
+            if(mode == 'once'){
+                if(totalnum == num){
+                    return true;
+                }
+            }else{
+                if(num > 0){
+                    return true;
+                }
+            }
+			return false;
+		}
+
+		function getcardnum(){
+			var num = 0;
+			$$(".card-num-input").each(function(item){
+				num =  parseInt(num)+parseInt(item.get('value'));
+			});
+
+			if(totalnum > num){
+				return true;
+			}
+			return false;
+		}
+		$$(".fuheka").addEvent("click",function(){
+			$$(".goods-card").each(function(item){
+				if(item.getElement('.selected')){
+					item.getElement('.selected').remove();
+				}
+			});
+			$$(".card_next").setStyles({
+				'background': 'url("<{$_THEME_}>/images/kq_10_1.png") no-repeat'
+			});
+			$$(".card-num-input").set("value",0);
+			$('cardrules').set("text",totalnum);
+		});
+
+	});
+</script>
+
+<script type="text/javascript">
+	function card_data(){
+		var num = 0;
+		$$(".card-num-input").each(function(item){num =  parseInt(num)+parseInt(item.get('value'));});
+        var mode = $('card_change_mode').get('value');
+        if(mode == 'once'){
+		if(totalnum == num){
+                $("card_post").submit();
+            }
+        }else{
+			$("card_post").submit();
+		}
+	}
+	function card_data1(package_id){
+		$('cardgoods').set("value",package_id);
+		$("card_post").submit();
+	}
+</script>

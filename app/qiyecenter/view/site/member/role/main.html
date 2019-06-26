@@ -1,0 +1,105 @@
+<{script src="tree/mootools-more.js" app="qiyecenter" pdir="js"}>
+<{script src="tree/mootools-class-extras.js" app="qiyecenter" pdir="js"}>
+<{script src="tree/Tree.js" app="qiyecenter" pdir="js"}>
+<{script src="tree/Collapse.js" app="qiyecenter" pdir="js"}>
+<{script src="tree/Collapse.Persistent.js" app="qiyecenter" pdir="js"}>
+<div class="memberwrap">
+    <div class="clearfix">   
+        <!-- left start-->
+        <div class="member-sidebar member-sidebar2">
+            <div class="qiye_left">
+                <div class="u_left_h">企业中心</div>
+                <div class="u_left_ct">
+                    <{foreach from=$cpmenu item=menus}>
+                    <{if $menus.mid eq '0'}>
+                    <ul class="menu_1">
+                        <li class="menu_li_1">
+                            <a class="menu_li_a1 active"><{$menus.label}></a>
+                            <ul class="menu_2">
+                                <{foreach from=$menus.items item=items}>
+                                <li class="menu_li_2">
+                                    <a href="<{if $items.args ne null}><{link app=$items.app ctl=$items.ctl act=$items.link args=$items.args}><{else}><{link app=$items.app ctl=$items.ctl act=$items.link}><{/if}>" class="menu_li_a2"><{$items.label}></a>
+                                </li>
+                                <{/foreach}>
+                            </ul>
+                        </li>
+                    </ul>
+                    <{else}>
+                    <ul class="menu_1">
+                        <li class="menu_li_1">
+                            <a class="menu_li_a1 active<{$menus.mid}>"><{$menus.label}></a>
+                            <ul class="menu_2">
+                                <{foreach from=$menus.items item=items}>
+                                <li class="menu_li_2">
+                                    <a href="<{if $items.args ne null}><{link app=$items.app ctl=$items.ctl act=$items.link args=$items.args}><{else}><{link app=$items.app ctl=$items.ctl act=$items.link}><{/if}>" class="menu_li_a2"><{$items.label}></a>
+                                </li>
+                                <{/foreach}>
+                            </ul>
+                        </li>
+                    </ul>
+                    <{/if}>
+                    <{/foreach}>
+                </div>
+            </div>       
+  <!-- left end-->
+<div id="qiye_right" class="qiye_right">
+  <{include file=$_PAGE_ app=$app_id}>
+</div>
+  </div>
+</div>
+</div>
+
+<script>
+	function picChange(x){
+		if(x==1){
+			document.getElementById("opera"+x).src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_13.png";
+			document.getElementById("opera2").src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_10.png";
+			}else if(x==2){
+				document.getElementById("opera"+x).src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_11.png";
+				document.getElementById("opera1").src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_12.png";
+				}
+		}
+	function fowardR(){
+		var bb=document.getElementById("fudong").style.left;
+		bb=bb.match(/([0-9])+/, "");
+		if(!bb){
+			var aa=setInterval(function(){
+				if(bb>-200){
+					bb-=1;
+					document.getElementById("fudong").style.left=bb+"px";
+				}
+				},1);
+			}else{
+		bb=parseFloat(bb);
+		if(bb==0){
+				var aa=setInterval(function(){
+				if(bb>-200){
+					bb-=1;
+					document.getElementById("fudong").style.left=bb+"px";
+				}
+				},1);}
+			}
+		}
+
+	function forwardL(){
+		var bb=document.getElementById("fudong").style.left;
+		if(bb=='-200px'){
+				bb=bb.match(/([0-9])+/, "");
+				var cc=-parseFloat(bb);
+				setInterval(function(){
+				if(cc<0){
+					cc+=1;
+					document.getElementById("fudong").style.left=cc+"px";
+				}
+				},1);
+			}
+		}
+	function picleave(x){
+			if(x==1){
+			document.getElementById("opera"+x).src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_12.png";
+			}else if(x==2){
+				document.getElementById("opera"+x).src="<{$base_url}>/app/qiyecenter/statics/image/qyzx_10.png";
+				}
+		}
+
+</script>

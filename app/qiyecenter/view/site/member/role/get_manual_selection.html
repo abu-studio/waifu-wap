@@ -1,0 +1,114 @@
+<style type="text/css">
+        .suoshuqiye{float: left; margin-right: 13px;font-family: 微软雅黑,宋体; font-size:line-height: 53px;height: 53px;}
+        .search_bott{background: #c40001;padding: 0 15px;border: none;display: inline-block;zoom: 1;overflow: visible;color: #FFFFFF;font-size: 12px;font-family: 微软雅黑; text-decoration: none;cursor: pointer;vertical-align: middle;height: 24px;line-height: 24px;border-radius: 5px;}
+       
+    </style>
+<div style="height: 30px; "></div>
+    <div style="height: 60px;">
+        <div class='suoshuqiye' style=''>雇员编号</div>
+        <div class='suoshuqiye'>
+            <input type="text" name="EMP_HUMBAS_NO"  id="humbas_EMP_HUMBAS_NO" value="" style="border: 1px solid;width: 100px;"/>
+        </div>
+        <div class='suoshuqiye'>姓名</div>
+        <div class='suoshuqiye'>
+            <input type="text" name="EMP_NAME" value=""  id="humbas_EMP_NAME" style="border: 1px solid;width: 100px;"/>
+        </div>
+
+        <div class='suoshuqiye'>
+        <input type="hidden" name="EMP_NEW_PRICE" value="<{$PRICE}>"  id="EMP_NEW_PRICE"/>
+        <input type="submit" value="搜索"  id="search_humbas" class="search_bott"/></div>
+    </div>
+<!-- end -->
+<div class="show_list" id="HUMBAS_LIST">
+    <div class="list_head" style="width: 100%;">
+        <div class="head_font">操作</div>
+        <div class="head_font">商社名称</div>
+        <div class="head_font">雇员编号</div>
+        <div class="head_font">雇员姓名</div>
+		<div class="head_font">发放金额</div>
+    </div>
+    <{foreach from=$sfscdata item=item}>
+    <div class="list_con" style="width: 100%;">
+        <div class="head_font">
+            <input type="checkbox" name="HUMBAS_NO" value="<{$item.HUMBAS_NO}>" />
+            <input type="hidden" name="CUSTOMER_NAME" value="<{$item.CUSTOMER_NAME}>" />
+            <input type="hidden" name="DEPT_NAME" value="<{if $item.DEPT_NAME}><{$item.DEPT_NAME}><{else}><{$item.GROUP_NAME}><{/if}>" />
+            <input type="hidden" name="NAME" value="<{$item.NAME}>" />
+            <input type="hidden" name="DEPT_ID" value="<{if $item.DEPT_ID}><{$item.DEPT_ID}><{else}><{$item.GROUP_ID}><{/if}>">
+            <input type="hidden" name="COMPANY_NO" id="COMPANY_NO" value="<{$item.COMPANY_NO}>">
+            <input type="hidden" name="NEW_PRICE" value="<{$PRICE}>" />
+        </div>
+        <div class="head_font"><{$item.CUSTOMER_NAME}></div>
+        <div class="head_font"><{$item.HUMBAS_NO}></div>
+        <div class="head_font"><{$item.NAME}></div>
+        <div class="head_font"><{$PRICE}></div>
+    </div>
+    <{/foreach}>
+</div>
+<input type='hidden' id='current_page' value='0' />
+<div class="show_fenye">
+    <div class="feny" id="page_navigation">
+    </div>
+</div>
+<script type="text/javascript">
+    var per_page = 10;
+    var items = document.getElementsByClassName("list_con");
+    var pages = Math.ceil(items.length/per_page);
+    gotopage(0);
+    function gotopage(page){
+        for(var i=0;i<items.length;i++){
+            items[i].style.display='none';
+        }
+        for(var i=page*per_page;i<(page+1)*per_page;i++){
+            if(i<items.length){
+                items[i].style.display='block';
+            }
+        }
+        var navigation_html = '<a class="page_link" title="上一页" href="javascript:prepage();">&lt;</a>';
+        for(var current_link = 0; current_link < pages; current_link++){
+            if(pages<=10){
+                current_link == page?navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>':navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+            }else{
+                if(current_link == page){
+                    navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+                }
+                if(current_link <= (page+4)&&current_link >= (page-4)&&current_link != page){
+                    navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+                }
+            }
+        }
+        navigation_html += '<a class="page_link" title="下一页" href="javascript:nextpage();">&gt;</a>';
+        document.getElementById("page_navigation").innerHTML= navigation_html;
+        document.getElementById("current_page").value= page;
+    }
+    function nextpage(){
+        var page = parseInt(document.getElementById("current_page").value);
+        if(page < pages - 1){
+            gotopage((page+1));
+            document.getElementById("current_page").value= page+1;
+        }
+    }
+    function prepage(){
+        var page = parseInt(document.getElementById("current_page").value);
+        if(page > 0){
+            gotopage((page - 1));
+            document.getElementById("current_page").value= page - 1;
+        }
+    }
+
+            // window.addEvent('domready',function(){
+            //     if(!window.opener.modedialogInstance)return;
+    //查询雇员信息 --  start
+    window.addEvent('domready',function(){
+        var url = '<{link app=qiyecenter ctl=site_member act=get_guyuan_gyselect}>';
+        $('search_humbas').addEvent('click',function(){
+            new Request.HTML({
+                url:url,
+                method:'get',
+                data:'EMP_HUMBAS_NO='+$('humbas_EMP_HUMBAS_NO').getValue()+'&EMP_NAME='+$('humbas_EMP_NAME').getValue()+'&CUSTOMER_ID='+$('CUSTOMER_ID').getValue()+'&EMP_NEW_PRICE='+$('EMP_NEW_PRICE').getValue(),
+                update:$('HUMBAS_LIST')
+            }).send();
+
+        });
+    });
+</script>

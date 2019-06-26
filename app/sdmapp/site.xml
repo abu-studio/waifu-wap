@@ -1,0 +1,7 @@
+<site>
+    <module controller='site_sdmapp'>
+        <name>shuidianmei</name>
+        <title>水电煤首页</title>
+        <disable>false</disable>         
+    </module>
+</site>

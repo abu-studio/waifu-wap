@@ -1,0 +1,58 @@
+<form action="" id="catEditor" method="post" target="{update:'messagebox'}">
+  <{if $isEnable}>
+<div class="gridlist-action">
+  <a href="index.php?app=jdsale&ctl=admin_regions&act=import">
+    <{button label=$___jdsale="同步京东地区数据"|t:'jdsale' app="desktop" }>
+  </a>
+</div>
+  <{/if}>
+  <table cellspacing="0" cellpadding="0" class="gridlist">
+    <col class="Colauto"></col>
+    <col class="Coloption_1b"></col>
+    <col class="Coloption_1b" ></col>
+    <col class="Coloption_1b"></col>
+    <col class="Coloption_1b"></col>
+    <col></col>
+    <thead>
+      <th><{t}>地区名称<{/t}></th>
+
+      <th></th>
+    </thead>
+    <tbody>
+      <{foreach from=$area item=item key=iLoop name="item"}>
+      <tr parentid="<{$item.region_id}>" class="provice-bg">
+        <td style="text-align:left; width:320px;">
+          <div style="padding-left:<{$item.step*25}>px">
+            <{if $item.child_count>0}>
+            <span class="imgTree" onclick="clickTree(this);" id="<{$item.region_id}>"> &nbsp;&nbsp; </span>
+            <{else}>
+            <span class="imgTree tree_open" id="<{$item.region_id}>"> &nbsp;&nbsp; </span>
+            <{/if}>
+            <{$item.local_name}>
+
+        </td>
+
+        <td></td>
+      </tr>
+      <{/foreach}>
+    </tbody>
+  </table>
+</form>
+
+
+<script>
+function clickTree(el){
+    var el=$(el), obj = el.getParent('[parentid]');
+    if(!el.hasClass("tree_open")){
+        if(!obj.getNext() || !obj.getNext().get('readstatus')){
+            var tr=new Element('tr[readstatus=1]').injectAfter(obj).setHTML('<td colspan="6" style="border:0;padding:0;"></td>');
+            W.page('index.php?app=jdsale&ctl=admin_regions&act=getChildNode',{update:tr.firstChild,method:'post',data:'regionId='+el.id});
+        }
+        obj.getNext().show();
+        el.addClass("tree_open");
+    }else{
+        obj.getNext().hide();
+        el.removeClass("tree_open");
+    }
+}
+</script>

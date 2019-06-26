@@ -1,0 +1,83 @@
+<div class="tijian_main_leftPd clb">
+	<div class="one clb">
+		<div class="addr">
+			<img src="<{$res_url}>/image/tjlb_01.png"/>  
+			<span>您所在的位置：</span>
+			<a href="<{link app=physical ctl=site_index act=index}>">体检首页</a>
+			<span>></span>
+			<a href="<{link app=physical ctl=site_index act=goodslist}>">体检产品</a>
+			<span>></span>
+			<span style="color: black;"><{$info.name}></span>                
+		</div>
+	 </div>
+	 <div class="two clb">
+		<div class="two_top clb">
+			<div class="pic">
+				<img src="<{$info.image_default_id|storager:'s'}>"/>
+			</div>
+			<div class="right">
+				<span class="name"><{$info.name}></span>
+				<div class="center">								
+							悠福价：<span class="price"><{$info.price|cur}></span><br>
+							市场价：<span class="mktprice"><{$info.mktprice|cur}></span>
+				</div>
+				<div class="info">
+					<{if $info.type.setting.use_props}>
+					<{foreach from=$info.type.props key=key item=aProp}>
+						<span class="lb"><{$aProp.name}>：</span>
+						<{assign var="p_col" value="p_{$key}"}>
+						<{if $aProp.type eq 'select'}>
+							<{assign var="p_val" value=$info.props[$p_col].value}>
+							<{$aProp.options[$p_val]}>
+						<{else}>
+							<{$info.props[$p_col].value}>
+						<{/if}>
+						<br />
+					<{/foreach}>
+					<{/if}>
+					<span class="lb">支持门店：</span>
+					<a href="<{link app=physical ctl=site_index act=storelist args=array($info.goods_id)}>">查看列表>></a><br />
+					<span class="lb">简介：</span><{$info.brief}>
+				</div>
+				<div class="remind">
+					<span class="title">温馨提示：</span>
+					该套餐所支持的门店9-12月为高峰期,请大家预约时,尽量避开！
+					<a class="close">X</a>
+				</div>
+				<div class="btn_box">
+					<a class="btn1" href="<{link app=physical ctl=site_exchange act=index args=array(0,1,$info.goods_id)}>">在线预约</a>
+					<a class="btn2" href="<{link app='cardcoupons' ctl='site_product' act='index' args=array($info.goods_id)}>">购买卡券</a>
+				</div>
+			</div>
+		</div><!--上半部分-->
+		<div class="tijian_title_bar clb">
+			<div class="title">
+			   体检项目
+			</div>
+		</div>
+		 <div class="tijian_content clb">
+			<{foreach from=$projects item=item key=key}>
+			<a title="<{$item.project_name}>">
+				<{$item.project_name|cut:16}>
+				<div class="intro"><{$item.introduction}></div>
+			</a>
+			<{/foreach}>
+		</div>
+		<div class="tijian_title_bar clb">
+			<div class="title">
+			   详情介绍
+			</div>
+		</div>
+		<div class="tijian_content clb">
+			<{$info.description}>
+		</div>
+	</div>
+</div>
+<script>
+window.addEvent('domready', function(){
+	$$(".tijian_wrap1").setStyle('background-color','#F8F8F8');
+	$$('.remind .close').addEvent('click',function(){
+		this.getParent().setStyle('visibility','hidden');
+	}); 
+});
+</script>

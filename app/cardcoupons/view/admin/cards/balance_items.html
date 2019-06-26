@@ -1,0 +1,26 @@
+<div>
+	<div class="tableform">
+		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="gridlist">
+			<thead>
+			<tr>
+			  <th><{t}>卡券名称<{/t}></th>
+			  <th><{t}>卡券编号<{/t}></th>
+			  <th><{t}>卡券密码<{/t}></th>
+			  <th><{t}>卡券销售价<{/t}></th>
+			  <th><{t}>卡券结算价<{/t}></th>
+			</tr>
+			</thead>
+			<tbody>
+			<{foreach from=$balance_info item=item key=key}>
+			<tr>
+			   <td><{$item.card_name}></td>
+			   <td><{$item.card_no}></td>
+			   <td><{$item.card_pass}></td>
+			   <th><{$item.item_money|cur}></th>
+			   <th><{$item.cost_money|cur}></th>
+			</tr>
+			<{/foreach}>
+			</tbody>
+		</table>
+	</div>
+</div>

@@ -1,0 +1,17 @@
+<app version="1.0">
+  <name>卡券中心</name>
+  <description>基于b2c应用的卡券中心，用于卡券销售</description>
+  <author>
+	  <name>rongze-zhyu</name>
+	  <email></email>
+	  <url></url>
+  </author>
+  <version>0.1</version>
+  <license>Commercial</license>
+
+	<depends>
+		<app>b2c</app>
+	</depends>
+
+
+</app>

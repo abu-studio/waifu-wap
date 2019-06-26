@@ -1,0 +1,239 @@
+<!-- right-->
+<{css src="member.css" app="b2c" pdir="css_mini"}>
+<div class="personInfo" style="min-height:510px;">
+    <div class="personInfo-banner">
+
+    </div>
+    <script>
+        var mouseEnterFunction = function(){
+            $(this).addClass('active');
+        }
+        var mouseLeaveFunction = function(){
+            $(this).removeClass('active');
+        }
+
+        var clickFunction = function(){
+            $$('#accordion li').removeClass('active');
+            $(this).addClass('active');
+        }
+        window.addEvent('domready', function() {
+            $$('#accordion li').addEvent('mouseenter', mouseEnterFunction);
+            $$('#accordion li').addEvent('mouseleave', mouseLeaveFunction);
+            $$('#accordion li').addEvent('click', clickFunction);
+        });
+    </script>
+    <div class="personInfo-content">
+        <div class="u_left box_border">
+            <div class="u_left_h">用户中心</div>
+            <div class="u_left_ct">
+                <ul class="menu_1">
+                    <li class="menu_li_1">
+                        <a class="menu_li_a1 active" href="<{link app=cardcoupons ctl=site_member act=orders}>">我的订单</a>
+                        <ul class="menu_2">
+                            <li class="menu_li_2">
+                                <a href="<{link app=cardcoupons ctl=site_member act=return_list }>" class="menu_li_a2">退货管理</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <script type="text/javascript">
+            window.addEvent('domready', function() {
+                $$('.menu_li_a1').addEvent('click', function(){
+                    $$('.menu_li_a1').removeClass('active');
+                    $$(".menu_li_2 .menu_li_a2").removeClass('active');
+                    $(this).addClass('active');
+                    var el = $(this).getNext(".menu_2");
+                    if (el) {
+                        var val = el.getStyle("display");
+                        if (val == "none") {
+                            el.setStyle("display", "block");
+                        } else {
+                            el.setStyle("display", "none");
+                        }
+                    }
+                });
+                $$('.menu_li_a2').addEvent('click', function() {
+                    $$('.menu_li_a1').removeClass('active');
+                    $$(".menu_li_2 .menu_li_a2").removeClass('active');
+                    $(this).addClass('active');
+                });
+            });
+        </script>
+
+        <div class="personInfoContentRight">
+            <div class="member-main"id="sdm_member-main" >
+                <div class="content-title" style="width: 950px;"><{t}><{$title}><{/t}></div>
+                <div class="mywelfare">
+                    <div class="tx_step">
+                        <span class="on">1. 账单查询</span>
+                        <span>2. 账单确认</span>
+                        <span>3. 在线支付</span>
+                        <span>4. 获取凭证</span>
+                    </div>
+                </div>
+                <div style="height:480px;"class="jf_txxx">
+                    <form method="post" action="<{link app=b2c ctl=site_lifecost act=getcost}>">
+                        <div class="jf_txxx_left">
+                            <div class="sdm_tr">
+
+                                <div class="sdm_td_left">
+                                    <span style="display:block;font-size: 15px;line-height:40px;">付费地区：</span>
+                                </div>
+                                <div class="sdm_td_right">
+                                    <span id="checkout-select-area "><{input type="region" id="sdmArea" name="sdmArea" required="true" value='' app="ectools" callback="selectArea"}></span>
+
+                                </div>
+                            </div>
+
+                            <div class="sdm_tr">
+
+                                <div class="sdm_td_left">
+                                    <span style="display:block;font-size: 15px;line-height:40px;">付费项目：</span>
+                                </div>
+                                <div class="sdm_td_right">
+                                    <select class="sdm_select" id="sdmSubject" name="sdmSubject">
+                                        <option value="water">水费</option>
+                                        <option value="electricity">电费</option>
+                                        <option value="gas">燃气费</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="sdm_tr">
+
+                                <div class="sdm_td_left">
+                                    <span style="display:block;font-size: 15px;line-height:40px;">出账机构：</span>
+                                </div>
+                                <div class="sdm_td_right">
+                                    <select class="sdm_select_l" id="sdmCompany" name="sdmCompany">
+                                        <option>上海城投水务[原市北、市南、市南闵行水]</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="sdm_tr_line"></div>
+
+                            <div class="sdm_tr">
+
+                                <div class="sdm_td_left">
+                                    <span style="display:block;font-size: 15px;line-height:40px;">付费方式：</span>
+                                </div>
+                                <div class="sdm_td_right">
+                                    <!--<label style="height: 36px;line-height: 36px;">
+                                    <input type="radio" value="search" class="sdm_radio_btn" name="chargeType" checked="checked">
+                                    <span class="font2">户号</span>
+                                    </label>-->
+                                    <label style="height: 36px;line-height: 36px;">
+                                        <input type="radio" value="search" class="sdm_radio_btn" id="sdmChareType" name="sdmChareType" checked="checked">
+                                        <span class="font2">条 形 码</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="sdm_tr">
+
+                                <div class="sdm_td_left">
+                                    <span style="display:block;font-size: 15px;line-height:40px;">条形码：</span>
+                                </div>
+                                <div class="sdm_td_right">
+                                    <input class="sdm_input_l" id="sdmChareNum" name="sdmChareNum"type="text" value=""/>
+                                </div>
+                            </div>
+
+                            <div class="sdm_tr">
+
+                                <div class="sdm_td_left">
+                                    <span style="display:block;font-size: 15px;line-height:40px;">金额：</span>
+                                </div>
+                                <div class="sdm_td_right">
+                                    <input class="sdm_input" type="text" id="sdmMoney" name="sdmMoney"value=""/> 元
+                                </div>
+                            </div>
+
+
+
+                            <div class="sdm_tr">
+
+                                <div class="sdm_td_left">
+
+                                </div>
+                                <button class="sdm_sel_button" >
+                                    查询
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <script>
+                        function get_cost(id){
+                            var url="<{link app=b2c ctl=site_lifecost act=getcost}>";
+                            var sdmArea=$('sdmArea').get('value');
+                            new Request({
+                                url:url,
+                                method:'post',
+                                data:{
+                                    'sdmArea':$('sdmArea').get('value'),
+                                    'sdmMoney':$('sdmMoney').get('value'),
+                                    'sdmChareNum':$('sdmChareNum').get('value'),
+                                    'sdmChareType':$('sdmChareType').get('value'),
+                                    'sdmCompany':$('sdmCompany').get('value'),
+                                    'sdmSubject':$('sdmSubject').get('value')
+                                },
+                                onComplete: function(rs){
+                                    window.location.href="<{link app=b2c ctl=site_lifecost act=getcost}>";
+                                }
+                            }).send();
+                            return false;
+                        }
+
+
+                        var mouseEnterFunction = function(){
+                            $(this).addClass('active');
+                        }
+                        var mouseLeaveFunction = function(){
+                            $(this).removeClass('active');
+                        }
+
+                        var clickFunction = function(){
+                            $$('#accordion li').removeClass('active');
+                            $(this).addClass('active');
+                        }
+                        window.addEvent('domready', function() {
+                            $$('#accordion li').addEvent('click', clickFunction);
+                        });
+                    </script>
+                    <div style="margin-top:0px; position:relative;" class="jf_txxx_right">
+                        <div style="display: block;" id="billDetailExample" class="jf_txxx_right">
+                            <div id="modelTitle" class="title_n">上海市电力公司付费指南</div>
+                            <div style="position:relative;" class="check_styles">
+                                <div "="" id="chargeOrgBill" class="check_picture">
+                                <a href="https://www.shfft.com/images/modelBill/barcode/888880000502900.jpg" target="_balnk" class="thickbox">
+                                    <img src="https://www.shfft.com/images/modelBill/barcode/888880000502900_s.jpg" id="billChargeImg">
+                                </a>
+                            </div>
+                            <div style="color:#666;" class="check_pics01">
+                                <ul>
+                                    <li id="limitInfo" style="margin:0px 0px 0px 10px;">
+                                        <p>范围:上海市电力公司家庭用户</p>
+                                        <p>可支付逾期账单，建议不超过1个月。逾期将产生滞纳金，建议使用查询方式付费。</p>
+                                        <p>提醒:已代扣或其它渠道支付请勿重复付费</p>
+                                        <p>客服热线:95598</p>
+                                        <p><font color="red">6月1日之后的崇明电费账单请选择上海电力支付</font></p>
+                                    </li>
+                                </ul>
+                                <div class="clear"></div>
+                            </div>
+                            <div class="check_fd_icon">
+                                <a href="https://www.shfft.com/images/modelBill/barcode/888880000502900.jpg" id="billDetailHref" style="display: block;" class="thickbox"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="clearfix"></div>
+</div>
+

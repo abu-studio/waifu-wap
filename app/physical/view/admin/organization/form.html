@@ -1,0 +1,72 @@
+<form id="organization_form" class="tableform" action="index.php?app=physical&ctl=admin_organization&act=save"  method="POST" >
+    <input type="hidden" name="organization_id" value="<{$organization_info.organization_id}>">
+    <div class="division">
+        <table width="100%" >
+            <tr>
+                <th><em class="red">*</em><{t}>服务类型：<{/t}></th>
+                <td><{input type='select' name='type' vtype="required" required="true" options=$types value=$organization_info.type|default:1}></td>
+            </tr>
+            <tr>
+                <th><em class="red">*</em><{t}>机构编号：<{/t}></th>
+                <td><{input type="text" name="organization_code" vtype="required" value=$organization_info.organization_code}></td>
+            </tr>
+            <tr>
+                <th><em class="red">*</em><{t}>机构名称：<{/t}></th>
+                <td><{input type="text" name="organization_name" vtype="required" value=$organization_info.organization_name}></td>
+            </tr>
+			<tr>
+                <th><{t}>logo：<{/t}></th>
+                <td>
+					<table>
+						<tr>
+						<td><{input type='image' name='logo' vtype="required" width=200 height=150 value=$organization_info.logo}></td>
+						</tr>
+						<tr>
+							<td><em class="red">*</em>链接：<{input type="text" name="url" vtype="required&&url" value=$organization_info.url}></td>
+						</tr>
+					</table></td>
+            </tr>
+        </table>
+    </div>
+
+</form>
+
+<{area inject='.mainFoot'}>
+<div class="table-action"><{button type="submit"  label=$___physical="保存"|t:'physical' id='organization_form_submit'}></div>
+<{/area}>
+
+<script>
+    (function(){
+        var _form = $('organization_form');
+        var btn =$('organization_form_submit');
+
+        _form.store('target',{
+            onComplete:function(){
+
+            },
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                    }
+                }
+                else
+                {
+                    //alert(hash_res_obj.error);
+                }
+            }
+        });
+
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+        });
+
+    })();
+</script>

@@ -1,0 +1,40 @@
+<div style="margin-left:150px;">
+<form action="<{link app=qiyecenter ctl=site_member act=save_applyinvoice}>" method="post" id="invoice_form">
+	<input type="hidden" name="type" value="com">
+	<input type="hidden" name="invoice_id" value="<{$invoice_id}>">
+	<div style="font-size:14px;margin:10px;">
+		<span style="color:red;width: 10px;display:inline-block;">*</span>
+		<span style="width: 60px;display:inline-block;">公司抬头</span>
+		<input type="text" style="height:25px;width: 160px; border: 1px solid #ccc;" name="invoice_title" value="<{$invoice_data.invoice_title}>">
+	</div>
+	<div style="font-size:14px;margin:10px;">
+		<span style="width: 60px;display:inline-block;">是否默认</span>
+		<input name="invoice_default" type="checkbox"  <{if $invoice_data.invoice_default == 1}>checked="checked"<{/if}> value="1" />
+	</div>
+
+	<div style="margin-left:100px;">
+		<input type="button" id="confirm_humbas" style="margin-top: 20px; margin-bottom: 10px; width: 100px; background: #c40001; font-size:14px; font-weight: bold; color: #ffffff; height: 30px;border-radius: 5px;" value="提交">
+	</div>
+</form>
+</div>
+<script type="text/javascript">
+    window.addEvent('domready',function() {
+        $('confirm_humbas').addEvent('click', function () {
+            new Request.JSON({
+                url: '<{link app=qiyecenter ctl=site_member act=save_applyinvoice}>',
+                method: 'post',
+                data: $('invoice_form').toQueryString(),
+                onComplete: function (res) {
+                    if (res.error) {
+                        MessageBox.error(res.error);
+                        location.reload();
+                    } else {
+                        MessageBox.success("添加成功！");
+                        location.reload();
+                    }
+                }
+            }).send();
+            
+        });
+    });
+</script>

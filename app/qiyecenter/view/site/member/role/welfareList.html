@@ -1,0 +1,244 @@
+<script>
+    window.loadedPart = [1,0,(new Date).getTime()];
+    BREADCRUMBS ='0:0';
+    MODALPANEL = {
+        createModalPanel:function(){
+            var mp = new Element('div',{'id':'MODALPANEL'});
+            var mpStyles = {
+                'position': 'fixed',
+                'background': '#333333',
+                'width': '100%',
+                'display':'none',
+                'height': window.getScrollSize().y,
+                'top': 0,
+                'left': 0,
+                'zIndex': 65500,
+                'opacity': .4
+            };
+            this.element = mp.setStyles(mpStyles).inject(document.body);
+            return this.element;
+        },
+        show:function(){
+            var panel = this.element = this.element||this.createModalPanel();
+            panel.setStyles({
+                'width': '100%',
+                'height': window.getScrollSize().y
+            }).show();
+        },hide:function(){
+            if(this.element)this.element.hide();
+        }
+    };
+    Xtip = new Tips({tip:'tip_Xtip',fixed:true,offset: {x: 24, y: -15},onBound:function(bound){
+        if(bound.x2){
+            this.tip.getElement('.tip-top').addClass('tip-top-right');
+            this.tip.getElement('.tip-bottom').addClass('tip-bottom-right');
+        }else {
+            this.tip.getElement('.tip-top').removeClass('tip-top-right');
+            this.tip.getElement('.tip-bottom').removeClass('tip-bottom-right');
+        }
+    }});
+    var LAYOUT = {
+        container: $('container'),
+        side: $('side'),
+        workground: $('workground'),
+        content_main: $('main'),
+        content_head: $E('#workground .content-head'),
+        content_foot: $E('#workground .content-foot'),
+        side_r: $('side-r'),
+        side_r_content:$('side-r-content')
+    };
+</script>
+<{script src="load.js" app="qiyecenter" pdir="js"}>
+<{script src="wpage.js" app="qiyecenter" pdir="js"}>
+<script>
+    var W = new Wpage({});
+</script>
+<{script src="dialog.js" app="qiyecenter" pdir="js"}>
+<div class="qiye_list">
+    <div class="right_top">
+        <div class="r_tit">
+            <div class="guanlibumen">福利列表页面</div>
+        </div>
+        <div class="create_de">
+            <div class="an_input">创建福利订单</div>
+        </div>
+		 <script type="text/javascript">
+			 window.addEvent('domready',function(){
+				$$('.an_input').addEvent('click',function(){
+					new Dialog('<{link app=qiyecenter ctl=site_member act=create_order}>',{
+						width:1000,
+						height:600,
+						resizeable:false,
+						draggable:false,
+					});
+				});
+			});
+        </script> 
+    </div>
+    <div class="right_selectbycon">
+        <form action="<{link app=qiyecenter ctl=site_member act=welfareList}>" method="post">
+        <div class="r_center">
+            <div class="suoshuqiye">发放单号</div>
+            <div class="suoshuqiye" >
+                <input type="text" style="border: 1px solid;width: 100px;" name="ORDER_NO"/>
+            </div>
+            <div class="suoshuqiye">名目</div>
+            <div class="suoshuqiye" style="width: 100px;">
+                <input type="text" style="border: 1px solid;width: 100px;" name="GRANT_NAME"/>
+            </div>
+            <div class="suoshuqiye" >
+                <input type="submit" value="搜索" class="search_bott"/>
+            </div>
+        </div>
+        </form>
+    </div>
+	<{if $welfareList}>
+    <div class="r_list">       
+        <div class="show_list" id="show_list">
+            <div class="list_head">
+            	<div class="head_font" style="width: 10%;"><input type="checkbox" style="margin-top:11px" name="selectAll"  onclick="selectAll2(this);"/></div>
+                <div class="head_font" style="width: 16%;">发放单号</div>
+                <div class="head_font" style="width: 16%;">名目</div>
+                <div class="head_font" style="width: 16%;">创建时间</div>
+                <div class="head_font" style="width: 16%;">制单人</div>
+                <div class="head_font" style="width: 16%;">状态</div>
+                <div class="head_font" style="width: 10%;">操作</div>
+            </div>
+            <{foreach from=$welfareList item=item}>
+                <div class="list_con">
+                	<div class="head_font" style="width: 10%;"><input style="margin-top:11px"  type="checkbox" name="selectItem"  id=""/></div>
+                    <div class="head_font" style="width: 16%;"><{$item.ORDER_NO}></div>
+                    <div class="head_font" style="width: 16%;"><{$item.GRANT_NAME}></div>
+                    <div class="head_font" style="width: 16%;"><{$item.ADD_TIME}></div>
+                    <div class="head_font" style="width: 16%;"><{$item.ADD_USER_NAME}></div>
+                    <div class="head_font" style="width: 16%;"><{$item.STATUS}></div>
+                    <div class="head_font" style="width: 10%;">
+                        <a href="<{link app=qiyecenter ctl=site_member act=fabufuliEdit arg0=$item.ORDER_ID}>">编辑</a> 
+                    </div>
+                </div>
+            <{/foreach}>          
+            
+        </div>
+        <script type="text/javascript">
+            window.addEvent('domready',function(){
+                $$('.list_con').getElements(".edit").each(function(item){
+                    item.addEvent('click',function(){
+                        var customer_no = this.getParent(".list_con").getChildren(".head_font").getText()[0];
+                        new Dialog('<{link app=qiyecenter ctl=site_member act=editinput}>',{
+                            width:1200,
+                            height:600,
+                            resizeable:false,
+                            dragable:false,
+                            ajaxoptions:{
+                                method: 'post',
+                                data:'qiyeguanli_edit=true&customer_no='+customer_no
+                            }
+                        });
+                    });
+                });
+
+
+            });
+        </script>        
+    </div>
+	<div class='shenhe'>
+			    <div class="head_font"  id="veritySuccess" onclick="verifyWelfare(this);">审核成功</div>
+			    <div class="head_font"  id="verityFailure" onclick="verifyWelfare(this);">审核失败</div>
+			    <div class="head_font" >导出</div>
+	</div>
+    <input type='hidden' id='current_page' value='0' />
+        <div class="show_fenye">
+            <div class="feny" id="page_navigation">
+            </div>
+        </div>
+	<{else}>
+		<div style="border:1px solid #eee;height:40px;line-height:40px;text-align:center">没有找到相应的订单</div>
+	<{/if}>
+</div>
+
+<script type="text/javascript">
+	var per_page = 10; 
+	var items = document.getElementsByClassName("list_con");
+	var pages = Math.ceil(items.length/per_page);
+	gotopage(0);
+	
+	function gotopage(page){
+		for(var i=0;i<items.length;i++){
+			items[i].style.display='none';
+		}
+		for(var i=page*per_page;i<(page+1)*per_page;i++){
+			if(i<items.length){
+			items[i].style.display='block';
+			}
+		}
+		var navigation_html = '<a class="page_link" title="上一页" href="javascript:prepage();">&lt;</a>';
+		
+		for(var current_link = 0; current_link < pages; current_link++){
+			current_link == page?navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>':navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';			
+		}
+		navigation_html += '<a class="page_link" title="下一页" href="javascript:nextpage();">&gt;</a>';
+		document.getElementById("page_navigation").innerHTML= navigation_html;
+		document.getElementById("current_page").value= page;
+		
+	}
+	function nextpage(){
+		var page = parseInt(document.getElementById("current_page").value);
+		if(page < pages -1){
+			gotopage((page+1));
+			document.getElementById("current_page").value= page+1;
+		}	
+	}
+	function prepage(){
+		var page = parseInt(document.getElementById("current_page").value);		
+		if(page > 0){
+			gotopage((page - 1));
+			document.getElementById("current_page").value= page - 1;
+		}
+	}
+	
+	
+</script>
+
+<script type="text/javascript">
+//审核福利
+function verifyWelfare(obj){var chkInput = document.getElementsByName("selectItem");
+	if(obj.id=='veritySuccess'){
+		alert("审核成功");
+	}else{
+		alert("审核失败");
+	}
+	return false;
+	var dataObj = {};
+	var itemArray = new Array();
+	var chkInput = document.getElementsByName("selectItem");
+	for(var i=0; i<chkInput.length;i++){
+		if(chkInput[i].checked){
+			var itemList = {};
+			itemList.REC_ID = '01';
+			itemArray.push(itemList);
+		}
+	}
+	dataObj.ITEM_LIST = itemArray;
+	
+}
+//全选反选
+function selectAll2(obj){
+	//var chkInput = document.getElementsByTagName('input');
+	var chkInput = document.getElementsByName("selectItem");
+	if(obj.checked){
+		for(var i=0; i<chkInput.length;i++){
+			if(!chkInput[i].checked){
+				chkInput[i].checked = true;
+			}
+		}
+	}else{
+		for(var i=0; i<chkInput.length;i++){
+			if(chkInput[i].checked){
+				chkInput[i].checked = false;
+			}
+		}
+	}
+	
+}
+</script>
+

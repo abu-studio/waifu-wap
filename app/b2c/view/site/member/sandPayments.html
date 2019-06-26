@@ -1,0 +1,98 @@
+<div class="bianzhifuContent-right">
+    <div class="content-title" id="shuifei"><div class="tb"></div><h1 class="fl">付账单-支付中心</h1><h4 class="fl"></h4></div>
+    <div class="tx_step3"></div>
+    <div style="margin-left:10px;">
+    <div class="orderpay"  style="width: 98%;">
+        <form id="f_order_pay" action="<{$form_action}>" method="post">
+            <input type="hidden" name="payment[order_id]" value="<{$order.order_id}>" />
+            <input type="hidden" name="payment[money]" value="<{$order.total_amount}>" id="hidden_money"/>
+            <input type="hidden" name="payment[currency]" value="<{$order.currency}>" />
+            <input type="hidden" name="payment[cur_money]" value="<{$order.cur_amount}>" id="hidden_cur_money"/>
+            <input type="hidden" name="payment[cur_rate]" value="<{$order.cur_rate}>" />
+            <input type="hidden" name="payment[cur_def]" value="<{$order.cur_def}>" />
+            <input type="hidden" name="payment[pay_app_id]" value="<{$order.payinfo.pay_app_id}>" />
+            <input type="hidden" name="payment[cost_payment]" value="<{$order.payinfo.cost_payment}>" />
+            <input type="hidden" name="payment[cur_amount]" value="<{$order.cur_amount}>" />
+            <input type="hidden" name="payment[memo]" value="<{$order.memo}>" />
+
+            <h3 class="payfor_order_title" style="background: #EEEEEE;"><{t}>订单信息<{/t}></h3>
+
+            <div class='p15 border-all over' >
+                <p class="lh25"><{t}>订单编号：<{/t}><strong class='font14px'><{$order.order_id}></strong>&nbsp;&nbsp;</p>
+                <p class="lh25"><{t}>订单金额：<{/t}><strong class="hueorange font-red font16px" id="span_amount"><{$order.cur_amount|cur_odr:$order.currency:false:true}></strong></p>
+            </div>
+
+            <h3 class="payfor_order_title" style="background: #EEEEEE;"><{t}>福点信息<{/t}></h3>
+            <div class='p15 border-all over'>
+                <p class="lh25"><{t}>福点余额：<{/t}><strong class="hueorange font-red font16px"><{$sfsc_balance.SUM}></strong></p>
+            </div>
+
+            <h3 class="payfor_order_title" style="background: #EEEEEE;"><{t}>订单支付<{/t}></h3>
+
+
+            <div class='p15 border-all over'>
+				 <{if $order.cur_amount > 0}>
+					<div class=' p5 fontbold'>
+						<{t}>您选择了：<{/t}><strong class="hueorange font-red font12px"><{$order.payinfo.pay_app_id|pay_name}></strong>
+					</div>
+                <{if $order.selecttype}>
+                <div class='select-paymethod' id="_normal_payment">
+                    <{if $payments}>
+
+                    <{foreach from=$payments item=item key=key}>
+                    <p class="p3">
+                        <label><input type="radio" onclick="Order.paymentChange(this)" formatmoney="<{$order.cur_def}><{$item.cur_money}>" curmoney="<{$item.cur_money}>" moneyamount="<{$order.total_amount}>"<{if $order.payinfo.pay_app_id == $item.app_id}> checked="checked"<{/if}> value="<{$item.app_id}>" paytype="<{$item.app_id}>" name="payment[pay_app_id]" class="x-payMethod" style="cursor: pointer;"><{$item.app_name}></label>
+                        <span class="selected"><{$item.app_des}></span>
+                    </p>
+                    <{/foreach}>
+
+                    <{/if}>
+                </div>
+                <{include file="site/order/banks.html" app=b2c}>
+                <{else}>
+                <input type="hidden" name="payment[pay_app_id]" value="<{$order.payinfo.pay_app_id}>" />
+                <{if $extendInfo}>
+                <div class='division paymethodextendInfo'>
+                    <{foreach from=$extendInfo item=item key=key}>
+                    <{if $item.type=='select'}>
+                    <select name=<{$key}>>
+                        <{foreach from=$item.value item=vitem key=vkey}>
+                        <option value="<{$vitem.value}>" <{if $vitem.checked}>selected<{/if}>><{$vitem.name}></option>
+                        <{/foreach}>
+                    </select>
+                    <{else}>
+                    <{foreach  from=$item.value item=vitem key=vkey}>
+                    <{if $item.type=='radio'}>
+                    <input <{$vitem.checked}> type='radio' name=<{$key}> value=<{$vitem.value}>><{if $vitem.imgname}><{$vitem.imgname}><{else}><{$vitem.name}><{/if}></if>
+                    <{else if $item.type=='checkbox'}>
+                    <input <{$vitem.checked}> type='checkbox' name="<{$key}>[]" value=<{$vitem.value}>><{if $vitem.imgname}><{$vitem.imgname}><{else}><{$vitem.name}><{/if}></if>
+                    <{/if}>
+                    <{/foreach}>
+                    <{/if}>
+                    <{/foreach}>
+                </div>
+                <{/if}>
+                <{/if}>
+                <{else}>
+                <{t}>订单不需要再支付,请等待我们处理<{/t}>
+                <{/if}>
+
+            </div>
+
+            <{if $order.payinfo.pay_app_id != '-1' && $order.cur_amount > 0}>
+            <div class="textcenter p10"style="margin-left: 78%;">
+                <{if $order.payinfo.pay_app_id!="offline"}>
+                <{button type="submit" class="order-btn lijizhifu btn-has-icon" label=$___b2c="立刻dddddd支付"|t:'b2c' icon="set-arrow.gif"}>
+                <{else}>
+                <{button type="submit" class="order-btn lijizhifu" label=$___b2c="确定"|t:'b2c' rel="_request"}>
+                <{/if}>
+
+            </div>
+            <{/if}>
+
+
+        </form>
+
+    </div>
+   
+</div>

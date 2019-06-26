@@ -1,0 +1,25 @@
+<table cellspacing="0" cellpadding="0" style="width:100%">
+  <col class="Colauto"></col>
+  <col class="Coloption_1b"></col>
+  <col class="Coloption_1b" ></col>
+  <col class="Coloption_1b"></col>
+  <col class="Coloption_1b"></col>
+  <col></col>
+  <tbody>
+  <{foreach from=$area item=item key=iLoop name="item"}>
+  <tr parentid="<{$item.region_id}>" class="provice-bg">
+    <td style="text-align:left; width:320px;" nowrap>
+      <div style="padding-left:<{$item.step*25}>px">
+        <{if $item.child_count>0}>
+        <span class="imgTree" onclick="clickTree(this);" id="<{$item.region_id}>"> &nbsp;&nbsp; </span>
+        <{else}>
+        <span class="imgTree tree_open" id="<{$item.region_id}>"> &nbsp;&nbsp; </span>
+        <{/if}>
+
+         <{$item.local_name}>
+      </div>
+    </td>
+    <td></td>
+  </tr>
+  <{/foreach}>
+</table>

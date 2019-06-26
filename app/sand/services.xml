@@ -1,0 +1,5 @@
+<services>
+    <service id="desktop_finder.sand_mdl_sandorder">
+        <class>sand_finder_sandorder</class>
+    </service>
+</services>

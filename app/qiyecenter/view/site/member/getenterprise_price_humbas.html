@@ -1,0 +1,18 @@
+<div class="list_head">
+	<div class="head_font" style="width: 10%;">操作</div>
+	<div class="head_font" style="width: 15%;">雇员编号</div>
+	<div class="head_font" style="width: 10%;">用户名</div>
+	<div class="head_font" style="width: 15%;">雇员姓名</div>
+	<div class="head_font" style="width: 40%;">身份证</div>
+	<div class="head_font" style="width: 10%;">性别</div>
+</div>
+<{foreach from=$sfscdata item=item}>
+<div class="list_con">
+	<div class="head_font" style="width: 10%;"><input type="checkbox" name="HUMBAS_NO" value="<{$item.HUMBAS_NO}>" /></div>
+	<div class="head_font" style="width: 15%;"><{$item.HUMBAS_NO}></div>
+	<div class="head_font" style="width: 10%;"><{$item.CUSTOMER_NAME}></div>
+	<div class="head_font" style="width: 15%;"><{$item.NAME}></div>
+	<div class="head_font" style="width: 40%;"><{$item.ID}></div>
+	<div class="head_font" style="width: 10%;"><{if $item.SEX == '1'}>男<{elseif $item.SEX == '2'}>女<{else}>--<{/if}></div>
+</div>
+<{/foreach}>

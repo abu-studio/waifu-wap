@@ -1,0 +1,39 @@
+<div container="true"/>
+<div container='true'>
+<div class="tableform">
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+	<thead>  
+       <tr>
+          <th><{t}>商品名称<{/t}></th>
+          <th><{t}>商品编号<{/t}></th>
+		  <th><{t}>销售数量<{/t}></th>
+          <th><{t}>成本价<{/t}></th>
+          <th><{t}>销售价<{/t}></th>
+          <th><{t}>成本合计<{/t}></th>
+          <th><{t}>起始日期<{/t}></th>
+          <th><{t}>截止日期<{/t}></th>
+       </tr>
+    </thead>
+	<tbody>
+        <{if $products}>
+            <{foreach from=$products item=product key=key}>
+              <tr>  
+                 <td><a target='_blank' href="index.php?app=b2c&ctl=admin_goods&act=index&action=detail&id=<{$product.goods_id}>&singlepage=true&finderview=detail_basic"><{$product.goods_name}></a></td>
+                 <td style="font-weight:bold;"><{$product.bn}></td>
+				 <td style="font-weight:bold;"><{$product.count}></td>
+                 <td style="color:red;font-weight:bold;"><{$product.cost|cur}></td>
+                 <td style="color:red;font-weight:bold;"><{$product.price|cur}></td> 
+                 <td style="color:red;font-weight:bold;"><{$product.total_cost|cur}></td>
+                 <td><{$product.start|date_format:'%Y-%m-%d'}></td>
+                 <td><{$product.end|date_format:'%Y-%m-%d'}></td>
+              </tr>
+            <{/foreach}>
+        <{else}>
+            <tr><td style="text-align:center;" colspan="12">无结算商品</td></tr>
+        <{/if}>
+       
+	</tbody>
+    </table>
+     <{$pager}>
+</div>
+</div>

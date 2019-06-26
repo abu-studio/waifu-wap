@@ -1,0 +1,43 @@
+<{if count($data) > 0}> 
+ <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td>
+      <div class="tableform">
+      <h3><{t}>订单配送信息<{/t}></h3>
+	  <{foreach from=$data item=dely key=key name="delyitem"}>
+	  <h4>子订单号：<{$dely.jdOrderId}></h4>
+      <table cellpadding="0" class="gridlist" cellspacing="0" width="100%" border="0">
+		<col style="width:5%"/>
+		<col style="width:15%"/>
+		<col style="width:10%"/>
+		<col style="width:60%"/>
+      <thead>
+		  <tr>
+			<th><{t}>序号<{/t}></th>
+			<th><{t}>时间<{/t}></th>
+			<th><{t}>操作人<{/t}></th>
+			<th><{t}>备注<{/t}></th>
+		  </tr>
+      </thead>
+      <tbody>
+	  <{foreach from=$dely.orderTrack item=track key=k name="item"}>
+		<tr>
+          <td style="width:5%"><{$k+1}></td>
+          <td style="width:15%">
+			<{$track.msgTime}>
+          </td>
+          <td style="width:10%"><{$track.operator}></td>
+		  <td style="width:60%"><{$track.content}></td>
+        </tr>
+	 <{/foreach}>
+	 </tbody>
+	</table>
+	 <{/foreach}>
+	</td>
+   </tr>
+</table>
+<{else}>
+暂无物流信息
+<{/if}>
+
+

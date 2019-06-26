@@ -1,0 +1,120 @@
+<!--
+<div class="site dis_bl clb">
+    <div class="login_title">
+    <span class="site_l fl">当前位置：<a href="/">首页</a> &gt; <a class="red" href="#">用户登录</a></span>
+    <span class="site_r fr">如果您尚未注册，请<a href="<{link app=b2c ctl=site_passport act=signup}>" class="lan">注册新用户</a></span>
+    </div>
+</div>
+-->
+<link href="login.css" rel="stylesheet" type="text/css" />
+
+<h3>登录悠福<font style="color:#222222;font-size: 20px;"> Login</font></h3>
+<form action="<{$callback}>" method="post" id="loginBar">
+  <div class="loginbox login_body" style="border:0px;" <{if $mini_passport}>style="margin-bottom:0;padding-left:5px;padding-right:5px;border:0px;"<{/if}>>
+  <div>
+    <ul class="login_ul">
+      <li>
+      <!-- <label class="login-k"><i>*</i><{t}>用户名 <font style="font-size: 14px;color:#CDCDCD;">User Name：</font><{/t}></label> -->
+      <div class="login-v aling_left">
+        <{input name="uname" vtype="required" class="inputstyle" id="uname" tabindex="1" placeholder="用户名 User Name" value="" onblur="checkUname(this);" class="user_name"}>
+        <!-- <a href="<{$singup_url}>"><{t}>立即注册<{/t}></a> -->
+		<div class="crl_sz">
+			<span id="remind_uname"></span>
+			<span id="mobile_info" style="display: none;"></span>
+		</div>
+      </div>
+      </li>
+      <li>
+      <!-- <label class="login-k"><i>*</i><{t}>密码 <font style="font-size: 14px;color:#CDCDCD;margin-left: 14px;">Password：</font><{/t}></label> -->
+      <div class="login-v"><{input name="password" type="password" class="inputstyle password" placeholder="密码 Password" vtype="required" id="password" tabindex="2"}></div>
+      </li>
+        <li>
+            <label class="login-k"><{t}>角色 <font style="font-size: 14px;color:#CDCDCD;margin-left: 14px;">Role：</font><{/t}></label>
+            <br>
+            <input name="Role" type="radio" value="Role1" checked="true"  onclick="changeLoginRole('Role1')" />&nbsp;企业雇员/供应商&nbsp;&nbsp;&nbsp;
+            <input name="Role" type="radio" value="Role2" onclick="changeLoginRole('Role2')" /> 企业管理员&nbsp;&nbsp;&nbsp;
+            <br><br>
+        </li>
+      <{if $show_varycode}>
+      <li id="pictureCode">
+      <label class="login-k"><!--<i>*</i>--><{t}>验证码<font style="font-size: 14px;color:#CDCDCD;margin-left: 14px;">Verify Code：</font><{/t}></label>
+      <div class="login-v"><{input  vtype="required&&number" size="4" maxlength="4" name="verifycode" id="iptlogin"  style="width:60px;padding:6px 0px 6px 14px;" tabindex="3" class="mobileverifycode"}> <span class='verifyCodebox' style="display:none"><img align="absmiddle" id="membervocde" src="<{link app="b2c" ctl="site_passport" act="gen_vcode"}>" codesrc="<{link app="b2c" ctl="site_passport" act="gen_vcode"}>"/> <a href="javascript:changeimg('membervocde')"><{t}>看不清楚?换个图片<{/t}></a></span></div>
+      </li>
+      <{/if}>
+
+      <li>
+      <div class="login-v login-w">
+		<{if $company}>
+			<input type="submit" value="登录Login" class="btn login_button" tabindex="4" rel="_request" <!--style="background:url(<{$_THEME_}>/images/company/<{$company}>/btn1.jpg) no-repeat;" -->>
+		<{else}>
+			<{button class="login_button" type="submit" label=$__b2c="登录LOGIN"|t:'b2c' tabindex="4" rel="_request"}>
+		<{/if}>
+
+        <input type="hidden" name="forward" value="<{$forward}>">
+      </div>
+      </li>
+      <li class="zidong_for">
+        <a href="https://cloudtest.fsgplus.com/wf_efescoCn/UserAction.do?method=forgetPwd&languageType=zh_CN"  target="_blank" <{if $mini_passport==1}> target="_blank"<{/if}>><{t}>忘记密码  Forget the password？<{/t}></a>
+        <a href="https://cloudtest.fsgplus.com/wf_efescoCn/UserAction.do?method=fillRegisterFirstStep&languageType=zh_CN" target="_blank" style="margin-left: 6px;">立即注册 Register</a>
+      </li>
+    </ul>
+
+    <{if $login_image_url.0}>
+    <{if $mini_passport == 1}>
+    <div style="margin-left:48px;">
+      <ul class="trustlogos">
+        <{foreach from=$login_image_url item=login_image_url}>
+            <{$login_image_url}>
+        <{/foreach}>
+      </ul>
+    </div>
+    <{/if}>
+    <{/if}>
+	</div>
+	<div class="crl"></div>
+  </div>
+</form>
+<{if $show_varycode}>
+<script>
+  $$('#loginBar input').addEvent('focus',function(){
+    if($(this.form).retrieve('showvcode',false))return;
+    changeimg('membervocde');
+    $$('.verifyCodebox').setStyle('display','');
+    $(this.form).store('showvcode',true);
+  });
+  function changeimg(id){
+    //$(id).set('src','<{link app="b2c" ctl="site_passport" act="gen_vcode"}>#'+(+new Date()));
+	$(id).src = $(id).get('codesrc')+'?'+(+new Date());
+  }
+</script>
+<{/if}>
+
+<script>
+    function checkUname(input){
+        return true;
+        
+        new Request({
+            url:'<{link app=b2c ctl=site_passport act=checkuname}>',
+            onComplete:function(response){
+                if(response == 1){
+                    $('remind_uname').set('html','');
+                }else{
+                    $('remind_uname').set('html',response);
+                }
+            },
+            method:'post',
+            data:'login_name='+encodeURIComponent(input.value.trim())
+        }).send();
+    }
+
+    function changeLoginRole(roleType){
+        var actionRoleOneUrl = '<{$callback}>';
+        var actionRoleTwoUrl = '<{link app=qiyecenter ctl=site_enter act=loginDeal}>';
+
+        if(roleType == 'Role2'){
+            $('loginBar').set('action',actionRoleTwoUrl);
+        }else{
+            $('loginBar').set('action',actionRoleOneUrl);
+        }
+    }
+</script>

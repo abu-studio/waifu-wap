@@ -1,0 +1,73 @@
+<div class="personInfo">
+    <div class="personInfo-bannerQY" style="<{if $banner_url}>background: url(<{$banner_url}>) <{/if}>center center no-repeat;">
+    </div>
+    <script>
+        var mouseEnterFunction = function(){
+            $(this).addClass('active');
+        }
+        var mouseLeaveFunction = function(){
+            $(this).removeClass('active');
+        }
+
+        var clickFunction = function(){
+            $$('#accordion li').removeClass('active');
+            $(this).addClass('active');
+        }
+        window.addEvent('domready', function() {
+            $$('#accordion li').addEvent('mouseenter', mouseEnterFunction);
+            $$('#accordion li').addEvent('mouseleave', mouseLeaveFunction);
+            $$('#accordion li').addEvent('click', clickFunction);
+        });
+    </script>
+    <div class="bianzhifu-content">
+        <div class="bianzhifuContent-left">
+			<div class="bianzhifuContent-left">
+			<div class="bianzhifu-title"><a href=""><span>便支付</span></a></div>
+				<div id="bianzhifu">
+					<{foreach from=$cpmenu item=menus}>
+                    <{if $menus.app ne null}>
+                        <div class="switchable-trigger"><li class="menu_li_1"><a class="menu_li_a1 active<{$menus.label_image}>" href="<{link app=$menus.app ctl=$menus.ctl act=$menus.link}>"><{$menus.label}></a></li></div>
+                        <ul class="switchable-panel">
+                            <{foreach from=$menus.items item=items}>
+                                <{if $items}>
+                                    <li>
+                                    <{if $items.href}>
+                                        <span class="accordion-icon"></span>
+                                        <a href="<{if $items.args ne null}><{link app=$items.app ctl=$items.ctl act=$items.link args=$items.args}><{else}><{link app=$items.app ctl=$items.ctl act=$items.link}><{/if}>" target="_balnk"><{$items.label}></a>
+                                    <{else}>
+                                        <span class="accordion-icon"></span>
+                                        <a href="<{if $items.args ne null}><{link app=$items.app ctl=$items.ctl act=$items.link args=$items.args}><{else}><{link app=$items.app ctl=$items.ctl act=$items.link}><{/if}>"><{if $items.label==$___b2c='我的订单'|t:'b2c'}><{/if}><{$items.label}><{if $items.label==$___b2c='我的订单'|t:'b2c'}><{/if}></a>
+                                    <{/if}>
+                                    </li>
+                                <{/if}>
+                            <{/foreach}>
+                        </ul>
+                    <{else}>
+                        <div class="switchable-trigger"><li class="menu_li_1"><a class="menu_li_a1 active<{$menus.label_image}>"><{$menus.label}></a></li></div>
+                        <ul class="switchable-panel">
+							<{assign var=i value=0}>
+                            <{foreach from=$menus.items item=items}>
+                                <{if $items}>
+								<{assign var=i value=$i+1}>
+                                    <li <{if $i==4}>style="padding-bottom:10px;"<{/if}>>
+                                    <{if $items.href}>
+                                        <span class="accordion-icon"></span>
+                                        <a href="<{if $items.args ne null}><{link app=$items.app ctl=$items.ctl act=$items.link args=$items.args}><{else}><{link app=$items.app ctl=$items.ctl act=$items.link}><{/if}>" target="_balnk"><{$items.label}></a>
+                                    <{else}>
+                                        <span class="accordion-icon"></span>
+                                        <a href="<{if $items.args ne null}><{link app=$items.app ctl=$items.ctl act=$items.link args=$items.args}><{else}><{link app=$items.app ctl=$items.ctl act=$items.link}><{/if}>"><{if $items.label==$___b2c='我的订单'|t:'b2c'}><{/if}><{$items.label}><{if $items.label==$___b2c='我的订单'|t:'b2c'}><{/if}></a>
+                                    <{/if}>
+                                </li>
+                                <{/if}>
+                            <{/foreach}>
+                        </ul>
+                    <{/if}>
+					<{/foreach}>
+                </div>
+		</div>
+        </div>
+
+        <{include file=$_PAGE_ app=$app_id}>
+    </div>
+    <div class="clearfix"></div>
+</div>

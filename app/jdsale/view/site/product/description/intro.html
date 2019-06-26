@@ -1,0 +1,145 @@
+ 
+
+	
+
+
+<div class="pdtdetail desc1" data-sync-type="goodsdescription" tab="<{t}>详情描述<{/t}>" data-order="1">
+	<div class="goodsparams"  data-sync-type="goodsparams" tab="规格参数" data-order="1">
+		<h3 class="params">&nbsp;&nbsp;&nbsp;&nbsp;规格参数</h3>
+		<{$goods.param}>
+	</div>
+    <{if $goods.wareQD}>
+	<div class="goodsStandard" style="padding: 5px 25px;" data-sync-type="goodswareQD" tab="包装清单" data-order="2">
+		<h3 class="ware">&nbsp;&nbsp;&nbsp;&nbsp;包装清单</h3>
+		<{$goods.wareQD}>
+	</div>
+	<{/if}>
+	
+    <div id="goods-intro" class="p25">	
+		<textarea class="textarea-lazyload">
+			<div class="goods-intro" class="p15" style="color:black">
+				<{$goods.description}>
+			</div>
+		</textarea>
+		<div class="referbox"> </div>
+   </div>
+</div>
+
+
+
+<div class="pdtdetail" data-sync-type="goodsdiscuss" style="display:none" tab="<{t}>商品评价<{/t}> " data-order="3">
+  <h3 class="hd-font">商品评价</h3>
+  <div class="referbox">
+	  <div class="rate-toolbar" id="discuss_toolbar">
+		<span class="rate-filter">
+		<strong>宝贝评价</strong>
+		<input id="discuss_hasaddition" class="rate-list-append" type="checkbox" name="append">
+		<label for="discuss_hasaddition">查看追加 (0)</label>
+		<input id="discuss_hascontent" type="checkbox" checked="" name="content">
+		<label for="discuss_hascontent">有内容评价</label>
+		</span>
+		<span class="rate-sort">
+		  <a class="active" data-value="1" href="#" title="按评价时间从近到远进行排序">
+		  <span class="rate-arrow">按时间</span></a>
+		</span>
+		<input type="hidden" name="orderb">
+	  </div>
+  <div class="evalubox clearfix">
+      <div class="evalubox-left">
+		  <div class="scores-wrap">
+			<ul class="out">
+			  <li class="flt">商品评分</li>
+			  <li><strong>0.00</strong></li>
+			  <li>
+				<div class="star-div flt " style="padding-top:2px;padding-top:0\9"><!--咨询页面这个地方class可调用用"star-no"-->
+				  <ul>
+					<li class="star0"></li>
+				  </ul>
+				</div>
+				<span class="scores_size"></span>
+				</li>
+			  <li style="clear:both">(共<span class="value-color">0</span>人评分)</li>
+			</ul>
+		  </div>
+	  </div>
+	  <div class="evalubox-right">
+		<div class="rightbox"><!--<h4>评价说明</h4>--><p></p></div>
+	  </div>
+  </div>
+  <a name="discuss_all_info"></a>
+  <div class="goods-discus-title bulelink"> 
+	共<span id="product_discusscount" class="value-color">0</span>个商品评价&nbsp;&nbsp;
+	<span class="all_link" style="display:none;"><a href="#discuss_all_info" class="allnum">查看所有评论</a></span> 
+  </div>
+	<div class="consult-content">
+	<div class="consult-panel rate-grid" id="discuss_content"> 如果您对本商品有什么评价或经验,欢迎分享!</div>
+  </div>
+</div>
+</div>
+
+
+
+ <script>
+
+
+window.addEvent('domready', function(){
+
+	/*Tab的处理*/
+	//try{
+    var viewDetails = $$('.goods-detail-infos');
+    var viewSections=$$('.goods-detail-infos .pdtdetail');
+
+    viewDetails.each(function(v,i){
+        var viewTabsContainer=v.getElement('.goods-detail-tab');
+        var viewTabs=[];
+
+        viewSections.each(function(se){
+            var type = se.getAttribute('data-sync-type');
+            var id = se.getAttribute('data-order');
+            var t = new Element('li.goodsDetailTab',{'data-tab-type':type,'html':'<a>'+se.getAttribute('tab')+'</a>'});
+
+            (id == i) && viewTabs.push(t);
+        });
+
+        viewTabsContainer.adopt(new Element('ul').adopt(viewTabs));
+        new Tabs(v,{
+          panels:'.pdtdetail',
+          eventType:'click',
+          activeIndex: 0,
+          triggers:'.goodsDetailTab',
+          content:'.goodsDetailContent',
+          onInit:function(){
+            this.panels.each(function(el,i){
+              if(el.get('data-order') == 0) return;
+              el.show().getElements('.displaydiv').hide();
+              el.getElements('.allnum').addEvent('click', function(e){
+                this.triggers[i].fireEvent('click');
+                this.panels[i].getElement('textarea').focus();
+              }.bind(this));
+            },this);
+          },
+          onSwitch:function(index){
+            this.panels.each(function(el,i){
+              if(el.get('data-order') == 0) {
+                try{
+                  // 修复ie67下图片不显示bug:reflow
+                  if(Browser.ie6 || Browser.ie7) $('goods_link').getElements('li .picwidth,li .goodinfo h3,li li,li li .addcart-btn span,li li .addcart-btn .has-icon').show('block');
+                }catch(e){}
+                return; 
+              };
+              if(!this.activeIndex){
+                el.show().getElements('.displaydiv').hide();
+                el.getElements('.all_link').hide();
+              }else{
+                if(this.activeIndex!=i) el.hide();
+                el.getElements('.displaydiv').show();
+                el.getElements('.all_link').hide();
+
+              }
+            },this);
+          }
+        });
+    });
+	//}catch(e){}
+});
+</script>

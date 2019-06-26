@@ -1,0 +1,146 @@
+<?php 
+$db['package']=array (
+	'columns' =>
+	array (
+		'package_id' =>
+		array (
+			'type' => 'int(11)',
+			'required' => true,
+			'pkey' => true,
+			'extra' => 'auto_increment',
+			'label' => app::get('physical')->_('套餐ID'),
+			'width' => 100,
+			'editable' => false,
+			'in_list' => false,
+			'default_in_list' => false,
+		),
+		'package_name' =>
+		array (
+			'type' => 'varchar(200)',
+			'required' => true,
+			'label' => app::get('physical')->_('套餐名称'),
+			'width' => 350,
+			'editable' => true,
+			'in_list' => true,
+			'default_in_list' => true,
+			'filterdefault' => true,
+			'filtertype' => 'custom',
+			'filtercustom' => 
+			array (
+				'has' => '包含',
+				'tequal' => '等于',
+				'head' => '开头等于',
+				'foot' => '结尾等于',
+			),
+			'searchtype' => 'has',
+			'order'=>10,
+		),
+		'package_code' =>
+		array (
+			'type' => 'varchar(50)',
+			'required' => true,
+			'label' => app::get('physical')->_('套餐编号'),
+			'width' => 150,
+			'editable' => true,
+			'in_list' => true,
+			'default_in_list' => true,
+			'filterdefault' => true,
+			'filtertype' => 'yes',
+			'order'=>20,
+		),
+		'type_id' =>
+		array (
+			'type' => 'table:package_type',
+			'required' => true,
+			'label' => app::get('physical')->_('类型ID'),
+			'width' => 100,
+			'editable' => false,
+			'in_list' => true,
+			'default_in_list' => true,
+			'filterdefault' => true,
+			'filtertype' => 'yes',
+			'order'=>30,
+		),
+		'image' => array (
+		  'type' => 'varchar(32)',
+		  'label' => '图片',
+		  'width' => 75,
+		  'hidden' => true,
+		  'editable' => false,
+		  'in_list' => false,
+		  'order'=>40,
+		),
+		'price' => array (
+		  'type' => 'money',
+		  'default' => '0',
+		  'required' => true,
+		  'label' => '销售价',
+		  'width' => 75,
+		  'editable' => false,
+		  'filtertype' => 'number',
+		  'filterdefault' => true,
+		  'in_list' => true,
+		  'default_in_list' => true,
+		  'orderby' => true,
+		  'order'=>50,
+		),
+		'mktprice' => array (
+		  'type' => 'money',
+		  'default' => '0',
+		  'required' => true,
+		  'label' => '市场价',
+		  'width' => 75,
+		  'editable' => false,
+		  'filtertype' => 'number',
+		  'in_list' => true,
+		  'default_in_list' => true,
+		  'order'=>60,
+		),
+		'project_ids' =>
+		array (
+			'type' => 'varchar(255)',
+			'required' => true,
+			'label' => app::get('physical')->_('套餐包含体检项目'),
+			'width' => 150,
+			'editable' => true,
+			'in_list' => false,
+			'default_in_list' => false,
+			'order'=>70,
+		),
+		'create_time' =>  array(
+			'type' => 'time',
+			'required' => true,
+			  'label' => app::get('physical')->_('创建时间'),
+			  'width' => 150,
+			  
+			  'filtertype' => 'normal',
+			  'filterdefault' => true,
+			  'in_list' => true,
+			  'default_in_list' => true,
+			  'order'=>80,
+		),
+		'update_time' =>  array(
+			'type' => 'time',
+			'required' => true,
+			  'label' => app::get('physical')->_('最后更新时间'),
+			  'width' => 150,
+			  
+			  'filtertype' => 'normal',
+			  'filterdefault' => true,
+			  'in_list' => true,
+			  'default_in_list' => true,
+			  'order'=>90,
+		),
+	),
+	'index'=>array(
+		'ind_package_code'=>
+		array(
+			'columns'=>array(
+				0=>'package_code',
+			),
+		),
+	),
+  'engine' => 'innodb',
+	'comment' => app::get('physical')->_('体检套餐表'),
+	'version' => '$Rev: 50514 $',
+);

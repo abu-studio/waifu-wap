@@ -1,0 +1,90 @@
+<div class="action-bar">
+	<div class="order-ctls clearfix" id="<{$order_info.id}>">
+		<div class="span-auto"><b><{t}><{$order_info.status_name}><{/t}></b></div>
+	</div>
+
+</div>
+
+
+<div class="tableform">
+  <div class="division">
+    <table width="100%" cellspacing="0" cellpadding="0">
+	  <tr>
+        <th><label><{t}>卡券编号：<{/t}></label></th>
+        <td><{$order_info.card_no}></td>
+        <th><label><{t}>服务类型：<{/t}></label></th>
+        <td><{$order_info.type_name}></td>
+		<th><label><{t}>门店名称：<{/t}></label></th>
+        <td><{$order_info.store_name|escape:'html'}></td>
+      </tr>
+	  <tr>
+        <th><label><{t}>预约人：<{/t}></label></th>
+        <td><{$order_info.person_name|escape:'html'}></td>
+        <th><label><{t}>性别：<{/t}></label></th>
+        <td><{if $order_info.sex == 1}>男<{elseif $order_info.sex == 2}>女<{/if}></td>
+		<th><label><{t}>是否已婚：<{/t}></label></th>
+        <td><{if $order_info.marry == 1}>是<{elseif $order_info.marry == 2}>否<{/if}></td>
+      </tr>
+	  <tr>
+        <th><label><{t}>年龄：<{/t}></label></th>
+        <td><{$order_info.age}></td>
+        <th><label><{t}>证件类型：<{/t}></label></th>
+        <td><{$order_info.c_type_name}></td>
+		<th><label><{t}>证件号码：<{/t}></label></th>
+        <td><{$order_info.c_no}></td>
+      </tr>
+	  <tr>
+        <th><label><{t}>联系手机：<{/t}></label></th>
+        <td><{$order_info.mobile}></td>
+        <th><label><{t}>联系地址：<{/t}></label></th>
+        <td><{$order_info.address}></td>
+		<th><label><{t}>所选套餐：<{/t}></label></th>
+        <td><{$order_info.package_name}></td>
+      </tr>
+	  <tr>
+        <th><label><{t}>预约时间：<{/t}></label></th>
+        <td><{if $order_info.order_time_arr.0}><{$order_info.order_time_arr.0}><{/if}></td>
+        <th></th>
+        <td><{if $order_info.order_time_arr.1}><{$order_info.order_time_arr.1}><{/if}></td>
+		<th></th>
+        <td><{if $order_info.order_time_arr.2}><{$order_info.order_time_arr.2}><{/if}></td>
+      </tr>
+	  <tr>
+        <th><label><{t}>预约确定时间：<{/t}></label></th>
+        <td><{if $order_info.sure_time}><{$order_info.sure_time}><{/if}></td>
+        <th><label><{t}>预约其它时间：<{/t}></label></th>
+        <td><{if $order_info.other_time}><{$order_info.other_time|cdate:FDATE_FTIME}><{/if}></td>
+		<th><label><{t}>体检时间：<{/t}></label></th>
+        <td><{if $order_info.physical_time}><{$order_info.physical_time|cdate:FDATE_FTIME}><{/if}></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+
+<div class="tableform">
+	<table width="100%" border="0" cellpadding="0" cellspacing="0" class="gridlist">
+		<thead>
+		<tr>
+		  <th><{t}>项目名称<{/t}></th>
+		  <th><{t}>项目编号<{/t}></th>
+		  <th><{t}>科目<{/t}></th>
+		  <th><{t}>医学编号<{/t}></th>
+		  <th><{t}>价格<{/t}></th>
+		  <th><{t}>简介<{/t}></th>
+		</tr>
+		</thead>
+		<tbody>
+		<{foreach from=$order_info.project_list item=item key=key}>
+		<tr>
+		   <td><{$item.project_name}></td>
+		   <td><{$item.project_code}></td>
+		   <td><{$item.subject_name}></td>
+		   <td><{$item.medical_code}></td>
+		   <td><{$item.price|cur}></td>
+		   <td style="text-align: left;"><{$item.introduction}></td>
+		</tr>
+		<{/foreach}>
+		</tbody>
+	</table>
+</div>

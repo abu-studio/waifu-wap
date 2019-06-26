@@ -1,0 +1,19 @@
+<div style="text-align:right;padding:3px 18px"><{help docid="102" type="link"}><{t}>点击查看帮助<{/t}><{/help}></div>
+<h3 class="head-title"><{t}>O2O参数设置 <{/t}></h3>
+<form method="post" action="<{$this_url}>&act=o2oset" id="imageset" class="tableform">
+<input type="hidden" name="setting" value="setting">
+<table>
+  <{foreach from=$set key=key item=item}>
+	<tr>
+		<th><input type="hidden" name="kv[title][<{$key}>]" value="<{$title.$key}>"><{$title.$key}>：</th>
+		<td><{input type="text" name="kv[value][{$key}]" value=$item }></td>
+	</tr>
+<{/foreach}>
+</table>
+<div class="table-action">
+  <{button label=$___image="保存"|t:'image' class="btn-primary" type="submit"}>
+</div>
+</form>
+
+
+

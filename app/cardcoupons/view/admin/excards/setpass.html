@@ -1,0 +1,170 @@
+<form id="setpass_form" class="tableform" action="index.php?app=cardcoupons&ctl=admin_excards&act=setpass"  method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="cards[card_id]" value="<{$cards.card_id}>">
+	<input type="hidden" name="cards[name]" value="<{$cards.name}>"/>
+	<input type="hidden" name="cards[from_time]" value="<{$cards.from_time}>"/>
+	<input type="hidden" name="cards[to_time]" value="<{$cards.to_time}>"/>
+	<input type="hidden" name="setpass" value="setpass">
+    <div class="division">
+        <table width="100%" >
+			<tr>
+				<th>卡密方式：</th>
+				<td>
+					<input type="radio" name="cards[passset]" onclick="pass_create('manual')" value='manual' <{if $cards.passset == 'manual'}>checked<{/if}> />
+					<label ><{t}>手动输入<{/t}></label>
+					<input  type="radio" name="cards[passset]" onclick="pass_create('ftp')" value='ftp' <{if $cards.passset == 'ftp'}>checked<{/if}> />
+					<label  ><{t}>上传文件<{/t}></label>
+				</td>
+			</tr>
+			<tr class="manual_tr" style="<{if $cards.passset != 'manual'}>display:none;<{/if}>" >
+				<th>类型：</th>
+				<td>
+					<input type="radio" name="cards[type]" value='entity' checked="checked"/>
+					<label ><{t}>实体卡<{/t}></label>
+					<input  type="radio" name="cards[type]" value='virtual'/>
+					<label  ><{t}>电子码<{/t}></label>
+				</td>
+			</tr>
+			<tr class="manual_tr" style="<{if $cards.passset != 'manual'}>display:none;<{/if}>">
+                <th><{t}>开始时间：<{/t}></th>
+                <td><{input type="time" name="from_time"}></td>
+            </tr>
+			<tr class="manual_tr" style="<{if $cards.passset != 'manual'}>display:none;<{/if}>">
+                <th><{t}>结束时间：<{/t}></th>
+                <td><{input type="time" name="to_time"}></td>
+            </tr>
+			<tr class="manual_tr" style="<{if $cards.passset != 'manual'}>display:none;<{/if}>" >
+				<td style="text-align:right">
+					<a href="javascript:void(0);" class="addimage" id="FormWrap_table_a" style="padding:0px">卡密(点击添加)：</a>
+				</td>
+				<td id="manual_td">
+					<div><{t app="b2c"}>卡号:<{/t}><input type="text" name="cards[pass]['1234'][card_no]" maxlength="12" minlength="12" required="required">
+					<{t app="b2c"}>密码:<{/t}><input type="text" name="cards[pass]['1234'][card_pass]" required="required" vtype="required" minlength="12" maxlength="32">
+					</div>
+				</td>
+			</tr>
+			<tr class="ftp_tr" style="<{if $cards.passset != 'ftp'}>display:none;<{/if}>">
+				<td>选择文件:</td>
+				<td>
+					<input type="file" name="cards" /><a target='_blank' href="index.php?app=cardcoupons&ctl=admin_cards&act=downpass&card_id=<{$cards.card_id}>">下载模板</a><{help}>类型:entity实体卡，virtual电子卡；时间格式：2015-06-19<{/help}>
+				</td>
+			</tr>
+			<tr>
+				<th><em class="red">*</em>备注：</th>
+				<td>
+					<{input type="textarea" required="required" name="cards[remarks1]" vtype="required" cols="50" rows="5"}>
+				</td>
+			</tr>
+        </table>
+    </div>
+
+</form>
+<form id="error_info" class="tableform" style="display:none;">
+	<div class="division">
+		<table width="100%" >
+			<tr>
+				<td colspan="2"><em class="red" id="error_title"></em></td>
+			</tr>
+			<tr>
+				<th>错误卡号或卡密：</th>
+				<td id="error_con">
+				</td>
+			</tr>
+		</table>
+	</div>
+</form>
+
+<div class="table-action"><{button type="submit"  label=$___cardcoupons="保存"|t:'cardcoupons' id='setpass_form_submit' }></div>
+<script>
+function pass_create(id){
+		var set=new Array('manual','ftp');
+		for(var i=0;i<set.length;i++){
+
+			if(id==set[i]){
+				$$('.'+set[i]+'_tr').setStyle('display','');
+			}else{
+				$$('.'+set[i]+'_tr').setStyle('display','none');
+			}
+		}
+	}
+	document.getElement(".addimage").addEvent('click',function(){
+      var i=new Date().getTime();
+
+      var tpl='\
+        <div><{t app="b2c"}>卡号:<{/t}><input type="text" name="cards[pass]['+i+'][card_no]" maxlength="12" minlength="12" required="required">\
+        <{t app="b2c"}>密码:<{/t}><input type="text" name="cards[pass]['+i+'][card_pass]" required="required" vtype="required" minlength="12" maxlength="32">\
+        <{t app="b2c"}>删除该组:<{/t}><span onclick="del($(this));"><{img src="bundle/delete.gif" style="cursor:pointer;" alt=$___b2c="删除"|t:'b2c' title=$___b2c="删除"|t:'b2c'}></span>';
+
+      $('manual_td').adopt(new Element('tr',{'html':tpl,'width':'100%'}));
+});
+function del(tr){
+    $(tr).getParent('tr').destroy();
+}
+    (function(){
+        var _form = $('setpass_form');
+        var btn =$('setpass_form_submit');
+        var finder = finderGroup['<{$env.get._finder.finder_id}>'];
+        _form.store('target',{
+            onComplete:function(response){
+                var hash_res_obj = JSON.decode(response);
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                        finder.refresh.delay(400,finder);
+                    }
+                }
+                else
+                {
+                }
+				if(hash_res_obj.repeat_no || hash_res_obj.old_no || hash_res_obj.repeat_pass || hash_res_obj.old_pass || hash_res_obj.error_pass){
+					$('error_title').set("text",hash_res_obj.error);
+					if(hash_res_obj.repeat_no){
+						var pass = hash_res_obj.repeat_no;
+					}
+					if(hash_res_obj.old_no){
+						var pass = hash_res_obj.old_no;
+					}
+					if(hash_res_obj.repeat_pass){
+						var pass = hash_res_obj.repeat_pass;
+					}
+					if(hash_res_obj.old_pass){
+						var pass = hash_res_obj.old_pass;
+					}
+					if(hash_res_obj.error_pass){
+						var pass = hash_res_obj.error_pass;
+					}
+					$('error_con').set("text",pass.join());
+					$('error_info').setStyle('display','');
+				}
+            },
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                        finder.refresh.delay(400,finder);
+                    }
+                }
+                else
+                {
+                }
+            }
+        });
+
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+        });
+
+    })();
+</script>

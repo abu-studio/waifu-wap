@@ -1,0 +1,112 @@
+<div class="middle clb">
+    <div class="information">
+        <form id="order-create" action="<{link app=cardcoupons ctl=$ctl_name act=creat_order}>" method="post">
+            <input type="hidden" name="card_time"  value="<{$card_time}>">
+            <input type="hidden" name="purchase[member_id]"  value="<{$member_id}>">
+            <input type="hidden" name="purchase[addr_id]"  value="0">
+            <input type="hidden" name="purchase[def_area]"  value="0">
+            <input type="hidden" name="delivery[ship_id]"  value="">
+            <input type="hidden" name="payment[currency]"  value='CNY'>
+            <input type="hidden" name="payment[pay_app_id]"  value='sfscpay'>
+            <input type="hidden" name="business_goods"  value='<{$aCart.business_goods}>'>
+            <input type="hidden" name="split_order"  value='<{$aCart.json_order_split}>'>
+            <{foreach from=$aCart.order_split item=store key=store_key name=store_name}>
+                <{foreach from=$store.slips item=slip key=slip_key name=slip_name}>
+                    <{if $slip.shipping}>
+                        <{foreach from=$slip.shipping item="shipping" key="key" name="shippings"}>
+                        <{/foreach}>
+                        <input type="hidden" name="shipping[<{$store_key}>][<{$slip_key}>][shipping_id]" value="<{$shipping.dt_id}>">
+                    <{/if}>
+                <{/foreach}>
+            <{/foreach}>
+        <div class="distribution_info box_border">
+            <div class="info_head title_border">收货人信息 Shipping Address</div>
+            <div id="def_addr_info" class="hid_item cancel_receiver_info receiver_addr">
+                <{include file="site/common/reciver_def_addr.html" app=b2c}>
+            </div>
+        </div>
+
+        <div class="goods_info box_border">
+            <div class="info_head title_border">兑换商品 Order Summary</div>
+
+
+                <{foreach from=$gooddata item=item}>
+            <table>
+                <tr class="t_head">
+                    <th width="330">店铺 Shop：<{$item.store_name}></th>
+                    <th width="225">规格 Specification</th>
+                    <th width="180">商品类型 Product Types</th>
+                    <th width="175" style="display: none;">市场价 Price</th>
+                    <th width="193">数量 Quantity</th>
+                </tr>
+            </table>
+            <table>
+                <tr class="t_body b_bd">
+                    <td class="r_bd" width="405">
+                        <div class="good_img"><img style="width:87px; height:87px;" src="<{$item.image_default_id|storager:'s'}>"/></div>
+                        <div class="good_info">
+                            <span class="good_name"><{$item.name}></span><br/>
+                            <span class="good_spec"><{$item.brief}></span>
+                        </div>
+                    </td>
+                    <td class="r_bd" width="290">
+                        <span>
+                        <{if $item.spec_info}><{$item.spec_info}><{else}>无 Non<{/if}>
+                        </span>
+                    </td>
+                    <td class="r_bd" width="230">
+                        <{if $item.goods_kind == "card"}>
+                            卡券商品 Real Coupon
+                        <{elseif $item.goods_kind == "entity"}>
+                            虚拟商品 Virtual Coupon
+                        <{else}>
+                            实物 Real Object
+                        <{/if}>
+                    </td>
+                    <td class="r_bd" width="175" style="display: none;"><{$item.price}></td>
+                    <td width="200">
+                        <{if $item.virtual_card != 0}>
+                        电子券：<{$item.virtual_card}> <span style="color:#999999;">Virtual Coupon:<{$item.virtual_card}></span><br/>
+                        <{/if}>
+                        <{if $item.goods != 0}>
+                        实物：<{$item.goods}> <span style="color:#999999;">Real Object:<{$item.goods}></span><br/>
+                        <{/if}>
+                        <{if $item.goods_card != 0}>
+                        实物券：<{$item.goods_card}><span style="color:#999999;">Real Coupon:<{$item.goods_card}></span>
+                        <{/if}>
+                    </td>
+                </tr>
+
+                <{/foreach}>
+                <tr class="t_body">
+                    <td>
+                        补充说明：
+                        <br/>
+                        <span style="color: #999999;">Supplementary Note:</span>
+                    </td>
+                    <td colspan="4">
+                        <input type="text" class="inputstyle" size="60" name="cardRemark" style="height:42px">
+                    </td>
+                </tr>
+            </table>
+        </div>
+            <{foreach from=$good_data item=goodsinfo key=key}>
+            <input type="hidden" name="goodsinfo[<{$key}>][goods][num]" value="<{$goodsinfo.goods.num}>">
+            <input type="hidden" name="goodsinfo[<{$key}>][goods][goods_id]" value="<{$goodsinfo.goods.goods_id}>">
+            <input type="hidden" name="goodsinfo[<{$key}>][goods][pmt_id]" value="<{$goodsinfo.goods.pmt_id}>">
+            <input type="hidden" name="goodsinfo[<{$key}>][goods][product_id]" value="<{$goodsinfo.goods.product_id}>">
+            <input type="hidden" name="goodsinfo[<{$key}>][goods][virtual_card]" value="<{$goodsinfo.goods.virtual_card}>">
+            <input type="hidden" name="goodsinfo[<{$key}>][goods][goods]" value="<{$goodsinfo.goods.goods}>">
+            <input type="hidden" name="goodsinfo[<{$key}>][goods][goods_card]" value="<{$goodsinfo.goods.goods_card}>">
+            <input type="hidden" name="goodsinfo[<{$key}>][0]" value="0">
+            <{/foreach}>
+
+            <input type="hidden" name="cards[card_id]" value="<{$cards.card_id}>">
+            <input type="hidden" name="cards[card_pass_no]" value="<{$cards.card_pass_no}>">
+        <div class="next_info">
+            <input type="submit" class="next_btn"  style="width: 160px; font-size:14px; font-family: '微软雅黑','宋体',Arial, Helvetica, sans-serif;" id="orderSubmit" rel="_request" style="font-family:'微软雅黑','宋体',Arial, Helvetica, sans-serif; font-size:14px;" value="兑 换/Place the order">
+        </div>
+        </form>
+    </div>
+
+</div>

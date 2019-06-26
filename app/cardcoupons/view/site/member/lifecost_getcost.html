@@ -1,0 +1,127 @@
+<!-- right-->
+<{css src="member.css" app="b2c" pdir="css_mini"}>
+<!--<{css src="style.css" app="b2c" pdir="css"}>-->
+        <div class="personInfoContentRight">
+						<div class="content-title">水电煤</div>
+						<div class="mywelfare">
+							<div class="tx_step tx_step2">
+								<span>1. 账单查询</span>
+								<span class="on">2. 账单确认</span>
+								<span>3. 在线支付</span>
+								<span>4. 获取凭证</span>
+							</div>
+					
+						</div>
+						
+						<div style="height:480px;margin-left:40px;">
+							
+							<div class="pinl_tt2"><div class="jfcx_tt" style="margin-left:0px;">账单信息确认</div></div>
+							
+							
+							<div class="jfcx_lists" style="border:none;">
+				
+					<div class="jfcx_lists_tt">
+						<table width="100%" border="0" cellpadding="0" cellspacing="0">
+						    <tbody><tr>
+							<td width="50" height="40" align="center">
+							 	<label id="checkbox_xw" style="display: block;">
+					      			<input type="checkbox" name="allbox" id="checkbox">
+					    		</label>
+							</td>
+						    <td width="155" align="left" class="jfcx_ft1">机构名称</td>
+						    <td width="117" align="left" class="jfcx_ft1">账单编号</td>
+						    <td width="119" align="left" class="jfcx_ft1">账期</td>
+						    <td width="126" align="left" class="jfcx_ft1">金额</td>
+						    <td width="104" align="left" class="jfcx_ft1">状态</td>
+						    </tr>
+						</tbody></table>
+					</div>
+					
+					<div class="jfcx_lists_info">
+
+						<table width="100%" border="0" cellpadding="0" cellspacing="0">
+						
+						  
+						  	  
+							  <tbody><tr>
+								<td width="50" height="40" align="center" class="jfcx_boder1">
+								<!-- 帐单是否过期 -->
+								<input type="hidden" name="expires" value="1">								
+								
+									<input type="checkbox" amount="413.00" name="billbox" id="0-bills" onclick="jQuery.shfftSingleBillPay.getBillInfo('billbox',this.value)" value="00001029640000102964:3:0121371456:::41300:888883200302900" statuscode="00">
+								 
+								<div id="0-bill" style="display:none;">
+								<input type="hidden" name="bills[0].barcode" value="00001029640000102964">
+								<input type="hidden" name="bills[0].contractNo" value="0121371456">
+								<input type="hidden" name="bills[0].payMonth" value="">
+								<input type="hidden" name="bills[0].amount" value="41300">
+								<input type="hidden" name="bills[0].recordTimes" value="">
+								<input type="hidden" name="bills[0].orgId" value="888883200302900">
+								<input type="hidden" name="bills[0].catalogId" value="0000">
+								<input type="hidden" name="bills[0].billNoType" value="3">
+								<input type="hidden" name="bills[0].payType" value="0">
+								</div>
+								</td>
+							    <td width="155" height="40" align="left" class="jfcx_boder1">上海市自来水北有限公司</td>
+							    <td width="117" align="left" class="jfcx_boder1">89565456111574</td>
+							    <td width="119" align="left" class="jfcx_boder1">201309</td>
+				               	<td width="126" align="left" class="jfcx_boder1">
+				                    <font style="color:#FB5E00;font-weight: bold;">￥100</font>
+							    </td>
+							   
+							    <td align="left" class="jfcx_boder1" width="104">
+							    	<b>未支付</b>
+				                    
+				                    <input type="hidden" name="bills[0].statusDesc" value="未支付">
+							    </td>
+							  </tr>
+						  
+						</tbody></table>
+				    </div>
+				    
+				    
+				    
+					<div class="jfcx_price_tip">
+				          	<span class="jfcx_price_tip1">
+								已选账单笔数:
+									<span class="jfcx_price_tip2" id="billCountTip">1</span>
+									笔，已选账单总计:
+									<span class="jfcx_price_tip2" id="amountTip">￥100</span>
+							</span>
+				    </div>
+				    <div class="clear"></div>
+				    
+					
+					<div style="float: right;">
+
+                    <script>
+                        function fast_utilityPay(){
+                            new Request({
+                                url:"<{link app=b2c ctl=site_lifecost act=utilitypay}>",
+                                method:'post',
+                                data:'',
+                                onComplete: function(rs){
+
+                                }
+                            }).send();
+
+                        }
+                    </script>
+
+					    <button class="sdm_sel_button" onclick="fast_utilityPay()">立即支付</button>
+					</div>
+					
+
+				</div>
+				
+				
+				
+					
+				
+				
+				
+							
+						</div>
+						
+						
+		</div>

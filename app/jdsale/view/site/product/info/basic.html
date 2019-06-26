@@ -1,0 +1,219 @@
+<{css src="product.css" app="b2c"}>
+<link rel="stylesheet" type="text/css" href="http://uat.yoofuu.com/themes/simple/images/jddetail.css">
+<style>
+.curr a{
+	border: 2px solid red;
+    border-bottom: 0;
+    padding-bottom: 2px;
+    background: white;
+}
+</style>
+<ul class="goods-info-list">
+    <li class="list-item">
+		<span><{t}>价 &nbsp;&nbsp;&nbsp;   格：&nbsp;&nbsp;Our Price<{/t}></span>
+		<del class="mktprice1">
+          <em class="goodsprice" updatespec="updateprice" style="float:left"><{$goods.price|cur}></em>
+          <{if $this_member_lv_name}><img title="<{$this_member_lv_name}>价" alt="<{$this_member_lv_name}>" style="margin-left: 10px; width: 20px; height: 20px; float: left; padding-top: 5px;" src="<{$this_member_lv_pic}>"><span style="display: none;"><{$this_member_lv_name}></span><{/if}>
+		</del>
+    </li>
+    <li class="list-item"><span><{t}>配&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;送：&nbsp;&nbsp;Distribution</span><{/t}>
+		
+		
+		
+		<div class="dd clearfix">
+             <div id="store-selector">
+                <div class="text">
+					<div title="<{$regionDate.local_name}>" id="regionView"><{$regionDate.local_name}></div><b></b>
+				</div>
+                <div class="content">
+				   <div class="stock-add-select stock-add-new clearfix clicked">  
+						   <div class="JD-stock-con hide" id="JD-stock-wrap">
+								<div data-widget="tabs" class="m JD-stock" id="JD-stock">
+									<div class="mt">
+									   <ul class="tab">        
+										   <li data-index="1" data-widget="tab-item" class="curr" clstag="shangpin|keycount|product|yijidizhi">
+												<a href="javascript:void(0);" class="hover" title="<{$regionDate.local_name}>"><em data-id="<{$regionDate.area_id}>"><{$regionDate.local_name}></em><i></i></a>
+										   </li>
+										   <li data-index="2" data-widget="tab-item" style="" clstag="shangpin|keycount|product|erjidizhi" class="">
+										       <a href="javascript:void(0);" class="" title=""><em data-id="">请选择</em><i></i></a>
+										   </li>        
+										   <li data-index="3" data-widget="tab-item" style="display:none;" clstag="shangpin|keycount|product|sanjidizhi" class="">
+										      <a href="javascript:void(0);" class="" title=""><em data-id=""></em><i></i></a>
+										   </li>  
+									   </ul>    
+									   <div class="stock-line"></div>
+									 </div>
+									 <div class="mc" data-area="1" data-widget="tab-content" id="stock_province_item" style="display: block;">    
+									     <ul class="area-list">
+												<{foreach from=$provinceDate item=item}>
+											 	<li> <a href="javascript:void(0);" onclick="clickRegion(<{$item.area_id}>,event)" data-value="<{$item.area_id}>"><{$item.local_name}></a></li>
+												<{/foreach}>
+									     </ul>
+									 </div>
+									 
+								</div>
+							</div>
+						</div>
+						<span class="clr"></span>
+					</div>
+                    <div class="close" onclick="$('store-selector').removeClass('hover')"></div>
+					<div id="store-prompt"><strong></strong><span></span><span class="charges"></span></div>
+				</div>
+			</div>
+		
+		
+		
+		
+		
+	</li>
+    <li class="list-item">
+		<span style="width: 66px;"><{t}>月&nbsp;销&nbsp;量：</span><{/t}>
+		<em class="mon_sell "><em class="color_3355aa evaluation"><{$goods.buy_m_count}></em>件</em>
+		<div class="star-div goods-point clearfix" id="goods-point">
+			<span class="flt font-black" style="width: 110px;"><{t}>评价：&nbsp;Comment<{/t}></span>
+			<ul class="fl">
+				<li class="star<{$goods.rated|default:0}>"></li>
+			</ul>
+			<em class="fl color_3355aa evaluation">分(累计评价<a href="#consult" onclick="new Fx.Scroll(document,{onComplete:function(){$$('li[data-tab-type=goodsdiscuss]')[0]&&$$('li[data-tab-type=goodsdiscuss]')[0].fireEvent('click');}}).toElement('goodsDetailMain');return false;">0</a>)</em>
+		</div>
+    </li>
+</ul>
+<script type="text/javascript">
+//new AutoSize('.goods-info-list .list-item');
+window.addEvent('domready', function(){
+  var obj = $E('#J_PromoBox .tb-arrow')||'';
+  if(obj)
+  obj.addEvents({
+  mouseover:function(){
+  var p_obj = $('J_MoreMjsSlider')||'';
+  if(p_obj)p_obj.setStyle('display','block');
+  },
+  mouseleave:function(){
+  var p_obj = $('J_MoreMjsSlider')||'';
+  if(p_obj)p_obj.setStyle('display','none');
+  }
+  });
+});
+
+
+
+
+(function(){
+
+$$('#store-selector .text').addEvent('click',function(){
+	$('store-selector').addClass('hover');
+})
+
+
+ $$('li[data-widget=tab-item]').addEvent('click',function(){
+	if(this.hasClass('curr')) return ;
+	if($$('.curr')[0]){
+		$$('.curr')[0].removeClass('curr');
+		this.addClass('curr');
+	}
+	var dataIndex = this.get('data-index');
+	if(dataIndex>1){
+		var IndexOn = parseInt(dataIndex)-1;
+		var dataId = $$('li[data-index='+IndexOn+']')[0].getElement('em').get('data-id');
+	}
+	if(dataIndex == 1){
+		var url = '<{link app=jdsale ctl=site_regions act=getProvince}>';
+		var dataParms = dataIndex;
+	}else{
+		var url = '<{link app=jdsale ctl=site_regions act=getRegion}>';
+		var dataParms = dataId;
+	}
+	 new Request({
+		url:url,
+		method:'post',
+		data:'dataParms='+dataParms,
+		onComplete:function(res){
+			$$('.area-list').set('html',res);
+		}
+	}).send();
+})
+
+
+
+ 
+	
+	
+
+})();
+
+function clickRegion(dataVal,e){
+	
+	var event = window.event||e;  
+	var obj = event.srcElement ? event.srcElement : event.target; 
+	//var obj = event.target ? event.target : event.srcElement; 
+	var name = obj.get('html');
+	var Index = $$('.curr')[0].get('data-index');
+	var IndexOn = parseInt(Index)+1;
+	var url = '<{link app=jdsale ctl=site_regions act=getChildRegion}>';
+	var dataParms = dataVal;
+	new Request({
+		url:url,
+		method:'post',
+		data:'dataParms='+dataParms,
+		onComplete:function(res){
+			var IndexObj = $$('li[data-index='+Index+']')[0];
+			var IndexOnObj = $$('li[data-index='+IndexOn+']')[0];
+			IndexObj.getElement('a').set('title',name);
+			IndexObj.getElement('em').set('html',name);
+			IndexObj.getElement('em').set('data-id',dataVal);
+			if(IndexOn>3){
+				var _html = $$('li[data-index=1]')[0].get('html')+$$('li[data-index=2]')[0].get('html')+$$('li[data-index=3]')[0].get('html');
+				var areaID= $$('li[data-index=1]')[0].getElement('em').get('data-id')+'_'+$$('li[data-index=2]')[0].getElement('em').get('data-id')+'_'+$$('li[data-index=3]')[0].getElement('em').get('data-id')+'_0';
+				$('regionView').set('html',_html);
+				$('regionView').set('title',_html);
+				$('jdarea').value=areaID;
+				<{if $goods.marketable == 'true'}>
+				getStores(<{$goods.bn}>,areaID);
+				<{/if}>
+				$('store-selector').removeClass('hover');
+			}else{
+				IndexOnObj.show();
+				IndexOnObj.getElement('em').set('html','请选择');
+				var IndexMax = IndexOn+1;
+				if($$('li[data-index='+IndexMax+']')[0]){
+					$$('li[data-index='+IndexMax+']')[0].hide();
+				}
+				IndexObj.removeClass('curr');	
+				IndexOnObj.addClass('curr');
+				$$('.area-list').set('html',res);
+			}
+		}
+	}).send();
+}
+
+function getStores(bn,region){
+	var content=document.getElementById("selout");
+	content.setAttribute('value','请等待...');
+	$('selout').show();
+	$('btn_lj').hide();
+	$('cartBtn').hide();
+
+	var url = '<{link app=jdsale ctl=site_product act=getStore}>';
+	new Request({
+		url:url,
+		method:'post',
+		data:'bn='+bn+'&region='+region,
+		onComplete:function(re){
+			$$('#store-prompt .charges').set('html',re);
+			if(re == '有货'){
+				$('btn_lj').show();
+				$('cartBtn').show();
+				$('selout').hide();
+			}else{
+				content.setAttribute('value','已售罄');
+				$('btn_lj').hide();
+				$('cartBtn').hide();
+				$('selout').show();
+			}
+		}
+	}).send();
+}
+</script>
+
+
+

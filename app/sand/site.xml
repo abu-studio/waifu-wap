@@ -1,0 +1,7 @@
+<site>
+	<module id='sand' controller='site_sand'>
+        <name>sand</name>
+        <title>杉德生活</title>
+        <disable>false</disable>
+    </module>
+</site>

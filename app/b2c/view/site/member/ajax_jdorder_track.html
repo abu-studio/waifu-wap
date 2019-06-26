@@ -1,0 +1,32 @@
+<{if $hasTrack == 'false'}>
+<{t}>目前无物流信息！<{/t}>
+<{elseif}>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>
+      <div class="tableform">
+        <h3><{t}>订单配送信息<{/t}></h3>
+
+  <table id="table1" class='send_table' width="100%">
+  <tr>
+    <td class="textcenter"><{t}>序号<{/t}></td>
+    <td class="textcenter"><{t}>时间<{/t}></td>
+    <td class="textcenter"><{t}>跟踪进度<{/t}></td>
+    <td class="textcenter"><{t}>操作者<{/t}></td>
+  </tr>
+
+    <{foreach from=$jdOrderTrack.orderTrack item='track' key=k name='item'}>
+    <tr>
+      <td class="textcenter"><{$k+1}></td>
+      <td class="textcenter"><{$track.msgTime}></td>
+      <td class="textcenter"><{$track.content}></td>
+      <td class="textcenter"><{$track.operator}></td>
+    </tr>
+    <{/foreach}>
+  </table>
+
+      </div>
+    </td>
+  </tr>
+</table>
+<{/if}>

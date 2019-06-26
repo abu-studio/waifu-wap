@@ -1,0 +1,22 @@
+<form method="POST" action="<{link app=cellphone ctl=admin_public act=toAdd }>" id="groupactivity-from">
+<div class="goods-detail tableform">
+    <h3><{t}>公告选择<{/t}></h3>
+    <div class="division">
+        <table cellpadding="0" cellspacing="0" border="0" width="100%" >
+		<tr>
+          <th><{t}>请选择：<{/t}></th>
+        <td >
+			<div id= "select_type">
+				<{input type="object" object="article_indexs@content" vtype="required" name="article_id" multiple=false  select="radio" value=$article_id}>
+			<div>
+           </td>	
+            </tr>
+        </table>
+    </div>
+   
+</div>
+<div class="table-action">
+   <{button label="保存" type="submit" id="groupactivity-btn" }>
+    <{button label="取消" id="groupactivity-cancel" href=$reUrl}>
+</div>
+<form>

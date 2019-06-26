@@ -1,0 +1,39 @@
+
+<form method="POST" action="<{link app=cellphone ctl=admin_channeltype act=toAdd}>" id="groupactivity-from">
+<div class="goods-detail tableform">
+    <h3><{t}>基本信息<{/t}></h3>
+	<input type="hidden" name="type_id" value="<{$item.type_id}>">
+    <div class="division">
+        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+            <tr>
+                <th><{t}>频道类型：<{/t}></th>
+                <td><{input type="text" value="{$item.type_name}" name="type_name" size="22" vtype="required"}><em><font color="red">*</font></em></td>
+            </tr>
+           
+            <tr>
+                <th><{t}>录入时间：<{/t}></th>
+                <td><{input type="date" value="{$item.createtime}" name="createtime" size="30" vtype="required"}><em><font color="red">*</font></em></td>
+            </tr>
+			 
+			  <tr>
+                <th><{t}>排序：<{/t}></th>
+                <td><{input type="text" value="{$item.d_order}" name="d_order" size="5" vtype="required&&number"}><em><font color="red">*</font></em></td>
+            </tr>
+				<tr>
+                 <th>上传图片：</th>
+                <td>
+                 <{input type="image" name="image_id" vtype="require" value=$item.image_id width=110 height=110}><em><font color="red">建议上传100*100的图标</font></em>
+                </td> 
+			    </tr>
+           
+          
+        </table>
+    </div>
+    
+<div class="table-action">
+    <{button label="保存" type="submit" id="groupactivity-btn" }>
+	  <{button label="取消" type="button" id="groupactivity-btn" href=$reUrl}>
+</div>
+<form>
+
+

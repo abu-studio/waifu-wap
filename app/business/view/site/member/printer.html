@@ -1,0 +1,49 @@
+<{css src="member.css" app='b2c'}>
+<{include file="site/common/header.html" app="b2c"}>
+<div class="member-main member-main2">
+    <div>
+       <div class="title">
+	   <span style="float:left"><{t}>快递单模板列表<{/t}>
+	   <span class="disc">|</span> 
+	   <span id='add' class="disc add-icon" ><a target="_blank" href="<{link app=express ctl=site_deliverycenter act=add_tmpl}>" ><{t}>添加模板<{/t}></a></span>
+	   </span>
+	   </div>
+        <table class="gridlist border-all mt10" width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed;">
+            <tr>
+                <th ><{t}>单据名称<{/t}></th>
+				<th ><{t}>是否启用<{/t}></th>
+				<th ><{t}>单据宽度<{/t}></th>
+				<th ><{t}>单据高度<{/t}></th>
+                <th><{t}>操作<{/t}></th>				
+            </tr>
+           <{foreach from=$printers item=data key=key}>
+            <tbody>
+                <tr > 
+				    <td class="textcenter" style="word-wrap:break-word;"><{$data.prt_tmpl_title}></td>
+                    <td class="textcenter" style="word-wrap:break-word;"><{if $data.shortcut == "true"}>是<{else}>否<{/if}></td>
+					<td class="textcenter" style="word-wrap:break-word;"><{$data.prt_tmpl_width}></td>
+					<td class="textcenter" style="word-wrap:break-word;"><{$data.prt_tmpl_height}></td>
+                    <td align="center"><a target="_blank" href="<{link app=express ctl=site_deliverycenter act=edit_tmpl arg0=$data.prt_tmpl_id}>">编辑</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:remove(<{$data.prt_tmpl_id}>);">删除</a></td>
+                </tr>
+            </tbody>
+		<{/foreach}>
+        </table>
+</div>
+<script>
+	function remove(prt_tmpl_id) {
+	 Ex_Dialog.confirm('<{t}>确定要删除该快递模板吗？<{/t}>', function(e){
+		if(!e) return;
+		new Request.JSON({
+			url:"<{link app=express ctl=site_deliverycenter act=toRemove}>",
+			data:'prt_tmpl_id='+prt_tmpl_id,
+			method:'POST',
+			onSuccess:function(rs){
+			
+			Ex_Dialog.alert(rs.message);
+			//Modify by hzy 2013-8-14 15:51:59
+			setTimeout(function(){window.location.reload();},1000);
+			}
+		  }).send();
+	});
+ }
+</script>

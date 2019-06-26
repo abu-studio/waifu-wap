@@ -1,0 +1,95 @@
+<div container="true"/>
+<div container='true'>
+<div class="tableform">
+    <ul class="finder-action-items flt">
+        <li style="float:left;">
+        <a target='_blank' href="index.php?app=business&ctl=admin_settlement&act=export_detail&settlement_no=<{$settlement_no}>">
+        <span>导出明细</span>
+        </a>
+        </li>
+    </ul>
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+	<thead>
+       <tr>
+          <th><{t}>订单号<{/t}></th>
+          <th><{t}>商社号<{/t}></th>
+          <th><{t}>商品名称<{/t}></th>
+          <th><{t}>成本价<{/t}></th>
+          <th><{t}>销售价<{/t}></th>
+          <th><{t}>发货数量<{/t}></th>
+		  <th><{t}>订单运费<{/t}></th>
+          <th><{t}>福点金额<{/t}></th>
+          <th><{t}>第三方金额<{/t}></th>
+          <th><{t}>订单总额<{/t}></th>
+          <th><{t}>结算金额<{/t}></th>
+          <th><{t}>订单结算总额<{/t}></th>
+          <th><{t}>订单类型<{/t}></th>
+          <th><{t}>配送方式<{/t}></th>
+          <th><{t}>收货人<{/t}></th>
+          <th><{t}>收货地址<{/t}></th>
+          <th><{t}>邮编<{/t}></th>
+          <th><{t}>收货电话<{/t}></th>
+       </tr>
+    </thead>
+	<tbody id='detail_list'>
+        <{if $detail}>
+            <{foreach from=$detail item=detail key=key}>
+              <tr>  
+                 <td class='span'><a target='_blank' href="index.php?app=b2c&ctl=admin_order&act=index&action=detail&id=<{$detail.order_id}>&singlepage=true&finderview=detail_basic"><{$detail.order_id}></a></td>
+                 <td class='span' style="font-weight:bold;"><{$detail.company_no}></td>
+				 <td><a target='_blank' href="index.php?app=b2c&ctl=admin_goods&act=index&action=detail&id=<{$detail.goods_id}>&singlepage=true&finderview=detail_basic"><{$detail.goods_name}></a></td>
+                 <td style="color:red;font-weight:bold;"><{$detail.cost|cur}></td>
+                 <td style="color:red;font-weight:bold;"><{$detail.price|cur}></td> 
+				 <td style="font-weight:bold;"><{$detail.count}></td>
+                 <td class='span' style="color:red;font-weight:bold;"><{$detail.cost_freight|cur}></td>
+                 <{if $detail.sfsc_money==0}><td class='span' style="font-weight:bold;">-</td><{else}><td class='span' style="color:red;font-weight:bold;"><{$detail.sfsc_money|cur}></td><{/if}>
+                 <{if $detail.third_money==0}><td class='span' style="font-weight:bold;">-</td><{else}><td class='span' style="color:red;font-weight:bold;"><{$detail.third_money|cur}></td><{/if}>
+                 <td class='span' style="color:red;font-weight:bold;"><{$detail.order_money|cur}></td>
+                 <td style="color:red;font-weight:bold;"><{$detail.account}></td>
+                 <td class='span' style="color:red;font-weight:bold;"><{$detail.order_account}></td>
+                 <td class='span' style="font-weight:bold;"><{$detail.type}></td>
+				 <td class='span' style="font-weight:bold;"><{$detail.shipping}></td>
+				 <td class='span' style="font-weight:bold;"><{$detail.ship_name}></td>
+				 <td class='span' style="font-weight:bold;"><{$detail.ship_addr}></td>
+				 <td class='span' style="font-weight:bold;"><{$detail.ship_zip}></td>
+				 <td class='span' style="font-weight:bold;"><{$detail.ship_mobile}></td>
+              </tr>
+            <{/foreach}>
+        <{else}>
+            <tr><td style="text-align:center;" colspan="16">无结算明细</td></tr>
+        <{/if}>
+       
+	</tbody>
+    </table>
+    <{$pager}>
+</div>
+</div>
+
+<script>
+	//表格纵向合并
+	var tr_span = $('detail_list').getFirst('tr');
+	var tr_current = tr_span;
+	var rowspan = 1;
+	var rows_num = $('detail_list').getChildren('tr').length;
+	var spans;
+	for(var i=0;i<rows_num-1;i++){
+		if(tr_current.getNext()){
+			tr_current = tr_current.getNext();
+			//判断订单号相同的行
+			if(tr_current.getFirst('td').getFirst('a').get('text')==tr_span.getFirst('td').getFirst('a').get('text')){
+				rowspan++;
+				spans = tr_span.getChildren('.span');
+				for(var j=0;j<spans.length;j++){
+					spans[j].set('rowspan',rowspan);
+				}
+				spans = tr_current.getChildren('.span');
+				for(var k=0;k<spans.length;k++){
+					spans[k].set('hidden','true');
+				}
+			}else{
+				tr_span = tr_current;
+				rowspan = 1;
+			}
+		}
+	}
+</script>

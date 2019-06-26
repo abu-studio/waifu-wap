@@ -1,0 +1,39 @@
+
+<form method="POST" action="<{link app=cellphone ctl=admin_perauction act=toAdd}>" id="groupactivity-from">
+<div class="goods-detail tableform">
+    <h3><{t}>基本信息<{/t}></h3>
+	<input type="hidden" name="id" value="<{$item.id}>"
+    <div class="division">
+        <table cellpadding="0" cellspacing="0" border="0" width="100%" >
+     
+		<tr>
+          <th><{t}>请选择商家活动：<{/t}></th>
+         <td >
+			<div>
+     <{input type="object" object="activity@auction" vtype="required" name="act_id" filter=$filter  multiple=true value=$item.act_id}>
+       		
+			</div>
+           </td>
+				
+            </tr>
+         
+			<tr>
+                <th><{t}>启用：<{/t}></th>
+                <td>
+                    <input type="radio" value="true" <{if $column.is_active=='true'}>checked<{/if}> name="is_active" >开启
+                    <input type="radio" value="false" <{if $column.is_active!='true'}>checked<{/if}> name="is_active" >关闭
+                </td>
+            </tr>
+		
+        </table>
+    </div>
+   
+</div>
+    
+<div class="table-action">
+    <{button label="保存" type="submit" id="groupactivity-btn" }>
+	  <{button label="取消" type="button" id="groupactivity-btn" href=$reUrl}>
+</div>
+<form>
+
+

@@ -1,0 +1,17 @@
+<desktop>
+    <permissions>
+		<permission id="sandproduct" display='true' parent='0'  workground="b2c.wrokground.goods" >杉德默认商品设置</permission>
+		<permission id="sandorder" display='true' parent='0'  workground="ectools.workground.order" >杉德卡兑换</permission>
+    </permissions>
+    <workground name="订单" id="ectools.wrokground.order" app="b2c" controller="admin_order" action="index" order='10'>
+        <menugroup name="第三方接口">
+            <menu controller='admin_sandorder' action='index' permission='sandorder' display='true' order='100'>杉德卡兑换</menu>
+        </menugroup>
+    </workground>
+	
+	 <workground name="商品" id="b2c.wrokground.goods"  app="b2c" controller="admin_goods" action="index" order="15">
+		<menugroup name="第三方应用">
+            <menu controller='admin_sandProduct' action='basic_setting' permission='sandproduct' display='true' order='100'>杉德默认商品设置</menu>
+        </menugroup>
+	 </workground>
+</desktop>

@@ -1,0 +1,214 @@
+<{capture name="header"}>
+    <style type="text/css">
+        .r_list{border-left:1px solid #eee;border-right: 1px solid #eee; width: 100%; float: left;}
+        .list_head{height: 35px; width: 100%; background:#f1f1f1;border-top:1px solid #eee;}
+        .head_font{text-align:center;float: left;font-size:12px;height: 35px; line-height: 35px;overflow:hidden;}
+        .list_con{width: 100%; height: 35px; border-bottom: 1px solid #eee;}
+        .show_fenye{height:50px;background:white; width: 100%; float: left;}
+        .feny{float: left; margin-top:20px;height:50px;margin-left:21px;}
+        .page_link{display: inline-block; width: 15px;  height: 28px;  line-height: 28px;  padding: 0px 8px;  border: 1px solid #eee;  margin: 0 2px;  text-align: center;}
+        .show_fenye .feny a.on{background: #c40001; color: #fff; border-color: #c40001;}
+        .popup-container{position:absolute;margin:0;padding:0;z-index:131061;background-color:white;display:none;}
+        .popup-body{border:1px solid #e1e1e1;background-color:white;box-shadow:0 0 8px 1px #aaaaaa;-webkit-box-shadow:0 0 8px 1px #aaaaaa;-moz-box-shadow:0 0 8px 1px #aaaaaa;-o-box-shadow:0 0 8px 1px #aaaaaa;}
+        .popup-header{background:#fafafa;height:32px;line-height:32px;color:#333;padding:1px;overflow:hidden;_zoom:1;}
+        .popup-header h2{padding-left:6px;margin:0;float:left;font-size:14px;white-space:normal;overflow:hidden;}
+        .popup-header span{display:block;float:right;}
+        * html .popup-header span{width:48px;text-align:right;zoom:1;}
+        .popup-header span button{cursor:pointer;vertical-align:middle;border:0 none;padding:0;margin:0;height:16px;width:16px;overflow:hidden;text-indent:-26px;overflow:visible;}
+        .popup-header button.popup-btn-close{margin:8px 8px 0 0;background:url(/waifu/app/b2c/statics/images/icons.png) no-repeat;font-size:0;}
+        .popup-header button.popup-btn-maximize{margin:2px 2px 0 0;background:url(/waifu/app/b2c/statics/images/icons.png) no-repeat -16px 0;}
+        .popup-content{border-top:1px solid #dddddd;padding-bottom: 15px;}
+        .popup-content .loading{text-align:center;line-height:22px;background:url(/waifu/app/b2c/statics/images/loading.gif) no-repeat center bottom;height:55px;display:block;}
+        .popup-modalMask{height:100%;width:100%;position:absolute;left:0;top:0;-moz-opacity:0.3;opacity:0.3;filter:alpha(opacity=30);background:#777777;z-index:131060;display:none;}
+
+    </style>
+<{/capture}>
+<div style="width: 100%; height: auto;">
+    <div style="float: left; width: 100%; height: 50px; line-height:50px; text-align: center; font-size: 16px; font-weight: bold;">员工管理</div>
+        <div style="width: 80%; float: left; height: 50px; line-height: 50px; margin-left: 55px;">
+            <div style="width: 100px; float: left; height: 50px; line-height: 50px;">雇员姓名</div>
+            <div style="width:150px; float: left; height: 50px; line-height: 50px;">
+                <input style="height: 25px;" id="humbas_name" type="text" name="" />
+            </div>
+            <div style="width:200px; float: left; height: 50px; line-height: 50px;">
+                <input type="hidden" id="GROUP_ID" value="<{$GROUP_ID}>">
+                <input type="hidden" id="COMPANY_NO" value="<{$COMPANY_NO}>">
+                <input type="button" value="查询" id="search_humbas"  style="margin-left: 10px; display: inline-block;zoom: 1;color: rgb(255, 255, 255);font-size: 12px;font-family: 微软雅黑;cursor: pointer;vertical-align: middle;height: 24px;line-height: 24px;background: rgb(196, 0, 1);padding: 0px 15px;border-width: initial;border-style: none;border-color: initial;border-image: initial;overflow: visible;text-decoration: none;border-radius: 5px;">
+				<input type="button" value="删除" id="del_humbas"  style="margin-left: 10px; display: inline-block;zoom: 1;color: rgb(255, 255, 255);font-size: 12px;font-family: 微软雅黑;cursor: pointer;vertical-align: middle;height: 24px;line-height: 24px;background: rgb(196, 0, 1);padding: 0px 15px;border-width: initial;border-style: none;border-color: initial;border-image: initial;overflow: visible;text-decoration: none;border-radius: 5px;">
+				<input type="button" value="新增" id="add_humbas"  style="margin-left: 10px; display: inline-block;zoom: 1;color: rgb(255, 255, 255);font-size: 12px;font-family: 微软雅黑;cursor: pointer;vertical-align: middle;height: 24px;line-height: 24px;background: rgb(196, 0, 1);padding: 0px 15px;border-width: initial;border-style: none;border-color: initial;border-image: initial;overflow: visible;text-decoration: none;border-radius: 5px;">
+            </div>
+        </div>
+    <div class="r_list" id="HUMBAS_LIST">
+        <div class="list_head">
+            <div class="head_font" style="width: 10%;">操作</div>
+            <div class="head_font" style="width: 15%;">雇员编号</div>
+            <div class="head_font" style="width: 15%;">雇员姓名</div>
+            <div class="head_font" style="width: 40%;">身份证</div>
+            <div class="head_font" style="width: 10%;">性别</div>
+        </div>
+        <{foreach from=$sfscdata item=item}>
+            <div class="list_con">
+                <div class="head_font" style="width: 10%;"><input type="checkbox" name="HUMBAS_NO" value="<{$item.HUMBAS_NO}>" /></div>
+                <div class="head_font" style="width: 15%;"><{$item.HUMBAS_NO}></div>
+                <div class="head_font" style="width: 15%;"><{$item.NAME}></div>
+                <div class="head_font" style="width: 40%;"><{$item.ID}></div>
+                <div class="head_font" style="width: 10%;"><{if $item.SEX == '1'}>男<{elseif $item.SEX == '2'}>女<{else}>--<{/if}></div>
+            </div>
+        <{/foreach}>
+    </div>
+    <input type='hidden' id='current_page' value='0' />
+    <div class="show_fenye">
+        <div class="feny" id="page_navigation">
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var per_page = 10;
+    var items = document.getElementsByClassName("list_con");
+    var pages = Math.ceil(items.length/per_page);
+    gotopage(0);
+
+    function gotopage(page){
+        for(var i=0;i<items.length;i++){
+            items[i].style.display='none';
+        }
+        for(var i=page*per_page;i<(page+1)*per_page;i++){
+            if(i<items.length){
+                items[i].style.display='block';
+            }
+        }
+        var navigation_html = '<a class="page_link" title="上一页" href="javascript:prepage();">&lt;</a>';
+
+        for(var current_link = 0; current_link < pages; current_link++){
+            if(pages<=10){
+                current_link == page?navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>':navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+            }else{
+                if(current_link == page){
+                    navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+                }
+                if(current_link <= (page+4)&&current_link >= (page-4)&&current_link != page){
+                    navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+                }
+            }
+        }
+        navigation_html += '<a class="page_link" title="下一页" href="javascript:nextpage();">&gt;</a>';
+        document.getElementById("page_navigation").innerHTML= navigation_html;
+        document.getElementById("current_page").value= page;
+
+    }
+    function nextpage(){
+        var page = parseInt(document.getElementById("current_page").value);
+        if(page < pages - 1){
+            gotopage((page+1));
+            document.getElementById("current_page").value= page+1;
+        }
+    }
+    function prepage(){
+        var page = parseInt(document.getElementById("current_page").value);
+        if(page > 0){
+            gotopage((page - 1));
+            document.getElementById("current_page").value= page - 1;
+        }
+    }
+
+
+    //查询雇员信息 --  start
+    window.addEvent('domready',function(){
+        $('search_humbas').addEvent('click',function(){
+            var url = '<{link app=qiyecenter ctl=site_member act=employeemanagement_qunzu_search}>';
+            var GROUP_ID = $("GROUP_ID").getValue();
+            var COMPANY_NO = $("COMPANY_NO").getValue();
+            new Request.HTML({
+                url:url,
+                method:'post',
+                data:'EMPLOYEE_NAME='+$('humbas_name').getValue()+'&GROUP_ID='+GROUP_ID+'&COMPANY_NO='+COMPANY_NO,
+                update:$('HUMBAS_LIST')
+            }).send();
+
+        });
+
+        //删除员工数据
+        $('del_humbas').addEvent('click',function(){
+            var HUMBAS_NO = "";
+            $('HUMBAS_LIST').getElements('input[name="HUMBAS_NO"]').each(function(item){
+                if(item.get('checked') == true){
+                    HUMBAS_NO += item.getValue()+"_";
+                }
+            });
+
+            if(HUMBAS_NO == ""){
+                MessageBox.show("请选择要删除的数据！");
+                return false;
+            }
+            //数据传输没写
+            new Request.JSON({
+                url:'<{link app=qiyecenter ctl=site_member act=employeemanagement_qunzu_del}>',
+                method:'post',
+                data:"HUMBAS_NO="+HUMBAS_NO,
+                onComplete:function(res){
+                    if (res.error){
+                        MessageBox.error(res.error);
+                        location.reload();
+                    }else{
+                        MessageBox.success("删除成功！");
+                        location.reload();
+                    }
+                }
+            }).send();
+        });
+
+
+        $('dlg_ok-<{$sid}>').addEvent('click',function(){
+            var HUMBAS_NO = "";
+            $$('#HUMBAS_LIST').getElements('input[name="HUMBAS_NO"]').each(function(item){
+                item.each(function(key){
+                    if(key.get('checked')){
+                        if(key.getValue() != ""){
+                            HUMBAS_NO += key.getValue() + '_'
+                        }
+                    }
+                });
+
+            });
+            if(HUMBAS_NO == ""){
+                alert('请选择操作项！');
+                return false;
+            }else{
+                new Request.JSON({
+                    url:"<{link app='qiyecenter' ctl='site_member' act='setcompanymanager'}>",
+                    method:'POST',
+                    data:"HUMBAS_NO="+HUMBAS_NO+"&COMPANY_NO="+$('COMPANY_NO').getValue(),
+                    onComplete:function(res){
+                        //传输数据  没写
+
+                    }
+                }).send();
+
+            }
+            window.close();
+        });
+
+        $('add_humbas').addEvent('click',function(){
+            var COMPANY_NO = $('COMPANY_NO').getValue();
+            new Dialog('<{link app=qiyecenter ctl=site_member act=add_organization_qunzu}>',{
+                width:800,
+                height:400,
+                resizeable:false,
+                dragable:false,
+                ajaxoptions:{
+                    method: 'post',
+                    data:'COMPANY_NO='+COMPANY_NO+'&GROUP_ID='+$("GROUP_ID").getValue()
+                }
+             });
+
+        });
+
+    });
+    //查询雇员--end
+</script>
+<{capture name="footbar"}>
+<div class="table-action">
+    <{button id="dlg_ok-{$sid}" class="btn btn-primary" label=$___ectools="确定"|t:'ectools'}>
+    <{button id="dlg_cancel-{$sid}" class="btn btn-secondary" label=$___ectools="取消"|t:'ectools' onclick="window.close();"}>
+</div>
+<{/capture}>

@@ -1,0 +1,46 @@
+<div container="true"/>
+<div container='true'>
+<div class="tableform">
+    <div>当期店铺订单成本价结算金额：<span style="color:red;font-weight:bold;"><{$account_info.0.account_all|cur}></span>；&nbsp;&nbsp;&nbsp;&nbsp;当期店铺邮费金额：<span style="color:red;font-weight:bold;"><{$account_info.0.cost_freight_all|cur}></span>；&nbsp;&nbsp;&nbsp;&nbsp;当期平台结算金额：<span style="color:red;font-weight:bold;"><{$account_info.0.order_cut_all|cur}></span></div>
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+	<thead>  
+       <tr>
+          <th><{t}>订单号<{/t}></th>		  
+          <th><{t}>订单金额<{/t}></th>
+		  <th><{t}>使用积分折算<{/t}></th>
+          <th><{t}>店铺结算金额(成本价)<{/t}></th>
+		  <th><{t}>店铺结算运费<{/t}></th>
+          <th><{t}>平台抽成金额<{/t}></th>
+          <th><{t}>售前退款金额<{/t}></th>
+          <th><{t}>赠送积分折算<{/t}></th>
+          <th><{t}>售后退款金额<{/t}></th>
+          <th><{t}>店铺承担售后金额<{/t}></th>
+          <th><{t}>平台承担售后金额<{/t}></th> 
+       </tr>
+    </thead>
+	<tbody>
+        <{if $items}>
+            <{foreach from=$items item=item key=key}>
+              <tr>  
+                 <td><a target='_blank' href="index.php?app=b2c&ctl=admin_order&act=index&action=detail&id=<{$item.order_id}>&singlepage=true&finderview=detail_basic"><{$item.order_id}></a></td>
+                 <td style="font-weight:bold;"><{$item.order_money|cur}></td>
+				 <td style="font-weight:bold;"><{$item.score_use|cur}></td>
+                 <td style="color:red;font-weight:bold;"><{$item.account|cur}></td>
+				  <td style="color:red;font-weight:bold;"><{$item.cost_freight|cur}></td>
+                 <td style="color:red;font-weight:bold;"><{$item.order_cut|cur}></td> 
+                 <td style="color:red;font-weight:bold;"><{$item.refund|cur}></td>
+                 <td style="color:red;font-weight:bold;"><{$item.score_give|cur}></td>
+                 <td style="color:red;font-weight:bold;"><{$item.total_recut|cur}></td>
+                 <td><{$item.re_cut|cur}></td>
+                 <td><{$item.order_recut|cur}></td> 
+              </tr>
+            <{/foreach}>
+        <{else}>
+            <tr><td style="text-align:center;" colspan="12">无结算订单</td></tr>
+        <{/if}>
+       
+	</tbody>
+    </table>
+     <{$pager}>
+</div>
+</div>

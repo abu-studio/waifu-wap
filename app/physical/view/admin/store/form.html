@@ -1,0 +1,173 @@
+<form id="store_form" class="tableform" action="index.php?app=physical&ctl=admin_store&act=save"  method="POST" >
+    <input type="hidden" name="store_id" value="<{$store_info.store_id}>">
+    <div class="division">
+        <table width="100%" >
+            <tr>
+                <th><em class="red">*</em><{t}>机构：<{/t}></th>
+                <td><{input type='select' onchange="auto_no()" id="organization_id" name='organization_id' required="true" vtype="required" options=$organization_list value=$store_info.organization_id}></td>
+            </tr>
+			<tr>
+                <th><em class="red">*</em><{t}>门店编号：<{/t}></th>
+                <td><{input type="text" id="store_code" name="store_code" vtype="required" readOnly="true" style="color:#CCC;"  value=$store_info.store_code}></td>
+            </tr>
+            <tr>
+                <th><em class="red">*</em><{t}>门店名称：<{/t}></th>
+                <td><{input type="text" name="store_name" vtype="required" value=$store_info.store_name style="width:300px;"}></td>
+            </tr>
+			<tr>
+                <th><{t}>门店图片：<{/t}></th>
+                <td>
+					<table>
+						<tr>
+							<td> <input type="checkbox" name="default_image" value='true'>使用机构logo图</input></td>
+						</tr>
+						<tr>
+							<td><{input type='image' name='image' vtype="required" width=200 height=150 value=$store_info.image}></td>
+						</tr>
+						<tr>
+							<td>链接：<{input type='text' name='url' value=$store_info.url}></td>
+						</tr>
+					</table>
+				</td>
+            </tr>
+			<tr>
+                <th><em class="red">*</em><{t}>地区：<{/t}></th>
+                <td><{input app=ectools id="area" type="region"  name="area" vtype='area' value=$store_info.area}></td>
+            </tr>
+			<tr>
+                <th><{t}>详细地址：<{/t}></th>
+                <td><{input type="text" name="address" value=$store_info.address style="width:300px;"}></td>
+            </tr>
+			<tr>
+                <th><{t}>手机号码：<{/t}></th>
+                <td><{input type="text" name="mobile" vtype="mobile" value=$store_info.mobile}></td>
+            </tr>
+			<tr>
+                <th><{t}>座机号码：<{/t}></th>
+                <td><{input type="text" name="phone" value=$store_info.phone}></td>
+            </tr>
+			<tr>
+                <th><{t}>电子邮箱：<{/t}></th>
+                <td><{input type="text" name="email" vtype="email" value=$store_info.email}></td>
+            </tr>
+			<tr>
+                <th><{t}>传真号码：<{/t}></th>
+                <td><{input type="text" name="fax" value=$store_info.fax}></td>
+            </tr>
+			<tr>
+                <th><{t}>邮政编码：<{/t}></th>
+                <td><{input type="text" name="postcode" value=$store_info.postcode}></td>
+            </tr>
+			<tr>
+                <th><{t}>工作日：<{/t}></th>
+                <td>
+					<{foreach from=$weekdays item=value key=key}>
+						<{if $value.is}>
+						<input type="checkbox" name="weekday[]" value=<{$key}> checked="checked" /><{$value.val}>
+						<{else}>
+						<input type="checkbox" name="weekday[]" value=<{$key}> /><{$value.val}>
+						<{/if}>
+					<{/foreach}>
+				</td>
+            </tr>
+			<tr>
+                <th><{t}>开始营业时间：<{/t}></th>
+                <td>
+					<{input type='select' name='open_hour' options=$_hours required="true" value=$store_info.open_hour|default:8}>
+					:
+					<{input type='select' name='open_minute' options=$_minutes required="true" value=$store_info.open_minute}>
+				</td>
+            </tr>
+			<tr>
+                <th><{t}>结束营业时间：<{/t}></th>
+                <td>
+					<{input type='select' name='close_hour' options=$_hours required="true" value=$store_info.close_hour|default:17}>
+					:
+					<{input type='select' name='close_minute' options=$_minutes required="true" value=$store_info.close_minute}>
+				</td>
+            </tr>
+			<tr>
+                <th><{t}>地理经度：<{/t}></th>
+                <td><{input type="text" name="longitude" vtype="positive" value=$store_info.longitude}></td>
+            </tr>
+			<tr>
+                <th><{t}>地理纬度：<{/t}></th>
+                <td><{input type="text" name="latitude" vtype="positive" value=$store_info.latitude}></td>
+            </tr>
+			<tr>
+                <th><{t}>公交线路：<{/t}></th>
+                <td><{input type="textarea" name="bus_lines" value=$store_info.bus_lines style="width:300px;"}></td>
+            </tr>
+			<tr>
+                <th><{t}>地铁线路：<{/t}></th>
+                <td><{input type="textarea" name="subway_lines" value=$store_info.subway_lines style="width:300px;"}></td>
+            </tr>
+			<tr>
+                <th><{t}>门店简介：<{/t}></th>
+                <td><{input type="textarea" name="introduction" value=$store_info.introduction style="width:300px;"}></td>
+            </tr>
+			<tr>
+                <th><{t}>门店状态：<{/t}></th>
+                <td><{input type="select" name="status" required="true" value=$store_info.status options=$status }></td>
+            </tr>
+			<{if $store_info.store_id}>
+			<tr>
+				<th>状态备注：</th>
+				<td><{input type="textarea" name="log"  value=$log }></td>
+			</tr>
+			<{/if}>
+        </table>
+    </div>
+
+</form>
+
+<{area inject='.mainFoot'}>
+<div class="table-action"><{button type="submit"  label=$___physical="保存"|t:'physical' id='store_form_submit'}></div>
+<{/area}>
+
+<script>
+function auto_no(){
+	var store_nos=<{$store_code_array}>;
+	var organization_id=$('organization_id').getValue();
+	store_no=store_nos[organization_id];
+	$('store_code').setProperty('value',store_no);
+}
+    (function(){
+        var _form = $('store_form');
+        var btn =$('store_form_submit');
+        var finder = finderGroup['<{$env.get._finder.finder_id}>'];
+
+        _form.store('target',{
+            onComplete:function(){
+
+            },
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                        finder.refresh.delay(400,finder);
+                    }
+                }
+                else
+                {
+                    //alert(hash_res_obj.error);
+                }
+            }
+        });
+
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+
+
+
+        });
+
+    })();
+</script>

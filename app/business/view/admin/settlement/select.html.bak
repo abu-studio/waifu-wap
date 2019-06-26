@@ -1,0 +1,67 @@
+
+<form method="POST" id='settlement-edit-form' action="index.php?app=business&ctl=admin_settlement&act=auto_create_page&step=2" class="tableform">
+    <div class="division">
+		<table width="100%">
+			<tbody>
+				<tr>
+					<th style="padding-top:12px;"><{t}>开始日期：<{/t}></th>
+					<td><{input type="date" name="from_time"}></td>
+				</tr>
+				<tr>
+					<th style="padding-top:12px;"><em class="red">*</em><{t}>结束日期：<{/t}></th>
+					<td><{input type="date" required="required" name="to_time" vtype='required'}></td>
+				</tr>
+			
+                <tr>
+					<th style="padding-top:12px;"><em class="red">*</em><{t}>订单类型：<{/t}></th>
+                    <td>
+						<{foreach from=$order_kind key=key item=item}>
+							<label><input type="checkbox" value="<{$key}>" class="order_kind" name="order_kind[]"/><{$item}></label><br/>
+						<{/foreach}>
+                    </td>
+                </tr>
+				<tr id="card_type" style="display:none">
+					<th style="padding-top:12px;"><em class="red"></em><{t}>内部卡卡劵：<{/t}></th>
+					<td><{input type="object" object="cards@cardcoupons" name="card_id" multiple="true"  filter="source=internal"}></td>
+				</tr>
+				<tr>
+					<th style="padding-top:12px;"><em class="red">*</em><{t}>选择店铺：<{/t}></th>
+					<td><{input  type="object" vtype="required"  object="storemanger@business" multiple="true" name="store[value]" textcol="store_name" cols="store_name" filter="disabled=false"}></td>
+				</tr>
+			</tbody>
+		</table>
+    </div>
+</form>
+
+<{area inject='.mainFoot'}>
+<div class="table-action"><{button type="submit"  label=$___b2c="下一步"|t:'b2c' id='settlement-edit-form-submit'}></div>
+<{/area}>
+
+
+<script>
+	(function(){
+        var _form = $('settlement-edit-form');
+        var btn =$('settlement-edit-form-submit');
+
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+        });
+    })();
+
+
+
+	$$('.order_kind').addEvent('click',function(){
+		$$('.order_kind').each(function(a){
+			if(a.checked&&a.value =='card'){
+				$('card_type').setStyle('display','');
+			}else{
+				$('card_type').setStyle('display','none');
+			}
+		})
+	})
+
+
+    
+</script>
+
+

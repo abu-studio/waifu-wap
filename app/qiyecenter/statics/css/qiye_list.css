@@ -1,0 +1,12 @@
+/**右边*/
+.qy_right{height: 100%;float: left;width: 929px;}
+.right_top{height: 55px;border-bottom: 2px solid #cdcdcd;width: 100%;}
+.anniu_list{float: left;width: 110px;height: 35px;background: #999999;font-family: 微软雅黑,宋体;font-size: 15px;color: white;cursor: pointer;line-height: 31px;text-align: center;border-top-left-radius: 0.5em;border-top-right-radius: 0.5em;border-bottom-left-radius: 0.5em;border-bottom-right-radius: 0.5em;margin-right: 4%;margin-top: 2%;}
+.right_center1{height: 114px;border-bottom: 2px solid #cdcdcd;width: 90%;margin-left: 55px;border-style: dotted solid;}
+.right_center1 .r1{height: 48%}
+.right_center1 .r1 .con{height: 60%;width: 6.5%;margin-top: 10px;margin-right: 3px;float: left;font-family: 微软雅黑,宋体;font-size: 15px}
+.inp{border:1px solid #cdcdcd;width: 47px;}
+.show_list1{height: 30px;background: #F8F8F7;width: 100%;margin: 0 auto;margin-top: 30px;}
+.list_con1{height: 30px;width: 100%;margin: 0 auto;border-bottom: 1px solid #CDCDCD;}
+.list_head1{height: 30px;background: #F8F8F7;width: 100%;border-top: 2px solid #CDCDCD;margin: 0 auto;}
+.head_font1{width: 19%;text-align: center;font-family: 微软雅黑,宋体;font-size: 14px;float: left; overflow:hidden;}

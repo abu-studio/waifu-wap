@@ -1,0 +1,36 @@
+<form action="" id="catEditor" method="post">
+  <{if $isEnable}>
+<div class="action-bar mainHead">
+    <a href="index.php?app=jdsale&ctl=admin_regions&act=import">
+      <{button label=$___jdsale="同步京东地区数据"|t:'jdsale' app="desktop" }>
+    </a>
+</div>
+  <{/if}>
+<table cellspacing="0" cellpadding="0" class="gridlist">
+<col class="Colauto"></col>
+<col class="Coloption-1b"></col>
+<col class="Coloption-1b"></col>
+<col class="Coloption-1b"></col>
+<col class="Coloption-1b"></col>
+<col></col>
+<thead>
+<tr>
+<th><{t}>地区名称<{/t}></th>
+
+<th></th>
+</thead>
+<tbody>
+<{foreach from=$area item=item name="area"}>
+<tr>
+
+  <td style=" width:300px; white-space:nowrap;text-align:left; font-size:12px; padding-left:<{$item.region_grade*35}>px" nowrap>
+     <{$item.local_name}>
+    </td>
+  <td></td>
+
+</tr>
+<{/foreach}>
+</tbody>
+</table>
+
+</form>

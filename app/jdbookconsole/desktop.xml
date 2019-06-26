@@ -1,0 +1,40 @@
+<desktop>
+	<permissions>
+		<permission id="jdbookorder" display='true' parent='0'  workground="jdbookconsole.workground.order" >订单管理</permission>
+		<permission id="jdbookorderlist" display='true' parent='jdbookorder'  workground="jdbookconsole.workground.order" >订单列表</permission>
+		<permission id="jdbookorderlist_san" display='true' parent='jdbookorder'  workground="jdbookconsole.workground.order" >京东第三方订单列表</permission>
+		<permission id="jdbookordersearch" display='true' parent='jdbookorder'  workground="jdbookconsole.workground.order" >京东订单信息查询</permission>
+
+		<permission id="jdbookgoods" display='true' parent='0'  workground="jdbookconsole.workground.order" >商品管理</permission>
+		<permission id="jdbooklist" display='true' parent='jdbookgoods'  workground="jdbookconsole.workground.order" >商品列表</permission>
+		<permission id="jdbookcat" display='true' parent='jdbookgoods'  workground="jdbookconsole.workground.order" >分类列表</permission>
+		<permission id="jdeditmarketable" display='true' parent='jdsalegoods'  workground="jdsale.workground.order" >商品上下架</permission>
+		<permission id="batcheditmarketable" display='true' parent='jdsalegoods'  workground="jdsale.workground.order" >商品上下架</permission>
+
+		<permission id="jdaftersales" display='true' parent='0'  workground="jdbookconsole.workground.order" >售后管理</permission>
+		<permission id="jdaftersaleslist" display='true' parent='jdaftersales'  workground="jdbookconsole.workground.order" >售后申请列表</permission>
+
+		<permission id="jdbaseset" display='true' parent='0'  workground="jdbookconsole.workground.order" >基本设置</permission>
+		<permission id="jdstore" display='true' parent='jdbaseset'  workground="jdbookconsole.workground.order" >京东自营店铺</permission>
+		<permission id="jdbalance" display='true' parent='jdbaseset'  workground="jdbookconsole.workground.order" >余额查询</permission>
+	</permissions>
+
+	<workground name="京东图书" id="jdbookconsole.workground.order" app="jdbookconsole" controller="admin_order" action="index" order='100'>
+		<menugroup name="订单管理" >
+			<menu controller='admin_order' action='index' permission='jdbookorderlist' display='true' order='101'>订单列表</menu>
+			<menu controller='admin_jdorder' action='index' permission='jdbookorderlist_san' display='true' order='102'>京东第三方订单列表</menu>
+			<menu controller='admin_jdorder' action='search_info' permission='jdbookordersearch' display='true' order='103'>京东订单信息查询</menu>
+		</menugroup>
+		<menugroup name="商品管理">
+			<menu controller='admin_goods' action='index' permission='jdbooklist' display='true' order='113'>商品列表</menu>
+			<menu controller='admin_goods_cat' action='index' permission='jdbookcat' display='true' order='114'>分类列表</menu>
+		</menugroup>
+		<menugroup name="售后管理">
+			<menu controller='admin_aftersales' action='index' permission='jdaftersaleslist' display='true' order='125'>售后申请列表</menu>
+		</menugroup>
+		<menugroup name="基本设置">
+			<menu controller='admin_manage' action='index' permission='jdstore' display='true' order='133'>京东自营店铺</menu>
+			<menu controller='admin_balance' action='bookindex' permission='jdbalance' display='true' order='135'>图书余额查询</menu>
+		</menugroup>
+	</workground>
+</desktop>

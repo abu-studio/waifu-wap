@@ -1,0 +1,233 @@
+<{capture name="header"}>
+<{css src="qiye_zhongxin.css" app="qiyecenter"}>
+<{script src="File.Upload.js" app="qiyecenter" pdir="js"}>
+<style type="text/css">
+    .r_list{border-left:1px solid #eee;border-right: 1px solid #eee; width: 100%; float: left;}
+    .list_head{height: 35px; width: 100%; background:#f1f1f1;border-top:1px solid #eee;}
+    .head_font{text-align:center;float: left;font-size:12px;height: 30px; line-height: 30px;overflow:hidden;}
+    .list_con{width: 100%; height: 35px; border-bottom: 1px solid #eee;}
+    .show_fenye{height:50px;background:white; width: 100%; float: left;}
+    .feny{float: left; margin-top:20px;height:50px;margin-left:21px;}
+    .page_link{display: inline-block; width: 15px;  height: 28px;  line-height: 28px;  padding: 0px 8px;  border: 1px solid #eee;  margin: 0 2px;  text-align: center;}
+    .show_fenye .feny a.on{background: #c40001; color: #fff; border-color: #c40001;}
+    .suoshuqiye{float: left; margin-right: 13px;font-family: 微软雅黑,宋体; font-size:line-height: 53px;height: 53px;}
+        .search_bott{background: #c40001;padding: 0 15px;border: none;display: inline-block;zoom: 1;overflow: visible;color: #FFFFFF;font-size: 12px;font-family: 微软雅黑; text-decoration: none;cursor: pointer;vertical-align: middle;height: 24px;line-height: 24px;border-radius: 5px;}
+</style>
+<{/capture}>
+
+<div class="list" id="list">
+    <div class="fd_ye">
+        <div class="center">
+            <ul>
+                <li style="border-bottom-width: 3px; border-bottom-style: solid; border-bottom-color: rgb(28, 99, 161); color: rgb(28, 99, 161);" id="manual_selection" onclick="tab_guyuan_select(this.id)">手工选择</li>
+                <li id="file_import" onclick="tab_guyuan_select(this.id)">文件导入</li>
+                <input type="hidden" id="CUSTOMER_ID" value="<{$CUSTOMER_ID}>">
+            </ul>
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+
+    <div class="list" style="height: 100%;" id="list_nei">
+    <!-- start-->
+        <div style="height: 30px; "></div>
+        <div style="height: 60px;">
+            <div class='suoshuqiye' style=''>雇员编号</div>
+            <div class='suoshuqiye'>
+                <input type="text" name="EMP_HUMBAS_NO"  id="humbas_EMP_HUMBAS_NO" value="" style="border: 1px solid;width: 100px;"/>
+            </div>
+            <div class='suoshuqiye'>姓名</div>
+            <div class='suoshuqiye'>
+                <input type="text" name="EMP_NAME" value=""  id="humbas_EMP_NAME" style="border: 1px solid;width: 100px;"/>
+            </div>
+
+            <div class='suoshuqiye'>
+             <input type="hidden" name="EMP_NEW_PRICE" value="<{$PRICE}>"  id="EMP_NEW_PRICE"/>
+            <input type="submit" value="搜索"  id="search_humbas_shou" class="search_bott"/></div>
+        </div>
+<!-- end -->
+        <div class="show_list" id="HUMBAS_LIST">
+            <div class="list_head" style="width: 100%;">
+                <div class="head_font">操作</div>
+                <div class="head_font">商社名称</div>
+               <!--  <div class="head_font" style="width: 22%;">部门/群组名称</div> -->
+                <div class="head_font">雇员编号</div>
+                <div class="head_font">雇员姓名</div>
+                <div class="head_font">发放金额</div>
+            </div>
+
+            <{foreach from=$sfscdata item=item}>
+                <div class="list_con" style="width: 100%;">
+                    <div class="head_font">
+                        <input type="checkbox" name="HUMBAS_NO" value="<{$item.HUMBAS_NO}>" />
+                        <input type="hidden" name="CUSTOMER_NAME" value="<{$item.CUSTOMER_NAME}>" />
+                        <input type="hidden" name="DEPT_NAME" value="<{$item.DEPT_NAME}>" />
+                        <input type="hidden" name="NAME" value="<{$item.NAME}>" />
+                        <input type="hidden" name="COMPANY_NO"  value="<{$item.COMPANY_NO}>">
+                        <input type="hidden" name="NEW_PRICE"   value="<{$PRICE}>" />
+                    </div>
+                    <div class="head_font"><{$item.CUSTOMER_NAME}></div>
+                    <!-- <div class="head_font" style="width: 22%;"><{$item.DEPT_NAME}></div> -->
+                    <div class="head_font"><{$item.HUMBAS_NO}></div>
+                    <div class="head_font"><{$item.NAME}></div>
+                     <div class="head_font"><{$PRICE}></div>
+                </div>
+            <{/foreach}>
+
+        </div>
+
+
+
+        <input type='hidden' id='current_page' value='0' />
+        <div class="show_fenye">
+            <div class="feny" id="page_navigation">
+            </div>
+        </div>
+        <script type="text/javascript">
+            var per_page = 10;
+            var items = document.getElementsByClassName("list_con");
+            var pages = Math.ceil(items.length/per_page);
+            gotopage(0);
+
+            function gotopage(page){
+                for(var i=0;i<items.length;i++){
+                    items[i].style.display='none';
+                }
+                for(var i=page*per_page;i<(page+1)*per_page;i++){
+                    if(i<items.length){
+                        items[i].style.display='block';
+                    }
+                }
+                var navigation_html = '<a class="page_link" title="上一页" href="javascript:prepage();">&lt;</a>';
+
+                for(var current_link = 0; current_link < pages; current_link++){
+                    if(pages<=10){
+                        current_link == page?navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>':navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+                    }else{
+                        if(current_link == page){
+                            navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+                        }
+                        if(current_link <= (page+4)&&current_link >= (page-4)&&current_link != page){
+                            navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+                        }
+                    }
+                }
+                navigation_html += '<a class="page_link" title="下一页" href="javascript:nextpage();">&gt;</a>';
+                document.getElementById("page_navigation").innerHTML= navigation_html;
+                document.getElementById("current_page").value= page;
+
+            }
+            function nextpage(){
+                var page = parseInt(document.getElementById("current_page").value);
+                if(page < pages - 1){
+                    gotopage((page+1));
+                    document.getElementById("current_page").value= page+1;
+                }
+            }
+            function prepage(){
+                var page = parseInt(document.getElementById("current_page").value);
+                if(page > 0){
+                    gotopage((page - 1));
+                    document.getElementById("current_page").value= page - 1;
+                }
+            }
+
+
+
+            function tab_guyuan_select(id){
+                $(id).getParent('ul').getElements("li").each(function(el){
+                    if(el.get('style')){
+                        el.set('style','');
+                    }
+
+                });
+
+                $(id).setStyles({
+                    'border-bottom-width': '3px',
+                    'border-bottom-style': 'solid',
+                    'border-bottom-color': 'rgb(28, 99, 161)',
+                    'color': 'rgb(28, 99, 161)'
+                });
+                new Request.HTML({
+                    url:'<{link app=qiyecenter ctl=site_member act=get_guyuan_select}>',
+                    update:$('list_nei'),
+                    method:'POST',
+                    data:'type='+encodeURIComponent(id)+'&CUSTOMER_ID='+$('CUSTOMER_ID').getValue()+'&EMP_NEW_PRICE='+$('EMP_NEW_PRICE').getValue(),
+                    onComplete:function(res){
+                        $('list_nei').show();
+                    }
+                }).send();
+              
+            }
+
+
+
+
+
+            window.addEvent('domready',function(){
+                if(!window.opener.modedialogInstance)return;
+                var modedialog=window.opener.modedialogInstance.options.params;
+                var _inputText=modedialog.iptText;
+                var _inputHidden=modedialog.iptHidden;
+                var text;
+                $('dlg_ok-<{$sid}>').addEvent('click',function(){
+                    var COMPANY_NAME = '<div class="head_font" style="width: 100%;"><div class="head_employee">商社名称</div><div class="head_employee">雇员编号</div><div class="head_employee">雇员姓名</div><div class="head_employee">发放金额</div></div>';
+                    COMPANY_NAME +='<input type="hidden" name="REC_ACT_TYPE" value="I00105">';
+                    $$('#list_nei').getElements('input[name="HUMBAS_NO"]').each(function(item){
+                        item.each(function(key){
+                            var CUSTOMER_NAME = (key.getParent(".head_font").getChildren("input[name='CUSTOMER_NAME']").getValue() != '') ? key.getParent(".head_font").getChildren("input[name='CUSTOMER_NAME']").getValue() : '--';
+                            // var DEPT_NAME = (key.getParent(".head_font").getChildren("input[name='DEPT_NAME']").getValue() != '') ? key.getParent(".head_font").getChildren("input[name='DEPT_NAME']").getValue() : '--';
+                            var HUMBAS_NO = (key.getParent(".head_font").getChildren("input[name='HUMBAS_NO']").getValue() != '') ? key.getParent(".head_font").getChildren("input[name='HUMBAS_NO']").getValue() : '--';
+                            var NAME = (key.getParent(".head_font").getChildren("input[name='NAME']").getValue() != '') ? key.getParent(".head_font").getChildren("input[name='NAME']").getValue() : '--';
+                            
+							var NEW_PRICE = (key.getParent(".head_font").getChildren("input[name='NEW_PRICE']").getValue() != '') ? key.getParent(".head_font").getChildren("input[name='NEW_PRICE']").getValue() : '';
+                            if(key.get('checked')){
+                                COMPANY_NAME += '<input type="hidden" name="ORDER_ITEM[]" value="'+key.getParent(".head_font").getChildren("input[name='COMPANY_NO']").getValue()+'_'+key.getValue()+'">';
+                                COMPANY_NAME += '<div class="head_font" style="width: 100%;">';
+                                COMPANY_NAME += '<div class="list_employee">'+CUSTOMER_NAME+'</div>';
+                                // COMPANY_NAME += '<div class="list_employee">'+DEPT_NAME+'</div>';
+                                COMPANY_NAME += '<div class="list_employee">'+HUMBAS_NO+'</div>';
+                                COMPANY_NAME += '<div class="list_employee">'+NAME+'</div>';
+                                COMPANY_NAME += '<div class="list_employee"><input type="text" style="text-align:center;" name="NEW_PRICE[]" value="'+NEW_PRICE+'"></div>';
+                                COMPANY_NAME += '</div><div style="clear:both;"></div>';
+                            }
+                        });
+                    });
+
+                    if(COMPANY_NAME != ""){
+                        _inputHidden.set('html',COMPANY_NAME);
+                    }
+                    window.close();
+
+                });
+
+
+            });
+
+
+ //查询雇员信息 --  start
+    window.addEvent('domready',function(){
+        var url = '<{link app=qiyecenter ctl=site_member act=get_guyuan_gyselect}>';
+        $('search_humbas_shou').addEvent('click',function(){
+            new Request.HTML({
+                url:url,
+                method:'get',
+                data:'EMP_HUMBAS_NO='+$('humbas_EMP_HUMBAS_NO').getValue()+'&EMP_NAME='+$('humbas_EMP_NAME').getValue()+'&CUSTOMER_ID='+$('CUSTOMER_ID').getValue()+'&EMP_NEW_PRICE='+$('EMP_NEW_PRICE').getValue(),
+                update:$('HUMBAS_LIST')
+            }).send();
+
+        });
+    });
+
+
+
+        </script>
+    </div>
+</div>
+
+
+<{capture name="footbar"}>
+<div class="table-action">
+    <{button id="dlg_ok-{$sid}" class="btn btn-primary" label=$___ectools="确定"|t:'ectools'}>
+    <{button id="dlg_cancel-{$sid}" class="btn btn-secondary" label=$___ectools="取消"|t:'ectools' onclick="window.close();"}>
+</div>
+<{/capture}>

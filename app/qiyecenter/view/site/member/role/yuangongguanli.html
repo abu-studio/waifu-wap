@@ -1,0 +1,164 @@
+<div class="qiye_list">
+    <div class="right_top">
+        <div class="r_tit"><div class="guanlibumen">员工管理</div></div>
+       <!--  <div class="create_de"><div class="an_input">创建部门</div></div> -->
+    </div>
+  
+    <div class="right_selectbycon" style="height: 60px;">
+      <div class="r_center">
+            <div style="height: 60px;">
+             <form action="<{link app=qiyecenter ctl=site_member act=yuangongguanli}>">
+                <div class="suoshuqiye" style="display: none;">商社名称</div>
+                <div class="suoshuqiye" style="display: none;">
+                    <select style="width: 100px;font-family: 微软雅黑,宋体;" name="CUSTOMER_NAME" id="business">
+                        <option value="">请选择</option>
+                    </select>
+                </div>
+                 <div class="suoshuqiye" >部门名称</div>
+                <div class="suoshuqiye">
+                    <select style="width: 100px;font-family: 微软雅黑,宋体;" name="department_id" id="department">
+                        <option value="">请选择</option>
+                        <{foreach from=$sfscDepartList item=depart}>
+                        <option value="<{$depart.RELATION_ID}>"><{$depart.DEPT_NAME}></option>
+                        <{/foreach}>
+                    </select>
+                </div>
+                 <div class="suoshuqiye">群组名称</div>
+                 <div class="suoshuqiye">
+                    <select style="width: 100px;font-family: 微软雅黑,宋体;" name="sfscgroup_id" id="sfscgroup">
+                        <option value="">请选择</option>
+                        <{foreach from=$sfscGroupList item=sfscgroup}>
+                        <option value="<{$sfscgroup.RELATION_ID}>"><{$sfscgroup.GROUP_NAME}></option>
+                        <{/foreach}>
+                    </select>
+                </div>
+                <div class="suoshuqiye">姓名</div>
+                <div class="suoshuqiye">
+                    <input type="text" name="EMP_NAME" style="border: 1px solid;width: 100px;"/>
+                </div>
+                <div class="suoshuqiye" style="display: none;">性别</div>
+                <div class="suoshuqiye" style="width: 100px; display: none;">
+                    <select style="width: 100px;font-family: 微软雅黑,宋体; display: none;" name="sex">
+                        <option value="">请选择</option>
+                        <option value="1">男</option>
+                        <option value="0">女</option>
+                    </select>
+                </div>
+                <div class="suoshuqiye" style="display: none;">证件号</div>
+                <div class="suoshuqiye" style="width: 100px; display: none;"><input type="text" style="border: 1px solid; width: 100px;"/></div>
+                <div class="suoshuqiye" style="display: none;">企业</div>
+                <div class="suoshuqiye"><input type="text" style="border: 1px solid;width: 100px; display: none;"/></div>
+                <div class="suoshuqiye" style="display: none;">部门</div>
+                <div class="suoshuqiye" ><input type="text" style="border: 1px solid;width: 100px; display: none;"/></div>
+                <div class="suoshuqiye" ><input type="submit" value="搜索" class="search_bott"/></div>
+               </form>
+               <div  class="suoshuqiye">
+                       <button  id="btn_submit" rel="_request" type="button"  onclick="$(this).set('disabled',true);$('export_form').submit();">
+                       <span class="search_bott">导出</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+
+
+<form enctype="multipart/form-data" action="<{link app='qiyecenter' ctl='site_member' act='yuangong_export'}>" method="post" target="uploadframe" id="export_form">
+    <input type='hidden' value='' name='cat_id' id="selectCat"/>
+    <input type='hidden' value='' name='cat_name' id="selectCatName"/>
+   
+	<{if $sfscdata}>
+    <div class="r_list">
+        <div class="show_list">
+            <div class="list_head">
+                <div class="head_font" style="width: 23.5%;">商社名称</div>
+                <div class="head_font" style="width: 13.5%;">雇员编号</div>
+                <div class="head_font" style="width: 11.5%;">雇员姓名</div>
+                <div class="head_font" style="width: 6%;">性别</div>
+                <div class="head_font" style="width: 14.5%;">证件号</div>
+                <div class="head_font" style="width: 11.5%;">账户余额</div>
+            </div>
+            <{foreach from=$sfscdata item=item}>
+                <div class="list_con">
+                    <div class="head_font" style="width: 23.5%;"><{$item.CUSTOMER_NAME|default:'-'}></div>
+                    <div class="head_font" style="width: 13.5%;"><{$item.HUMBAS_NO|default:'-'}></div>
+                    <div class="head_font" style="width: 11.5%;"><{$item.NAME|default:'-'}></div>
+                    <div class="head_font" style="width: 6%;"><{if $item.SEX == '1'}>男<{elseif $item.SEX == '2'}>女<{else}>--<{/if}></div>
+                    <div class="head_font" style="width: 14.5%;"><{$item.ID|default:'-'}></div>
+                    <div class="head_font" style="width: 11.5%;"><{$item.BALANCE|default:'-'}></div>
+                </div>
+            <{/foreach}>
+        </div>
+    </div>
+	   <input type='hidden' id='current_page' value='0' />
+        <div>列表总人数：<span style="color:red"><{$member_total}></span></div>
+        <div class="show_fenye">
+            <div class="feny" id="page_navigation">
+            </div>
+        </div>
+	<{else}>
+		<div style="border:1px solid #eee;height:40px;line-height:40px;text-align:center">没有找到相应的员工</div>
+	<{/if}>
+</form>
+</div>
+<script type="text/javascript">
+	var per_page = 10; 
+	var items = document.getElementsByClassName("list_con");
+	var pages = Math.ceil(items.length/per_page);
+	gotopage(0);
+	
+	function gotopage(page){
+		for(var i=0;i<items.length;i++){
+			items[i].style.display='none';
+		}
+		for(var i=page*per_page;i<(page+1)*per_page;i++){
+			if(i<items.length){
+			items[i].style.display='block';
+			}
+		}
+		var navigation_html = '<a class="page_link" title="上一页" href="javascript:prepage();">&lt;</a>';
+		
+		for(var current_link = 0; current_link < pages; current_link++){
+			if(pages<=10){
+			current_link == page?navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>':navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';	
+			}else{
+				if(current_link == page){
+					navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+				}
+				if(current_link <= (page+4)&&current_link >= (page-4)&&current_link != page){
+					navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+				}	
+			}
+		}
+		navigation_html += '<a class="page_link" title="下一页" href="javascript:nextpage();">&gt;</a>';
+		document.getElementById("page_navigation").innerHTML= navigation_html;
+		document.getElementById("current_page").value= page;
+		
+	}
+	function nextpage(){
+		var page = parseInt(document.getElementById("current_page").value);
+		if(page < pages-1){
+			gotopage((page+1));
+			document.getElementById("current_page").value= page+1;
+		}	
+	}
+	function prepage(){
+		var page = parseInt(document.getElementById("current_page").value);		
+		if(page > 0){
+			gotopage((page - 1));
+			document.getElementById("current_page").value= page - 1;
+		}
+	}
+
+
+    window.addEvent('domready',function(){
+        var url ='<{link app=qiyecenter ctl=site_member act=getCompanyNameByManagerId}>';
+        new Request.HTML({
+            url:url,
+            method:"post",
+            update:$("business"),
+        }).send();
+    });
+	
+	
+</script>

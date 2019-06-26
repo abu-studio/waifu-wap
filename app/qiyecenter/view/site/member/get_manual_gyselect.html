@@ -1,0 +1,26 @@
+<div class="show_list" id="HUMBAS_LIST">
+    <div class="list_head" style="width: 100%;">
+        <div class="head_font">操作</div>
+        <div class="head_font">商社名称</div>
+        <div class="head_font">雇员编号</div>
+        <div class="head_font">雇员姓名</div>
+        <div class="head_font">发放金额</div>
+    </div>
+    <{foreach from=$sfscdata item=item}>
+    <div class="list_con" style="width: 100%;">
+        <div class="head_font">
+            <input type="checkbox" name="HUMBAS_NO" value="<{$item.HUMBAS_NO}>" />
+            <input type="hidden" name="CUSTOMER_NAME" value="<{$item.CUSTOMER_NAME}>" />
+            <input type="hidden" name="DEPT_NAME" value="<{if $item.DEPT_NAME}><{$item.DEPT_NAME}><{else}><{$item.GROUP_NAME}><{/if}>" />
+            <input type="hidden" name="NAME" value="<{$item.NAME}>" />
+            <input type="hidden" name="NEW_PRICE"   value="<{$item.PRICE}>" />
+            <input type="hidden" name="DEPT_ID" value="<{if $item.DEPT_ID}><{$item.DEPT_ID}><{else}><{$item.GROUP_ID}><{/if}>">
+            <input type="hidden" name="COMPANY_NO" value="<{$item.COMPANY_NO}>">
+        </div>
+        <div class="head_font"><{$item.CUSTOMER_NAME}></div>
+        <div class="head_font"><{$item.HUMBAS_NO}></div>
+        <div class="head_font"><{$item.NAME}></div>
+        <div class="head_font"><{$PRICE}></div>
+    </div>
+    <{/foreach}>
+</div>

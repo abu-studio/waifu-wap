@@ -1,0 +1,73 @@
+<div style="margin-left:150px;">
+<form action="<{if $bumenguanli_edit == true}><{link app='qiyecenter' ctl='site_member' act='updateDepartment'}><{else}><{link app='qiyecenter' ctl='site_member' act='createDepartment'}><{/if}>" method="post" onsubmit="return validate_form(this)">
+	<input type="hidden" name="DEPT_ID" value="<{$DEPT_ID}>">
+	<div style="font-size:14px;margin:10px;200px;">
+		<span style="color:red;width: 10px;display:inline-block;">*</span>
+		<span style="width: 60px;display:inline-block">部门名称</span>
+		<input type="text" style="height:25px;width: 160px; border: 1px solid #ccc;" value="<{$company.DEPT_NAME}>" name="DEPT_NAME">
+	</div>
+	<div style="font-size:14px;margin:10px;display:none;">
+		<span style="color:red;width: 10px;display:inline-block;">*</span>
+		<span style="width: 60px;display:inline-block;">部门编号</span>
+		<input type="text" style="height:25px;width: 160px; border: 1px solid #ccc;" name="department_no">
+	</div>
+	<div style="font-size:14px;margin:10px;display:none; ">
+		<span style="color:red;width: 10px;display:inline-block;"></span>
+		<span style="width: 60px;display:inline-block">上级部门</span>
+		<input type="text" style="height:25px;width: 160px; border: 1px solid #ccc;" name="parent_id">
+	</div>
+	<div style="font-size:14px;margin:10px;">
+		<span style="color:red;width: 10px;display:inline-block;">*</span>
+		<span style="width: 60px;display:inline-block">所属商社</span>
+		<{if $bumenguanli_edit == true}>
+			<select name="COMPANY_NO" id="customer_id" style="height:25px;width: 160px; border: 1px solid #ccc;" class="xla_k">
+
+				<option value="<{$company.COMPANY_NO}>"><{$company.CUSTOMER_NAME}></option>
+			</select>
+		<{else}>
+			<select name="COMPANY_NO" id="customer_id" style="height:25px;width: 160px; border: 1px solid #ccc;" class="xla_k">
+				<option value="">--请选择商社--</option>
+				<{foreach from=$company item=company}>
+				<option value="<{$company.CUSTOMER_ID}>"><{$company.CUSTOMER_NAME}></option>
+			<{/foreach}>
+		</select>
+		<{/if}>
+
+	</div>
+	<div style="margin-left:100px;">
+	<input type="submit" style="margin-top: 20px; margin-bottom: 10px; width: 100px; background: #c40001; font-size:14px; font-weight: bold; color: #ffffff; height: 30px;border-radius: 5px;" value="提交">
+	</div>
+</form>
+</div>
+<script type="text/javascript">
+	function validate_required(field,alerttxt){
+		with (field){
+			if (value==null||value==""){
+			alert(alerttxt);
+			return false;
+			}else {
+			return true;
+			}
+		} 
+	}
+	function validate_form(thisform){
+		with (thisform){
+			if (validate_required(department_name,"部门名称不能为空！")==false){
+				department_name.focus();return false;
+			}
+			/*
+			if (validate_required(department_no,"部门编号不能为空！")==false){
+				department_name.focus();return false;
+			}
+			*/
+		}
+		var myselect = document.getElementById('customer_id');
+		var index=myselect.selectedIndex ;
+		var customer_id=myselect.options[index].value;
+		if(customer_id==null||customer_id==""){
+			alert('所属企业不能为空');
+			myselect.focus();
+			return false;
+		}
+	}
+</script>

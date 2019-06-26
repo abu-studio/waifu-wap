@@ -1,0 +1,65 @@
+<form id="form01" class="tableform"  method="POST" action="<{link app='cardcoupons' ctl='admin_cards_pass_use' act='shenhe'}>">
+	<input type="hidden" name="shenhe" value="shenhe">
+	<input type="hidden" name="id" value="<{$id}>">
+    <div class="division">
+        <table width="100%" >
+            <tr>
+                <th><em class="red">*</em><{t}>审核：<{/t}></th>
+                <td>
+					<input type="radio" name="ex_status" value="true" checked="checked"/>
+					<label ><{t}>通过<{/t}></label>
+					<input type="radio" name="ex_status" value="false" />
+					<label ><{t}>不通过<{/t}></label>
+				</td>
+            </tr>
+            <tr>
+                <th><em class="red">*</em><{t}>备注：<{/t}></th>
+                <td><{input type="textarea" required="required" name="remarks2" vtype="required" cols="50" rows="5"}></td>
+            </tr>
+        </table>
+    </div>
+
+</form>
+<{area inject=".mainFoot"}>
+   <div class="table-action">
+        <{button label=$___b2c="保存"|t:'b2c' type="button" id="btn01" class="btn-primary"}>
+        <{button label=$___b2c="取消"|t:'b2c' isCloseDialogBtn="true"}>
+   </div>
+<{/area}>
+
+<script>
+  (function(){
+        var _form = $('form01');
+        var btn =$('btn01');
+        var finder = finderGroup['<{$env.get._finder.finder_id}>'];
+
+        _form.store('target',{
+            onComplete:function(){
+
+            },
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                        finder.refresh.delay(400,finder);
+                    }
+                }
+                else
+                {
+                }
+            }
+        });
+
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+        });
+
+    })();
+</script>

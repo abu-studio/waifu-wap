@@ -1,0 +1,83 @@
+<form id="form01" class="tableform"  method="POST" action="<{link app='cardcoupons' ctl='admin_cards_pass_disabled' act='add'}>">
+	<input type="hidden" name="add" value="add">
+    <div class="division">
+        <table width="100%" >
+			<tr>
+                <th><em class="red">*</em><{t}>有效性：<{/t}></th>
+                <td>
+					<input type="radio" name="disabled" value='false' checked="checked" onclick="search_pass('false')"/>
+					<label ><{t}>启用<{/t}></label>
+					<input  type="radio" name="disabled" value='true' onclick="search_pass('true')"/>
+					<label  ><{t}>失效<{/t}></label>
+				</td>
+            </tr>
+            <tr>
+                <th><em class="red">*</em><{t}>备注：<{/t}></th>
+                <td><{input type="textarea" required="required" name="remarks1" vtype="required" cols="50" rows="5"}></td>
+            </tr>
+            <tr>
+                <th><em class="red">*</em><{t}>选择卡密：<{/t}></th>
+                <td id="search_pass">
+				</td>
+            </tr>
+        </table>
+    </div>
+
+</form>
+<{area inject=".mainFoot"}>
+   <div class="table-action">
+        <{button label=$___b2c="保存"|t:'b2c' type="button" id="btn01" class="btn-primary"}>
+        <{button label=$___b2c="取消"|t:'b2c' isCloseDialogBtn="true"}>
+   </div>
+<{/area}>
+
+<script>
+  (function(){
+        var _form = $('form01');
+        var btn =$('btn01');
+        var finder = finderGroup['<{$env.get._finder.finder_id}>'];
+
+        _form.store('target',{
+            onComplete:function(){
+
+            },
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                        finder.refresh.delay(400,finder);
+                    }
+                }
+                else
+                {
+                }
+            }
+        });
+
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+        });
+
+    })();
+
+	window.addEvent('domready', function(){
+        search_pass("false");
+    });
+	function search_pass(disabled){
+		new Request.HTML({
+			url:'index.php?app=cardcoupons&ctl=admin_cards_pass_time&act=search_pass',
+			method:'POST',
+			update:$('search_pass'),
+			data:'source=internal&type=2&disabled='+disabled,
+			onComplete:function(siteInfo){
+			}
+		}).send();
+	}
+</script>

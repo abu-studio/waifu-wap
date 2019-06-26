@@ -1,0 +1,29 @@
+<form action="index.php?app=ectools&ctl=payment_cfgs&act=combine_pay" method="post" id="x-combine_pay"  target="{update:'messagebox'}">
+<div class="tableform">  
+  <h4><{t}>组合支付<{/t}></h4>
+
+<div class="division"> 
+<table cellspacing="0" cellpadding="0" border="0">
+  <tr>
+  	<th><{t}>组合支付状态：<{/t}></th>
+    <td>
+	<{if $combine_pay.is_open}>
+		<label><input type=radio name="combine_pay_open" value="true" checked /><{t}>开启<{/t}></label> &nbsp; &nbsp; 
+		<label><input type=radio name="combine_pay_open" value="false" /><{t}>关闭<{/t}></label>
+	<{else}>
+		<label><input type=radio name="combine_pay_open" value="true" /><{t}>开启<{/t}></label> &nbsp; &nbsp; 
+		<label><input type=radio name="combine_pay_open" value="false" checked /><{t}>关闭<{/t}></label>
+	<{/if}> &nbsp; &nbsp; <{help}><{t}>组合支付开启后，商店顾客支付时若福点余额不足，可选择福点+第三方支付方式组合进行支付。<{/t}><{/help}>
+	</td>
+	
+  </tr>
+
+</table>
+</div>  
+
+  <div class="table-action">
+	<{button id="x-submit" type="submit"  label=$___ectools="保存"|t:'ectools'}>
+</div>
+  
+
+</form>

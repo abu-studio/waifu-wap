@@ -1,0 +1,80 @@
+<h3><{t}>卡风格设置<{/t}></h3>
+<div class="tableform">
+	<table>
+		
+		<tr>
+		<th><{t}>头部图片:<{/t}></th>
+        <td>
+          <div class="dft_image">
+            <span class="lnk"><{input type="image" name="cards[style][top_image]" value=$cards.style.top_image }></span>
+              <div class="gpic-btn-bar" style="border: 1px solid #cccccc; border-top:none; text-align: center; height: 15px; width: 20px; background: #f2f2f2; color: #c8c8c8; font-size: 8px; line-height: 14px;">
+                  <span class="gpic-btn-delete" onclick="deleteImage(this);"></span>
+              </div>
+          </div>
+        </td>
+      </tr>
+	  <tr>
+	  <th><{t}>左部图片:<{/t}></th>
+        <td>
+          <div class="dft_image">
+            <span class="lnk"><{input type="image" name="cards[style][left_image]" value=$cards.style.left_image }></span>
+              <div class="gpic-btn-bar" style="border: 1px solid #cccccc; border-top:none; text-align: center; height: 15px; width: 20px; background: #f2f2f2; color: #c8c8c8; font-size: 8px; line-height: 14px;">
+                  <span class="gpic-btn-delete" onclick="deleteImage(this);"></span>
+              </div>
+          </div>
+        </td>
+      </tr>
+	  <tr>
+	  <th><{t}>右部图片:<{/t}></th>
+        <td>
+          <div class="dft_image">
+            <span class="lnk"><{input type="image" name="cards[style][right_image]" value=$cards.style.right_image }></span>
+              <div class="gpic-btn-bar" style="border: 1px solid #cccccc; border-top:none; text-align: center; height: 15px; width: 20px; background: #f2f2f2; color: #c8c8c8; font-size: 8px; line-height: 14px;">
+                  <span class="gpic-btn-delete" onclick="deleteImage(this);"></span>
+              </div>
+          </div>
+        </td>
+      </tr>
+	  <tr>
+	  <th><{t}>背景色:<{/t}></th>
+        <td>
+          <div class="dft_image">
+            <span class="lnk">
+                <{input type="text" name="cards[style][bgcolor1]" value=$cards.style.bgcolor1 }>
+            </span>
+          </div>
+        </td>
+      </tr>
+        <tr>
+            <th><{t}>卡券提示语：<{/t}></th>
+            <td>
+                <div class="tableform">
+                    <{input type="html" name="cards[message]" value=$cards.message includeBase=true}>
+                </div>
+            </td>
+        </tr>
+	  <tr style="display: none;">
+	  <th><{t}>背景色二:<{/t}></th>
+        <td>
+          <div class="dft_image">
+            <span class="lnk"><{input type="text" name="cards[style][bgcolor2]" value=$cards.style.bgcolor2 }></span>
+          </div>
+        </td>
+      </tr>
+	</table>
+</div>
+
+<script type="text/javascript">
+    function deleteImage(obj){
+        if(confirm("确定删除图片？")){
+            var obj = $(obj);
+            var img = obj.getParent('.gpic-btn-bar').getPrevious().getElements('.image-input-view img');
+            var input = obj.getParent('.gpic-btn-bar').getPrevious().getElements('.image-input input[type=hidden]');
+            if(input.get("value") && img.get("src")){
+                input.set("value","");
+                img.set("src","")
+            }
+        }
+    }
+
+</script>

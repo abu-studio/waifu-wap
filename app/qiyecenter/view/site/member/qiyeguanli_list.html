@@ -1,0 +1,129 @@
+<div class="personInfoContentRight">
+    <input type="hidden" id="company_no" value="<{$company_no}>">
+    <div class="content-title"><{t}>企业账户<{/t}></div>
+    <div class="mywelfare">
+        <div class="balance">
+            <div class="balance-title">
+                <a href="#">余额</a>
+            </div>
+            <div class="mybalance">
+                <span><{$sfsc_member_info.RESULT_DATA.SUM ? $sfsc_member_info.RESULT_DATA.SUM : 0}></span>福点
+            </div>
+        </div>
+        <div class="expenses-receipts" style="margin-bottom: 10px;">
+            <div class="expenses-receipts-title">
+                <a href="#">收/支</a>
+                    <a href="javascript:void(0);" id="query_by_year" onclick="getsfscinfo(this.id)" class="aclass">本年</a>
+                    <a  style="float: right; font-size: 12px; padding-left: 5px; padding-right: 5px;">|</a>
+                    <a href="javascript:void(0);" id="query_by_month" onclick="getsfscinfo(this.id)" class="aclass" >本月</a>
+                    <a style="float: right; font-size: 12px; padding-left: 5px; padding-right: 5px;" >|</a>
+                    <a href="javascript:void(0);" id="query_by_week" onclick="getsfscinfo(this.id)" class="aclass">本周</a>
+                    <a style="float: right; font-size: 12px; padding-left: 5px; padding-right: 5px;">|</a>
+                    <a href="javascript:void(0);" id="query_by_all" onclick="getsfscinfo(this.id)" class="aredclass">默认</a>
+            </div>
+            <div style="float: left; width: 289px; margin:20px 0 20px 0; height: 60px;line-height:60px; text-align:center; color:#6c6c6c; border-right:1px solid #CFCFCF;">
+                收入：<span style="color: #FD8700; font-size:250%; margin-right: 10px;  font-family:'黑体'; " id="RESULT_DATA_income"><{$sfsc_member_info.RESULT_DATA.INCOME?$sfsc_member_info.RESULT_DATA.INCOME:0}></span>福点
+            </div>
+            <div style="float: right; width: 289px; margin:20px 0 20px 0; height: 60px;line-height:60px; text-align:center; color:#6c6c6c; border-left:1px solid #CFCFCF;">
+                支出：<span style="color: #FD8700; font-size:250%; margin-right: 10px;  font-family:'黑体'; " id="RESULT_DATA_expenses"><{$sfsc_member_info.RESULT_DATA.EXPENSES?$sfsc_member_info.RESULT_DATA.EXPENSES:0}></span>福点
+            </div>
+        </div>
+    </div>
+    <{if $shifttab}>
+        <div class="Plate member-main" id="all_orders">
+            <h4>
+                <a href="javascript:void(0);" id="all" onclick="tosearch(this.id)">账户详情</a>
+                <a  href="javascript:void(0);" id='notify' onclick="tosearch(this.id)">流水记录</a>
+                <select style="float: right; width: 150px;">
+                    <option value="">账户类型</option>
+                    <option value="">通用</option>
+                </select>
+            </h4>
+            <div class="Plate_info" id='my_order'>
+            </div>
+        </div>
+    <{else}>
+        <div class="Plate member-main" id="all_orders">
+            <h4>
+                <a href="javascript:void(0);" id="all" onclick="tosearch(this.id)">账户详情</a>
+                <a  href="javascript:void(0);" id='notify' onclick="tosearch(this.id)">流水记录</a>
+                <select style="float: right; width: 150px;">
+                    <option value="">账户类型</option>
+                    <option value="">通用</option>
+                </select>
+            </h4>
+            <div class="Plate_info" id='my_order'>
+            </div>
+        </div>
+    <{/if}>
+
+</div>
+
+        <script>
+            window.addEvent('domready',function(){
+                <{if $shifttab}>
+                    $('notify').addClass('current');
+                    tosearch('notify');
+                <{else}>
+                    $('all').addClass('current');
+                    tosearch('all');
+                <{/if}>
+            });
+
+            function getsfscinfo(id){
+                $('query_by_all').removeClass('aredclass');
+                $('query_by_all').addClass('aclass');
+                $('query_by_week').removeClass('aredclass');
+                $('query_by_week').addClass('aclass');
+                $('query_by_month').removeClass('aredclass');
+                $('query_by_month').addClass('aclass');
+                $('query_by_year').removeClass('aredclass');
+                $('query_by_year').addClass('aclass');
+                $(id).addClass('aredclass');
+                var query_by_data = '';
+                if(id == "query_by_year"){
+                    query_by_data = "qb001";
+                }
+                if(id == "query_by_month"){
+                    query_by_data = "qb002";
+                }
+                if(id == "query_by_week"){
+                    query_by_data = "qb003";
+                }
+                if(id == "query_by_all"){
+                    query_by_data = "qb004";
+                }
+
+                company_no = $('company_no').getValue();
+                new Request.JSON({
+                    url:'<{link app=qiyecenter ctl=site_member act=qiyeguanli_list}>',
+                    method:'POST',
+                    data:'query_time='+query_by_data+'&company_no='+company_no,
+                    onComplete:function(siteInfo, text){
+                        $('RESULT_DATA_income').setHTML(siteInfo.RESULT_DATA.INCOME);
+                        $('RESULT_DATA_expenses').setHTML(siteInfo.RESULT_DATA.EXPENSES);
+                    }
+                }).send();
+            }
+
+            function tosearch(id){
+                $(id).addClass('current');
+                if(id=='all'){
+                    $('notify').removeClass('current');
+                }
+                if(id=='notify'){
+                    $('all').removeClass('current');
+                }
+
+                company_no = $('company_no').getValue();
+                new Request.HTML({
+                    url:'<{link app=qiyecenter ctl=site_member act=get_liushuizhanginfo}>',
+                    update:$('my_order'),
+                    method:'POST',
+                    data:'type='+encodeURIComponent(id)+'&company_no='+company_no,
+                    onComplete:function(res){
+                        $('my_order').show();
+                    }
+                }).send();
+            }
+        </script>

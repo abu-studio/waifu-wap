@@ -1,0 +1,119 @@
+<{include file="site/member/header_iframe.html"}>
+
+<script type="text/javascript">
+Builder.includeType('source');
+</script>
+
+
+
+
+<script>
+window.addEvent('domready',function(){
+tree = new Mif.Tree({ 
+    container: $('tree_container'),// tree container 
+    types: {// node types 
+        folder: { 
+            openIcon: 'mif-tree-open-icon',//css class open icon 
+            closeIcon: 'mif-tree-close-icon'// css class close icon
+        } 
+    }, 
+    dfltType: 'folder',//default node type 
+    height: 18//node height
+}); 
+ 
+var json = [ 
+	{
+		"property": {
+			"name": "上海市对外服务有限公司"
+		},
+		"children": [
+			{
+				"property": {
+					"name": "默认部门"
+				}
+			},
+			{
+				"property": {
+					"name": "销售部"
+				},
+				"children":[
+					{
+						"property": {
+							"name": "黄埔分部"
+						}
+					},
+					{
+						"property": {
+							"name": "静安分部"
+						},
+						"children": [
+							{
+								"property": {
+									"name": "<a href='<{link app=qiyecenter ctl=site_member act=testRight}>' target='frm2'>静安一科</a>"
+								}
+							},
+							{
+								"property": {
+									"name": "<a href='<{link app=qiyecenter ctl=site_member act=spcifyEmployees}>' target='frm2'>静安二科</a>"
+								}
+							}
+						]
+					}
+				]
+			},
+			{
+				"property": {
+					"name": "财务部"
+				}
+			}
+		]
+	}
+]; 
+// load tree from json. 
+tree.load({ 
+    json: json
+});
+
+	
+	
+
+	
+});
+
+</script>
+
+<body style="background-color:#ffffff;">
+<div class="qy_pop_main">
+	<div class="qy_pop_top">组织管理</div>
+	<div class="qy_pop_left">
+		<div class="qy_pop_left_top">
+			<div class="qy_pop_left_top_title fl">组织结构</div>
+			<div class="radio_check fl"><i></i>部门</div>
+			<div class="radio fl"><i></i>群组</div>
+		</div>
+		<div id="tree_container" class="tree_container"></div>
+	</div>
+</div>
+</body>
+
+<script type="text/javascript">
+
+//window.parent.top1();
+
+function tch1(){
+	alert('tch1');
+}
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+

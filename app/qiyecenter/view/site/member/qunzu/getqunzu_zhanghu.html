@@ -1,0 +1,60 @@
+<{if $type == "bumen_zhanghuxinxi"}>
+        <div class="fd_ye">
+            <div style="padding-top: 15px;">
+                <font style="font-family: 微软雅黑,宋体;font-size: 15px;font-weight: 700;">账户信息</font>
+            </div>
+        </div>
+        <div class="fd_ye">
+            <div class="fd_one">收支类型</div>
+            <div class="fd_one" style="width: 11%;">
+                <input  type="text" style="width: 80px; border: 1px solid #000000;"/>
+            </div>
+            <div class="fd_one" style="margin-left:20px">对方账户</div>
+            <div class="fd_one" style="width: 16%;" >
+                <select  style="width:120px;font-family: 微软雅黑,宋体;font-size: 14px;">
+                    <option>请选择</option>
+                </select>
+            </div>
+            <div class="fd_one" style="margin-left:20px">发生时间</div>
+            <div class="fd_one" style="width: 23%;">
+                <input type="text" style="border: 1px solid #000000; width:80px"/>-<input type="text" style="border: 1px solid #000000; width:80px"/>
+            </div>
+            <div class="fd_one" style="margin-left:20px">
+                <input type="button" value="搜索" style="font-family: 微软雅黑,宋体;font-size: 14px;"/>
+            </div>
+        </div>
+        <div class="show_list">
+            <div class="list_head" style="width: 93%;margin-left: 26px">
+                <div class="head_font">收支类型</div>
+                <div class="head_font">账户</div>
+                <div class="head_font" style="width: 22%;">发生时间</div>
+                <div class="head_font">事件/备注</div>
+                <div class="head_font">额度</div>
+            </div>
+            <div class="list_con" style="width: 93%;margin-left: 26px">
+                <div class="head_font">收入</div>
+                <div class="head_font">企业账户</div>
+                <div class="head_font" style="width: 22%;">15/04/10</div>
+                <div class="head_font">充值</div>
+                <div class="head_font">1000</div>
+            </div>
+        </div>
+<{else}>
+    <div class="show_list">
+        <div class="list_head" style="width: 93%;margin-left: 26px">
+            <div class="head_font">收支类型</div>
+            <div class="head_font">账户类型</div>
+            <div class="head_font" style="width: 22%;">记录时间</div>
+            <div class="head_font">事件/备注</div>
+            <div class="head_font">额度</div>
+        </div>
+        <div class="list_con" style="width: 93%;margin-left: 26px">
+            <div class="head_font">收入</div>
+            <div class="head_font">企业账户</div>
+            <div class="head_font" style="width: 22%;">15/04/10</div>
+            <div class="head_font">充值</div>
+            <div class="head_font">1000</div>
+        </div>
+    </div>
+
+<{/if}>

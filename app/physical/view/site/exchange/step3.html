@@ -1,0 +1,128 @@
+<div class="top">
+	<div class="left">
+		预约套餐：<a href="javascript:void(0);"><{$package_info.package_name}></a>
+	</div>
+	<div class="right" >
+		<div class="xm_step3">						
+		</div>
+	</div>
+</div>
+<div class="center">
+	<div class="mendian_title">
+		选择时间
+	</div>
+	<div class="mendian_main">
+		<div class="sj_left" id="sj_left">
+				<{input type="calendar" store=$info.store_id  width="590px" }>
+		</div>
+		<div class="sj_right">
+			<form id="form3" name="form3" method="POST" action="<{link app='physical' ctl='site_exchange' act='index' args=array($type,4,$goods_id,$package_id,$card_no,$card_pass)}>">
+			<input type='hidden' name="st" value="1" />
+
+			<div class="sj_top">你选择的预约时间</div>
+			<div class="sj_label">
+				<img class="close" src="<{$res_url}>/image/mdxz_04.png" style="cursor: pointer;float:right;">
+				请选择三个时间，并确认“优选”预约时间
+			</div>
+			<!-- <div class="sj_label">
+				<img class="close" src="<{$res_url}>/image/mdxz_04.png" style="cursor: pointer;float:right;">
+				<div class="sj_title">温馨提示：</div>
+				体检店状态仅作参考，存在预约失败的可能，如果预约失败我们客服将和你联系，确认更改预约时间。
+			</div> -->
+			<div class="sj_top">你选择的预约时间</div>
+			<div id="radio_box">
+				<{foreach from=$order_time_arr item=item key=key}>
+				<div class="sj_check" id="sj_check_<{$item}>">
+					<input type="radio" class="best_time" name="best_time" value="<{$item}>" <{if $key eq 0}>checked="checked"<{/if}>><{$item}>
+					<input type="hidden" name="order_time[]" value="<{$item}>">&nbsp;&nbsp;
+					<a href="javascript:void(0);" onclick="del_sj_check('<{$item}>');">删除</a>
+				</div>
+				<{/foreach}>
+			</div>
+			<div class="sj_label">
+				<img class="close" src="<{$res_url}>/image/mdxz_04.png" style="cursor: pointer;float:right;">
+				<div class="sj_title">温馨提示：</div>
+				体检店状态仅作参考，存在预约失败的可能，如果预约失败我们客服将和你联系，确认更改预约时间。
+			</div>
+			<div class="sj_next">
+				<button class="btn md_prev" type="button"  onclick="back2();" >
+					上一步
+				</button>
+				<button class="btn md_submit" type="button"  onclick="form_submit4();" >
+					下一步
+				</button>
+			</div>
+			
+			</form>
+		</div>					
+	</div>
+</div>
+
+<script>
+window.addEvent('domready', function(){
+	remove_click();
+	$$('.sj_label .close').addEvent('click',function(){
+		this.getParent().setStyle('visibility','hidden');;
+	});
+});
+//删除日历中已选择时间的点击效果
+function remove_click(){
+	<{foreach from=$order_time_arr item=item key=key}>
+		del_click('<{$item}>');
+	<{/foreach}>
+}
+//添加日历时间点击效果
+function add_click(date){
+	$('td_'+date).addClass('act'); 
+	$('td_'+date).removeClass('on'); 
+	$('td_'+date).addEvent('click',function(){
+		add_sj_check(date);
+	}); 
+}
+//删除日历时间点击效果
+function del_click(date){
+	$('td_'+date).removeClass('act'); 
+	$('td_'+date).addClass('on'); 
+	$('td_'+date).removeEvents('click');
+}
+//从日历选择时间
+function add_sj_check(date){
+	var num = $$(".sj_check").length;
+	if(num >= 3){
+		alert("最多选择三个时间 !");
+		return false;
+	}
+	var html = $('radio_box').getHTML();
+	html +=	'<div class="sj_check" id="sj_check_'+date+'">'
+				+'<input type="radio" class="best_time" name="best_time" value="'+date+'">'+date
+				+'<input type="hidden" name="order_time[]" value="'+date+'">&nbsp;&nbsp;&nbsp;&nbsp;'
+				+'<a href="javascript:void(0);" onclick="del_sj_check(\''+date+'\');">删除</a>'
+				+'</div>';
+	$('radio_box').setHTML(html);
+	del_click(date);
+}
+//删除已选择时间
+function del_sj_check(date){
+	$("sj_check_"+date).remove();
+	add_click(date); 
+}
+function back2(){
+	var url = "<{link app='physical' ctl='site_exchange' act='index' args=array($type,2,$goods_id,$package_id,$card_no,$card_pass)}>";
+	window.location.href= url;
+}
+function form_submit4(){
+	var num = $$(".sj_check").length;
+	if(num < 3){
+		alert("请选择三个时间 !");
+		return false;
+	}
+	var best_time = $$(".best_time:checked").getProperty("value");
+	var type = Object.prototype.toString.call(best_time);
+	if(type == "[object Object]"){
+		alert("请确认“优选”预约时间 !");
+		return false;
+	}
+	$("form3").submit();
+}
+
+</script>

@@ -1,0 +1,42 @@
+
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+        <title>jquery countDownTimer Demo reverse countdown clock</title>
+        <meta name="description" content="reverse clock plugin for jQuery.">
+            <meta name="keywords" content="jQuery, plugin, count down">
+                <meta name="viewport" content="width=device-width,initial-scale=1">
+                    <script type="text/javascript" src="jquery-2.0.3.js"></script>
+                    <script type="text/javascript" src="jquery.countdownTimer.min.js"></script>
+                    <link rel="stylesheet" type="text/css" href="jquery.countdownTimer.css" />
+                    </head>
+                    <body>
+
+
+                            <table style="border:0px;">
+                                <tr>
+                                    <td colspan="8"><span id="future_date"></span></td>
+                                </tr>
+                            </table>
+
+
+                            <script>
+                                $(function(){
+                                    $('#future_date').countdowntimer({
+                                        dateAndTime : "2020/01/01 00:00:00",
+                                        size : "lg",
+                                        regexpMatchFormat: "([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})",
+      					regexpReplaceWith: "$1<sup class='displayformat'>days</sup> / $2<sup class='displayformat'>hours</sup> / $3<sup class='displayformat'>minutes</sup> / $4<sup class='displayformat'>seconds</sup>"
+                                    });
+                                });
+                            </script>
+			    <style type="text/css">
+				.displayformat {
+					font-size:18px;
+					font-style: italic;
+				}
+			    </style>
+                           
+                    </body>
+                    </html>

@@ -1,0 +1,64 @@
+<div class="middle clb">
+    <div class="webwidth">
+        <div class="login_left">
+			<div class="login_banner">
+				<img src="<{if $company}><{$_THEME_}>/images/company/<{$company}>/banner2.jpg<{else}><{$_THEME_}>/images/1.png<{/if}>">
+			</div>
+        </div>
+        <div class="login_right">
+                <form action="<{link app='cardcoupons' ctl='site_card' act='login'}>" method="post" id="loginBar" autocomplete="off">
+                    <ul class="login_ul">
+                        <li>
+                            <span style="font-size:18px"><{if $company_description.login_title}><{$company_description.login_title}><{else}>兑换礼品&nbsp;或&nbsp;预约体验<{/if}></span>
+                        </li>
+                        <li>
+                            <input type="text" onblur="checkcardnum(this);" name="card_num" class="input_text" placeholder="输入卡号" autocomplete="off">
+                        </li>
+                        <li id="remind_num">
+                        </li>
+                        <li>
+                            <input type="password" id="password" name="password" class="input_text" placeholder="输入密码" autocomplete="off">
+                        </li>
+                        <li>
+                            <input type="button" value="确定" class="input_btn" onclick="login();" <{if $company}>style="background:url(<{$_THEME_}>/images/company/<{$company}>/btn2.jpg) no-repeat;"<{/if}>>
+                        </li>
+                    </ul>
+                </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function checkcardnum(input){
+        new Request({
+            url:"<{link app='cardcoupons' ctl='site_cards' act='checkcardnum'}>",
+            onComplete:function(response){
+                if(response == 1){
+                    $('remind_num').set('html','');
+                }else{
+                    $('remind_num').set('html',response);
+                }
+            },
+            method:'post',
+            data:'card_num='+encodeURIComponent(input.value.trim())
+        }).send();
+    }
+
+    function login(){
+        var postArgs = $('loginBar').toQueryString();
+        new Request.JSON({
+            url:"<{link app='cardcoupons' ctl='site_cards' act='login'}>",
+            method:'POST',
+            data:postArgs,
+            onComplete:function(res){
+                if(res.status == "failed"){
+                    alert(res.msg);
+                }
+                if(res.status == "success"){
+                    window.location.href= res.url;
+                }
+            }
+        }).send();
+    }
+</script>

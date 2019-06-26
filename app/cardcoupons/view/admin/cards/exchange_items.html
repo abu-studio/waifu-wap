@@ -1,0 +1,26 @@
+<div>
+	<div class="tableform">
+		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="gridlist">
+			<thead>
+			<tr>
+			  <th><{t}>卡券名称<{/t}></th>
+			  <th><{t}>卡券编号<{/t}></th>
+			  <th><{t}>卡券密码<{/t}></th>
+			  <th><{t}>是否可结算<{/t}></th>
+			  <th><{t}>备注<{/t}></th>
+			</tr>
+			</thead>
+			<tbody>
+			<{foreach from=$cards item=item key=key}>
+			<tr>
+			   <td><{$card_name}></td>
+			   <td><{$item.card_no}></td>
+			   <td><{$item.card_pass}></td>
+			   <td><{if $item.status=="1"}>可结算<{/if}><{if $item.status=="0"}>不可结算<{/if}></td>
+			   <td><{$item.memo}></td>
+			</tr>
+			<{/foreach}>
+			</tbody>
+		</table>
+	</div>
+</div>

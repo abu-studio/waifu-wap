@@ -1,0 +1,95 @@
+<form id="setpass_form" class="tableform" action="index.php?app=cardcoupons&ctl=admin_cards&act=setpass"  method="POST" >
+    <input type="hidden" name="cards[card_id]" value="<{$cards.card_id}>">
+	<input type="hidden" name="cards[name]" value="<{$cards.name}>"/>
+	<input type="hidden" name="cards[from_time]" value="<{$cards.from_time}>"/>
+	<input type="hidden" name="cards[to_time]" value="<{$cards.to_time}>"/>
+	<input type="hidden" name="setpass" value="setpass">
+    <div class="division">
+        <table width="100%" >
+        <tr>
+			<th>卡密方式：</th>
+			<td>
+				<input  type="radio" name="cards[passset]" onclick="pass_create('auto')" value='auto' <{if $cards.passset == 'auto'}>checked<{/if}> />
+				<label  ><{t}>自动生成<{/t}></label>
+			</td>
+		</tr>
+		<tr class="auto_tr" style="<{if $cards.passset != 'auto'}>display:none;<{/if}>" >
+			<th>发放默认产品 ：</th>
+			<td>
+				<input type="radio" name="cards[is_send]" value='true'/>
+				<label ><{t}>是<{/t}></label>
+				<input  type="radio" name="cards[is_send]" value='false' checked="checked"/>
+				<label  ><{t}>否<{/t}></label>
+			</td>
+		</tr>
+		<tr class="auto_tr" style="<{if $cards.passset != 'auto'}>display:none;<{/if}>" >
+			<th>是否默认已发放 ：</th>
+			<td>
+				<input type="radio" name="cards[is_issued]" value='true'/>
+				<label ><{t}>是<{/t}></label>
+				<input  type="radio" name="cards[is_issued]" value='false' checked="checked"/>
+				<label  ><{t}>否<{/t}></label>
+			</td>
+		</tr>
+		<tr class="auto_tr" style="<{if $cards.passset != 'auto'}>display:none;<{/if}>">
+			<th><{t}>开始时间：<{/t}></th>
+			<td><{input type="time" name="from_time"}></td>
+		</tr>
+		<tr class="auto_tr" style="<{if $cards.passset != 'auto'}>display:none;<{/if}>">
+			<th><{t}>结束时间：<{/t}></th>
+			<td><{input type="time" name="to_time"}></td>
+		</tr>
+		<tr class="auto_tr" style="<{if $cards.passset != 'auto'}>display:none;<{/if}>">
+			<th><em class="red">*</em>请输入数量：</th>
+			<td><{input type="text" name="cards[num]" vtype="required&&unsignedint"}></td>
+		</tr>
+		<tr>
+			<th><em class="red">*</em>备注：</th>
+			<td>
+				<{input type="textarea" required="required" name="cards[remarks1]" vtype="required" cols="50" rows="5"}>
+			</td>
+		</tr>
+        </table>
+    </div>
+
+</form>
+
+<div class="table-action"><{button type="submit"  label=$___cardcoupons="保存"|t:'cardcoupons' id='setpass_form_submit'}></div>
+
+<script>
+    (function(){
+        var _form = $('setpass_form');
+        var btn =$('setpass_form_submit');
+        var finder = finderGroup['<{$env.get._finder.finder_id}>'];
+
+        _form.store('target',{
+            onComplete:function(){
+
+            },
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                        finder.refresh.delay(400,finder);
+                    }
+                }
+                else
+                {
+                    //alert(hash_res_obj.error);
+                }
+            }
+        });
+
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+        });
+
+    })();
+</script>

@@ -1,0 +1,39 @@
+2018-10-18 16:55:03 Array
+(
+    [xmldata] => 
+)
+
+2018-10-18 16:55:55 Array
+(
+    [xmldata] => <xml><ToUserName><![CDATA[gh_d4ab71b33b7e]]></ToUserName>
+<FromUserName><![CDATA[o1qNlwCAokrnsrUYxAiHalwXFbVs]]></FromUserName>
+<CreateTime>1539852955</CreateTime>
+<MsgType><![CDATA[event]]></MsgType>
+<Event><![CDATA[subscribe]]></Event>
+<EventKey><![CDATA[]]></EventKey>
+</xml>
+)
+
+2018-10-18 16:55:58 Array
+(
+    [xmldata] => <xml><ToUserName><![CDATA[gh_d4ab71b33b7e]]></ToUserName>
+<FromUserName><![CDATA[o1qNlwLrk5LPuExyZ7hfjrv9szX0]]></FromUserName>
+<CreateTime>1539852958</CreateTime>
+<MsgType><![CDATA[event]]></MsgType>
+<Event><![CDATA[VIEW]]></Event>
+<EventKey><![CDATA[http://boyaboya.cn/wap/member.html]]></EventKey>
+<MenuId>686595426</MenuId>
+</xml>
+)
+
+2018-10-18 16:57:54 Array
+(
+    [xmldata] => <xml><ToUserName><![CDATA[gh_d4ab71b33b7e]]></ToUserName>
+<FromUserName><![CDATA[o1qNlwO6Zs44iqbZiJjoomaWuCa8]]></FromUserName>
+<CreateTime>1539853074</CreateTime>
+<MsgType><![CDATA[event]]></MsgType>
+<Event><![CDATA[subscribe]]></Event>
+<EventKey><![CDATA[]]></EventKey>
+</xml>
+)
+

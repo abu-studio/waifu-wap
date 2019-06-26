@@ -1,0 +1,77 @@
+<form id="project_form" class="tableform" action="index.php?app=physical&ctl=admin_project&act=save"  method="POST" >
+    <input type="hidden" name="project_id" value="<{$project_info.project_id}>">
+    <div class="division">
+        <table width="100%" >
+			<tr>
+                <th><em class="red">*</em><{t}>科目ID：<{/t}></th>
+                <td><{input type='select' name='subject_id' vtype="required" required="true" options=$subject_list value=$project_info.subject_id}></td>
+            </tr>
+            <tr>
+                <th><em class="red">*</em><{t}>项目编号：<{/t}></th>
+                <td><{input type="text" name="project_code" vtype="required" value=$project_info.project_code}></td>
+            </tr>
+            <tr>
+                <th><em class="red">*</em><{t}>项目名称：<{/t}></th>
+                <td><{input type="text" name="project_name" vtype="required" value=$project_info.project_name}></td>
+            </tr>
+			<tr>
+                <th><{t}>医学编号：<{/t}></th>
+                <td><{input type="text" name="medical_code" value=$project_info.medical_code}></td>
+            </tr>
+			<tr>
+                <th><{t}>价格：<{/t}></th>
+                <td><{input type="text" name="price" vtype="positive" value=$project_info.price}></td>
+            </tr>
+			<tr>
+                <th><{t}>简介：<{/t}></th>
+                <td><{input type="textarea" name="introduction" value=$project_info.introduction style="width:300px;"}></td>
+            </tr>
+        </table>
+    </div>
+
+</form>
+
+<{area inject='.mainFoot'}>
+<div class="table-action"><{button type="submit"  label=$___physical="保存"|t:'physical' id='project_form_submit'}></div>
+<{/area}>
+
+<script>
+    (function(){
+        var _form = $('project_form');
+        var btn =$('project_form_submit');
+       
+
+        _form.store('target',{
+            onComplete:function(){
+
+            },
+            onSuccess:function(response){
+                var hash_res_obj = JSON.decode(response);
+                if (hash_res_obj.success != undefined && hash_res_obj.success != "")
+                {
+                    try{
+                        var _dialogIns = btn.getParent('.dialog').retrieve('instance');
+                    }catch(e){}
+
+                    if(_dialogIns)
+                    {
+                        _dialogIns.close();
+                      
+                    }
+                }
+                else
+                {
+                    //alert(hash_res_obj.error);
+                }
+            }
+        });
+
+        btn.addEvent('click',function(){
+            _form.fireEvent('submit',{stop:$empty});
+
+
+
+        });
+
+    })();
+</script>

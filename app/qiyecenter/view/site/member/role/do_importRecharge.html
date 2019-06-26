@@ -1,0 +1,33 @@
+<div class="list_head">
+	<div class="head_font" style="width: 10%;">操作</div>
+	<div class="head_font" style="width: 15%;">雇员编号</div>
+	<div class="head_font" style="width: 10%;">雇员姓名</div>
+	<div class="head_font" style="width: 15%;">是否有效</div>
+	<div class="head_font" style="width: 40%;">备注</div>	
+</div>
+<{foreach from=$sfscdata item=item}>
+<div class="list_con">
+	<div class="head_font" style="width: 10%;">
+		<{if $item.ENABLED == '有效'}>
+		<input type="checkbox" name="HUMBAS_NO" value="<{$item.HUMBAS_NO}>" />
+		<{else}>
+		&nbsp; &nbsp; &nbsp; 
+		<{/if}>		
+		<input type="hidden" name="CUSTOMER_NAME" value="<{$item.CUSTOMER_NAME}>" />
+		<input type="hidden" name="DEPT_NAME" value="<{if $item.DEPT_NAME}><{$item.DEPT_NAME}><{else}><{$item.GROUP_NAME}><{/if}>" />
+		<input type="hidden" name="NAME" value="<{$item.NAME}>" />
+		<input type="hidden" name="NEW_PRICE"   value="<{$item.NEW_PRICE}>" />
+		<input type="hidden" name="DEPT_ID" value="<{if $item.DEPT_ID}><{$item.DEPT_ID}><{else}><{$item.GROUP_ID}><{/if}>">
+		<input type="hidden" name="COMPANY_NO" value="<{$item.CUSTOMER_ID}>">
+		<{if $item.ENABLED == '有效'}>
+			<input type="hidden" name="ENABLED" value="1">
+		<{else}>
+			<input type="hidden" name="ENABLED" value="0">
+		<{/if}>
+	</div>
+	<div class="head_font" style="width: 15%;"><{$item.HUMBAS_NO}></div>
+	<div class="head_font" style="width: 10%;"><{$item.NAME}></div>
+	<div class="head_font" style="width: 15%;"><{$item.ENABLED}></div>
+	<div class="head_font" style="width: 40%;"><{$item.REMARKS}></div>
+</div>
+<{/foreach}>

@@ -1,0 +1,81 @@
+<site>
+    <module controller='site_cards' >
+        <name>buycard</name>
+        <title>卡券兑换</title>
+        <disable>false</disable>
+    </module>
+
+	<module controller='site_cards1' >
+        <name>buycard1</name>
+        <title>会员卡券兑换</title>
+        <disable>false</disable>
+    </module>
+
+
+	<module controller='site_cards2' >
+        <name>buycard2</name>
+        <title>特殊会员卡券兑换</title>
+        <disable>false</disable>
+    </module>
+
+
+
+	<module controller='site_member'>
+        <name>cardmember</name>
+        <title>卡券兑换</title>
+        <disable>false</disable>
+    </module>
+
+	<module controller='site_card_channel' >
+        <name>cardchannel</name>
+        <title>卡券频道</title>
+        <disable>false</disable>
+    </module>
+
+	<module controller='site_product' >
+        <name>carddetail</name>
+        <title>卡券详情页</title>
+        <disable>false</disable>
+        <allow_seo act="index">
+            <title>卡券详情页</title>
+            <config id="{ENV_goods_name}">商品名</config>
+            <config id="{ENV_goods_brand}">商品品牌</config>
+            <config id="{ENV_goods_bn}">商品编号</config>
+            <config id="{ENV_goods_cat}">商品分类</config>
+            <config id="{ENV_goods_brief}">商品简介</config>
+            <config id="{ENV_goods_price}">商品价格</config>
+            <param>
+                <seo_title>{ENV_goods_name}_{ENV_goods_brand}</seo_title>
+                <seo_keywords>{ENV_goods_name}</seo_keywords>
+                <seo_content>{ENV_goods_intro}</seo_content>
+                <seo_nofollow>否</seo_nofollow>
+                <seo_noindex>否</seo_noindex>
+            </param>
+            <hidden>true</hidden>
+        </allow_seo>
+    </module>
+
+
+	<module controller='site_cardproduct'>
+        <name>cardexdetail</name>
+        <title>卡券兑换详情页</title>
+        <disable>false</disable>
+        <allow_seo act="index">
+            <title>卡兑换详情页</title>
+            <config id="{ENV_goods_name}">商品名</config>
+            <config id="{ENV_goods_brand}">商品品牌</config>
+            <config id="{ENV_goods_bn}">商品编号</config>
+            <config id="{ENV_goods_cat}">商品分类</config>
+            <config id="{ENV_goods_brief}">商品简介</config>
+            <config id="{ENV_goods_price}">商品价格</config>
+            <param>
+                <seo_title>{ENV_goods_name}_{ENV_goods_brand}</seo_title>
+                <seo_keywords>{ENV_goods_name}</seo_keywords>
+                <seo_content>{ENV_goods_intro}</seo_content>
+                <seo_nofollow>否</seo_nofollow>
+                <seo_noindex>否</seo_noindex>
+            </param>
+            <hidden>true</hidden>
+        </allow_seo>
+    </module>
+</site>

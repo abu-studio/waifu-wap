@@ -1,0 +1,160 @@
+<div id="member-main" class="member-main">
+    <table cellspacing="0" cellpadding="0"  width="100%">
+        <tr>
+            <td>
+                <h1 class="head-title"><{t}>京东售后服务单明细<{/t}></h1>
+            </td>
+            <td>
+                <form action="<{link app=qiyecenter ctl=site_member act=service_list arg0=$jdOrderId arg1=$order_id arg2=$hasSubOrder}>"  method="post" name="x-return-back-form" id="x-return-back-form">
+                    <{button id="return_back" type="submit"  label=$___jdsale="返回"|t:'jdsale'}>
+                </form>
+            </td>
+        </tr>
+    </table>
+    <br/>
+    <table cellspacing="0" cellpadding="0" class="gridlist" width="100%">
+        <thead>
+            <th colspan="4">服务单明细</th>
+        <tbody>
+            <tr >
+                <td align="right" width="15%" >
+                    <{t}>服务单号：<{/t}>
+                </td>
+                <td align="left" >
+                    <{$afsServiceDetail.afsServiceId}>
+                </td>
+                <td align="right" >
+                    <{t}>申请时间：<{/t}>
+                </td>
+                <td align="left" >
+                    <{$afsServiceDetail.afsApplyTime}>
+                </td>
+            </tr>
+            <tr >
+                <td align="right" >
+                    <{t}>京东订单号：<{/t}>
+                </td>
+                <td align="left" >
+                    <{$afsServiceDetail.orderId}>
+                </td>
+                <td align="right" >
+                    <{t}>订单号：<{/t}>
+                </td>
+                <td align="left" >
+                    <{$order_id}>
+                </td>
+
+            </tr>
+            <tr >
+                <td align="right" >
+                    <{t}>服务类型：<{/t}>
+                </td>
+                <td align="left" >
+                    <{$afsServiceDetail.customerExpect}>
+                </td>
+                <td align="right" >
+                    <{t}>商品编号：<{/t}>
+                </td>
+                <td align="left" >
+                    <{$afsServiceDetail.serviceDetailInfoDTOs[0].wareId}>
+                </td>
+            </tr>
+            <tr >
+                <td align="right" >
+                    <{t}>商品名称：<{/t}>
+                </td>
+                <td align="left" colspan="3">
+                    <{$afsServiceDetail.serviceDetailInfoDTOs[0].wareName}>
+                </td>
+            </tr>
+            <tr >
+                <td align="right" >
+                    <{t}>服务单环节：<{/t}>
+                </td>
+                <td align="left" >
+                    <{$afsServiceDetail.afsServiceStepName}>
+                </td>
+                <td align="right" >
+                    <{t}>申请时间：<{/t}>
+                </td>
+                <td align="left" >
+                    <{$afsServiceDetail.afsApplyTime}>
+                </td>
+            </tr>
+            <tr >
+                <td align="right"  >
+                    <{t}>审核意见：<{/t}>
+                </td>
+                <td align="left" colspan="3" >
+                    <{$afsServiceDetail.approveNotes}>
+                </td>
+            </tr>
+            <tr >
+                <td align="right"  >
+                    <{t}>产品问题描述：<{/t}>
+                </td>
+                <td align="left" colspan="3" >
+                    <{$afsServiceDetail.questionDesc}>
+                </td>
+            </tr>
+            <tr >
+                <td align="right" >
+                    <{t}>审核结果：<{/t}>
+                </td>
+                <td align="left" >
+                    <{$afsServiceDetail.approvedResultName}>
+                </td>
+                <td align="right" >
+                    <{t}>处理结果：<{/t}>
+                </td>
+                <td align="left" >
+                    <{$afsServiceDetail.processResultName}>
+                </td>
+            </tr>
+            <tr >
+                <td align="right" width="15%" >
+                    <{t}>客户名称：<{/t}>
+                </td>
+                <td align="left" >
+                    <{$afsServiceDetail.serviceCustomerInfoDTO.customerName}>
+                </td>
+                <td align="right" >
+                    <{t}>客户联系人：<{/t}>
+                </td>
+                <td align="left" >
+                    <{$afsServiceDetail.serviceCustomerInfoDTO.customerContactName}>
+                </td>
+            </tr>
+            <tr >
+                <td align="right" >
+                    <{t}>联系电话：<{/t}>
+                </td>
+                <td align="left" >
+                    <{$afsServiceDetail.serviceCustomerInfoDTO.customerTel}>
+                </td>
+                <td align="right" >
+                    <{t}>手机号：<{/t}>
+                </td>
+                <td align="left" >
+                    <{$afsServiceDetail.serviceCustomerInfoDTO.customerMobilePhone}>
+                </td>
+            </tr>
+            <tr >
+                <td align="right" >
+                    <{t}>邮箱：<{/t}>
+                </td>
+                <td align="left" >
+                    <{$afsServiceDetail.serviceCustomerInfoDTO.customerEmail}>
+                </td>
+                <td align="right" >
+                    <{t}>邮编：<{/t}>
+                </td>
+                <td align="left" >
+                    <{$afsServiceDetail.serviceCustomerInfoDTO.customerPostcode}>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+</div>

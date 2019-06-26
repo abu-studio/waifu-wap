@@ -1,0 +1,37 @@
+<form id="brandForm" action="index.php?app=b2c&ctl=admin_invoice&act=save"  method="POST" >
+    <input type="hidden" name="id" value="<{$data.id}>">
+    <div class="tableform">
+        <div class="division">
+            <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                  <th><{t}>快递号：<{/t}></th>
+                  <td><{input type="text" name="send_message" value=$data.send_message}></td>
+                </tr>
+                <tr>
+                  <th><{t}>发票处理：<{/t}></th>
+                  <td>
+                    <label><input type=radio name="is_send" value="yes" <{if $data.is_send == 'yes'}>checked<{/if}> /><{t}>是<{/t}>
+                    </label> &nbsp; &nbsp; 
+                    <label><input type=radio name="is_send" value="no" <{if $data.is_send == 'no'}>checked<{/if}>/><{t}>否<{/t}></label>
+                  </td>
+                </tr>
+            </table>
+        </div>
+          <div class="table-action">
+            <{button type="submit"  label=$___b2c="保存"|t:'b2c' id='brandbtn'}>
+        </div>
+    </div>
+</form>
+
+<script>
+    $('brandbtn').addEvent('click',function(){
+
+        $('brandForm').store('target',{onComplete:function(re){
+            re = JSON.decode(re);
+            if(re.error)return;
+            $('brandForm').getParent('.dialog').retrieve('instance').close();
+        }});
+        $('brandForm').fireEvent('submit',{stop:$empty});
+
+    });
+</script>

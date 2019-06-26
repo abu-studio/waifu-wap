@@ -1,0 +1,280 @@
+<!-- right-->
+<{css src="member.css" app="b2c" pdir="css_mini"}>
+<div class="bianzhifuContent-right" style="display:none;">
+    <div class="content-title" id="<{$type}>"><div class="tb"></div><h1 class="fl"><{$title}></h1><h4 class="fl"><{$otitle}></h4></div>
+    <div class="tx_step1"></div>
+    <div style="height:380px;"class="jf_txxx">
+    <form id="frmId" method="post" action="<{link app=b2c ctl=site_lifecost act=sdmOrderList}>">
+        <div class="jf_txxx_left">
+            <div class="sdm_tr">
+                <div class="sdm_td_left">
+                    <span style="display:block;font-size: 15px;line-height:40px;">付费地区：</span>
+                </div>
+					<div class="sdm_td_right" id='str'>
+						<div id='f1'  style='float:left;'>
+                            <select class="sdm_select" id='pr' onChange="javascript:getAreaList(this, 1);">
+                                <option value="0">请选择省份</option>
+                                <{foreach from=$provinceList item="v" key="k"}>
+                                <option value="<{$v.PROVINCE_CODE}>"> <{$v.PROVINCE_NAME}> </option>
+                                <{/foreach}>
+                            </select>
+						</div>
+						<div id="f2"  style='float:left;'></div>
+					</div>
+				</div>	
+				<div class="sdm_tr">
+					<div class="sdm_td_left">
+						<span style="display:block;font-size: 15px;line-height:40px;">出账机构：</span>
+					</div>
+					<div class="sdm_td_right" id = "f3">
+						<select class="sdm_select_l" id="sdmCompany" name="sdmCompany">
+							<option>请选择出账机构</option>
+						</select>
+					</div>
+				</div>
+				<div class="sdm_tr_line"></div>
+				<div class="sdm_tr">
+					<div class="sdm_td_left">
+						<span style="display:block;font-size: 15px;line-height:40px;">付费方式：</span>
+					</div>
+					<div class="sdm_td_right">
+						<!--<label style="height: 36px;line-height: 36px;">
+						<input type="radio" value="search" class="sdm_radio_btn" name="chargeType" checked="checked">
+						<span class="font2">户号</span>
+						</label>-->
+						<label style="height: 36px;line-height: 36px;">
+						<input type="radio" value="search" class="sdm_radio_btn" id="sdmChareType" name="sdmChareType" checked="checked">
+						<span class="font2">条 形 码</span>
+						</label>
+					</div>
+				</div>
+				<div class="sdm_tr">
+					<div class="sdm_td_left">
+						<span style="display:block;font-size: 15px;line-height:40px;">条形码：</span>
+					</div>
+					<div class="sdm_td_right">
+						<input class="sdm_input_l" id="sdmChareNum" name="sdmChareNum"type="text" value="" onBlur="return validateNum(this);"/><span style="margin-left: 8px;color:red;" id='tmtips'></span>
+					</div>
+				</div>
+				<div class="sdm_tr">
+					<div class="sdm_td_left">
+						<span style="display:block;font-size: 15px;line-height:40px;">金额：</span>
+					</div>
+					<div class="sdm_td_right">
+						<input class="sdm_input" type="text" id="sdmMoney" name="sdmMoney"value="" onBlur="return validateNum1(this);"/> 元 <span style="margin-left: 8px;color:red;" id='mytips'></span>
+					</div>
+				</div>
+				<div class="sdm_tr">
+					<div class="sdm_td_left"></div>
+                    <button class="sdm_sel_button" onClick="return validateBtn(this);">查询</button>
+				</div>
+			</div>
+			<input type="hidden" name='itemName' id='itemName' value='<{$type}>'>
+		</form>			
+			<script>
+			<!--
+				//定义几个全局变量
+				//var diquValidate = false;
+				var txmValidate = false;
+				var jineValidate = false;
+				document.getElementById('sdmChareNum').value='';
+				document.getElementById('sdmMoney').value='';
+				document.getElementById('pr').selectedIndex = 0;
+
+				//点击提交查询异步校验
+				function validateBtn(obj){
+					var url="<{link app=b2c ctl=site_lifecost act=inValidateBtn}>";
+
+					var sctmObj = document.getElementById('sdmCompany');
+					var itemName = document.getElementById('itemName').value;
+					var tmtipsObj = document.getElementById('tmtips');
+					var mytipsObj = document.getElementById('mytips');
+					
+					new Request({
+						url:url,
+						method:'post',
+						data:{
+							'BARCODE':$('sdmChareNum').get('value'),
+							'MONEY':$('sdmMoney').get('value'),
+							'ORGANIZATION_CODE':sctmObj.value,
+							'ITEM_NAME':itemName,
+						},
+						onComplete: function(rs){
+							if(rs=='error'){
+								tmtipsObj.innerHTML = "";
+								tmtipsObj.innerHTML = "条形码或者金额出错!";
+								txmValidate = false;
+							}else{
+								if(!txmValidate){
+									tmtipsObj.innerHTML = "请检查条形码是否正确！";
+									txmValidate = false;
+									return false;
+								}
+								if(!jineValidate){
+									mytipsObj.innerHTML = "请检查金额是否正确！";
+									jineValidate = false;
+									return false;
+								}
+
+								var frmObj = document.getElementById('frmId');
+								frmObj.submit();
+							}
+						}
+					}).send(); 
+					return false;
+				}
+
+				//校验条形码
+				function validateNum(obj){
+					var sctmObj = document.getElementById('sdmCompany');
+					var tmtipsObj = document.getElementById('tmtips');
+					
+					var indexNum = sctmObj.selectedIndex;
+					var codeLength = sctmObj[indexNum].lang;
+					
+					if(obj.value.length != codeLength || !obj.value){
+						tmtipsObj.innerHTML = "条形码长度不正确！";
+						txmValidate = false;
+						obj.value='';
+						return false;
+					}
+					else{
+						tmtipsObj.innerHTML = "";
+					}
+					txmValidate = true;
+				}
+				//金额
+				function validateNum1(obj){
+					var smjObj = document.getElementById('sdmMoney');
+					var mytipsObj = document.getElementById('mytips');
+					if(isNaN(obj.value)){
+						mytipsObj.innerHTML = "请输入数字！";
+						obj.value='';
+						jineValidate = false;
+						return false;
+					}
+					else if(obj.value<0 || !obj.value){
+						mytipsObj.innerHTML = "金额必须大于0";
+						obj.value='';
+						jineValidate = false;
+						return false;
+					}
+					/*else if(obj.value.toString().split(".")[1].length>2){
+						mytipsObj.innerHTML = "请精确到分！";
+						obj.value='';
+						jineValidate = false;
+						return false;
+					}*/
+					else{
+						mytipsObj.innerHTML = "";
+					}
+					jineValidate = true;
+				}
+			
+				//获取省市区
+				function getAreaList(obj, type){
+					var url="<{link app=b2c ctl=site_lifecost act=getAreaList}>";
+					var itemName = document.getElementById('itemName').value;
+					new Request({
+						url:url,
+						method:'post',
+						data:{
+							'id':$(obj).get('value'),
+							'itemName':itemName,
+							'type':type
+						},
+						onComplete: function(rs){
+							if(type==1){
+								//初始化
+								var ctObj = document.getElementById('ctid');
+								var strObj = document.getElementById('str');
+								var f1Obj = document.getElementById('f1');
+								var f2Obj = document.getElementById('f2');
+								if(rs!='error'){
+									f2Obj.innerHTML = rs;
+								}else{
+									f2Obj.innerHTML = '';
+								}
+							}
+							else if(type==2){
+								var czjgObj = document.getElementById('f3');
+								if(rs!='error'){
+									czjgObj.innerHTML = '';
+									czjgObj.innerHTML = rs;
+								}
+							}
+						}
+					}).send(); 
+					return false;
+				}
+
+				function get_costddd(id){
+					var url="<{link app=b2c ctl=site_lifecost act=getcost}>";
+					new Request({
+						url:url,
+						method:'post',
+						data:{
+							'sdmArea':$('sdmArea').get('value'),
+							'sdmMoney':$('sdmMoney').get('value'),
+							'sdmChareNum':$('sdmChareNum').get('value'),
+							'sdmChareType':$('sdmChareType').get('value'),
+							'sdmCompany':$('sdmCompany').get('value'),
+							'sdmSubject':$('sdmSubject').get('value')
+						},
+						onComplete: function(rs){
+							window.location.href="<{link app=b2c ctl=site_lifecost act=getcost}>";
+						}
+					}).send(); 
+					return false;
+				}
+				
+				
+				var mouseEnterFunction = function(){
+					$(this).addClass('active');
+				}
+				var mouseLeaveFunction = function(){
+					$(this).removeClass('active');
+				}
+
+				var clickFunction = function(){
+					$$('#accordion li').removeClass('active');
+					$(this).addClass('active');
+				}
+				window.addEvent('domready', function() {
+					$$('#accordion li').addEvent('click', clickFunction);
+				});
+			--></script>
+			<div style="margin-top:50px; position:relative;" class="jf_txxx_right">
+                <div style="display: block;" id="billDetailExample" class="jf_txxx_right">
+		            <div id="modelTitle" class="title_n"><{if $type=="water"}>水费<{/if}><{if $type=="electricity"}>电费<{/if}><{if $type=="gas"}>燃气费<{/if}>付费指南</div>
+		            <div style="padding-bottom:6px;position:relative;" class="check_styles">
+		                <div id="chargeOrgBill" class="check_picture">
+							<a href="<{$image_src|storager:'s'}>" target="_balnk" class="thickbox">
+								<img src="<{$image_src|storager:'s'}>" alt="此图片可在后台配置" width="223" height="116" id="billChargeImg">
+							</a>
+						</div>
+		           	    <div class="check_fd_icon">
+							<a href="<{$image_src|storager:'s'}>" id="billDetailHref" style="display: block;" class="thickbox"></a>
+						</div>
+		           	</div>
+                </div>
+            </div>			
+	</div>
+	<div>
+		<!-- xhk 2015/11/05 配置缴费规则 -->
+		<div class="payment_rules" style="margin:20px auto;width: 795px;">
+			<{if $type=="water"}><{$water_rules.value|default:'水费缴费规则（可在后台配置）'}><{/if}>
+			<{if $type=="electricity"}><{$electricity_rules.value|default:'电费缴费规则（可在后台配置）'}><{/if}>
+			<{if $type=="gas"}><{$gas_rules.value|default:'燃气费缴费规则（可在后台配置）'}><{/if}>
+		</div>
+	</div>
+</div>
+
+
+
+
+<div class="bianzhifuContent-right">
+	<div style="margin:50px 30px 50px 30px;">
+		<h1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;根据国家监管部门对第三方充值业务加强监管的有关要求，悠福网惠生活频道（外服的公共事业费、手机话费代为缴付业务）功能暂时关闭，后续将根据国家监管部门的合规性要求，适时重启，对此给用户带来的不便敬请理解.</h1>
+	</div>
+</div>

@@ -1,0 +1,59 @@
+<style>
+	.zzright_list .fd_ye .fd_one{font-size:14px;width:8%}
+	.show_list .list_head{line-height:30px}
+	.show_list .list_con{line-height:30px}
+</style>
+<div class="list" style="height: 82%;" id="list">
+    <div class="fd_ye">
+        <div style="padding-top: 15px;">
+            <font style="font-family: 微软雅黑,宋体;font-size: 15px;font-weight: 700;">发放记录</font>
+        </div>
+    </div>
+    <div class="fd_ye">
+        <div class="fd_one" style="width: 60px;margin-right:5px;">发放名目</div>
+        <div class="fd_one" style="width: 10%;margin-right:5px;"">
+            <input  type="text" style="width: 80px; border: 1px solid #a9a9a9;"/>
+        </div>
+        <div class="fd_one" style="width: 60px;margin-right:5px;">发放单号</div>
+        <div class="fd_one" style="width: 11%;margin-right:5px;"">
+            <input  type="text" style="width: 80px; border: 1px solid #a9a9a9;"/>
+        </div>
+
+        <div class="fd_one" style="width: 40px;margin-right:5px;">状  态</div>
+        <div class="fd_one" style="width: 16%;margin-right:5px;" >
+            <select  style="width:120px;font-family: 微软雅黑,宋体;font-size: 12px;">
+                <option>请选择</option>
+            </select>
+        </div>
+        <div class="fd_one" style="width: 60px;margin-right:5px;">创建时间</div>
+        <div class="fd_one" style="width: 23%;margin-right:5px;"">
+            <input type="text" style="border: 1px solid #a9a9a9; width:80px"/>-<input type="text" style="border: 1px solid #a9a9a9; width:80px"/>
+        </div>
+        <div class="fd_one" style="width: 60px;">
+            <input type="button" value="搜索" style="background: #c40001;padding: 0 15px;border: none;display: inline-block;zoom: 1;overflow: visible;color: #FFFFFF;cursor: pointer;vertical-align: middle;height: 24px;line-height: 24px;border-radius: 5px;font-family: 微软雅黑,宋体;font-size: 14px;"/>
+        </div>
+    </div>
+    <div class="show_list">
+        <div class="list_head" style="width: 93%;margin-left: 26px">
+            <div class="head_font" style="width: 13%;">发放单号</div>
+            <div class="head_font" style="width: 13%;">名目</div>
+            <div class="head_font" style="width: 13%;">创建时间</div>
+            <div class="head_font" style="width: 13%;">制单人</div>
+            <div class="head_font" style="width: 13%;">总金额(福点)</div>
+            <div class="head_font" style="width: 13%;">审核人</div>
+            <div class="head_font" style="width: 13%;">状态</div>
+        </div>
+        <{foreach from=$sfsc_order item=item}>
+            <div class="list_con" style="width: 93%;margin-left: 26px">
+                <div class="head_font" style="width: 13%;"><{$item.ORDER_NO}></div>
+                <div class="head_font" style="width: 13%;"><{$item.GRANT_NAME}></div>
+                <div class="head_font" style="width: 13%;"><{$item.ADD_TIME}></div>
+                <div class="head_font" style="width: 13%;"><{$item.ADD_USER_NAME}></div>
+                <div class="head_font" style="width: 13%;"><{$item.PAY_AMOUNT}></div>
+                <div class="head_font" style="width: 13%;"><{$item.CHECK_USER_NAME}></div>
+                <div class="head_font" style="width: 13%;"><{$item.EXEC_TYPE}></div>
+            </div>
+        <{/foreach}>
+
+    </div>
+</div>

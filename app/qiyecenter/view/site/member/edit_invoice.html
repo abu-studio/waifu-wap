@@ -1,0 +1,60 @@
+<input type="hidden" name="invoice_id" value="<{$data.invoice_id}>">
+<input type="hidden" name="invoice_type" value="<{$data.invoice_type}>">
+<{if $data.invoice_type == 'com'}>
+    <div class="division" style="border:none; border-bottom:1px dashed #ddd">
+        <table cellpadding="0" class="forform" cellspacing="0" border="0">
+            <tr>
+                <th><{t}>发票抬头：<{/t}></th>
+                <td><{input class="inputstyle" name="invoice_title" type="text" required="true" id="invoice_title" size="30" vtype="required" value=$data.invoice_title|escape:'html'}></td>
+            </tr>
+        </table>
+    </div>
+    <div class="member-editwrap"><span class="float-span" >
+                            <{button class="btn submit-btn" type="submit" rel="_request" label=$___b2c="保存"|t:'b2c'}></span>
+        <span class="float-span" style="float:left; margin-left:8px">
+                            <{button id="unset" type="button" label=$___b2c="取消"|t:'b2c'}></span>
+    </div>
+<{else}>
+<div class="FormWrap">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="liststyle data" style="border:none">
+        <col class="span-4 bg-gray"/>
+        <col class="span-auto"/>
+        <tr>
+            <th><{t}>单位名称：<{/t}></th>
+            <td><{input class="inputstyle" name="company_name" type="text" required="true" id="company_name" size="30"  maxlength="20" vtype="required" value=$data.company_name|escape:'html'}><span style="padding-left:10px;color: #777777;">字符串长度(<=20)</span></td>
+        </tr>
+        <tr>
+            <th><{t}>纳税人识别号：<{/t}></th>
+            <td><{input class="inputstyle" vtype="number" required="true" name="vat_number" size="25"  maxlength="20" value=$data.vat_number|escape:'html'}><span style="padding-left:10px;color: #777777;">字符串长度(<=20)</span></td>
+            <td style="padding:8px 0 0 0"><input type="hidden" vtype="number" /></td>
+        </tr>
+        <tr>
+            <th><{t}>注册地址：<{/t}></th>
+            <td><{input class="inputstyle" name="vat_addr" type="text" required="true" id="vat_addr" size="30"  maxlength="20" vtype="required" value=$data.vat_addr|escape:'html'}><span style="padding-left:10px;color: #777777;">字符串长度(<=20)</span></td>
+        </tr>
+        <tr>
+            <th><{t}>注册电话：<{/t}></th>
+            <td><{input class="inputstyle"  name="vat_tel" vtype="number&&mobile" id="vat_tel" size="15"  maxlength="11" value=$data.vat_tel|escape:'html'}><span style="padding-left:10px;color: #777777;">字符串长度(<=11)</span></td>
+            <td style="padding:8px 0 0 0"><input type="hidden" vtype="mobile_or_phone" /></td>
+        </tr>
+        <tr>
+            <th><{t}>开户银行：<{/t}></th>
+            <td><{input class="inputstyle" name="vat_bank" type="text" required="true" id="vat_bank" size="30"  maxlength="20" vtype="required" value=$data.vat_bank|escape:'html'}><span style="padding-left:10px;color: #777777;">字符串长度(<=20)</span></td>
+        </tr>
+        <tr>
+            <th><{t}>银行账号：<{/t}>&nbsp;</th>
+            <td><{input class="inputstyle" vtype="number" required="true" name="bank_number" size="30"  maxlength="20" value=$data.bank_number|escape:'html'}><span style="padding-left:10px;color: #777777;">字符串长度(<=20)</span></td>
+            <td style="padding:8px 0 0 0"><input type="hidden" vtype="number" /></td>
+        </tr>
+        <tr>
+            <th></th>
+            <td>
+                <{button class="submit-btn" type="submit" rel="_request" label=$___b2c="提交"|t:'b2c'}>
+                <button  onclick="$('addr_div').setStyle('display','none');" class="btn" type="button"> <span><span> <{t}>取消<{/t}></span></span> </button>
+            </td>
+        </tr>
+    </table>
+</div>
+<{/if}>
+
+

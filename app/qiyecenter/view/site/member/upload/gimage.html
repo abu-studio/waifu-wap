@@ -1,0 +1,6 @@
+<{if $gimage.image_id }>
+    <div class="gpic<{if $goods.image_default_id==$gimage.image_id}> current<{/if}>" image_id="<{$gimage.image_id}>">
+        <img src="<{$gimage.image_src}>" width="88" height="88" sn='_img_<{$gimage.image_id}>'/>
+    </div>
+    <input name="<{$upload_type}>" value="<{$gimage.image_id}>" soucre="<{$gimage.image_id|storager:'b'}>" bigPic="<{$gimage.image_id|storager:'b'}>" type="hidden">
+<{/if}>

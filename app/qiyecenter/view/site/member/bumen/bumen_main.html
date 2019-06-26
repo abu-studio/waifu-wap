@@ -1,0 +1,142 @@
+<div class="fafuli_con">
+    <div class="fafuli_tit">
+        <p class="fafuli_titf">部门管理</p>
+    </div>
+    <div style="height:500px">
+        <div class="left_tree">
+            <{$qiyemenu}>
+        </div>
+        <div class="zzright_list">
+            <input type="hidden" id="customer_no" value="<{$customer_no}>">
+            <div class="title">
+                <div class="unsel_tit" id="totab_yuangong" onclick="totab_qiye(this.id)">员工</div>
+               <!--  <div class="unsel_tit" id="totab_zhanghu" onclick="totab_qiye(this.id)">福点账户</div>
+                <div class="unsel_tit" id="totab_order" onclick="totab_qiye(this.id)">福利订单</div> -->
+                <div class="sel_tit" id="totab_setting" onclick="totab_qiye(this.id)">部门设置</div>
+            </div>
+            <div class="list" style="height: 82%;" id="list">
+
+
+
+                <div class="list" style="display: none;">
+                    <div class="fd_ye">
+                        <div class="center">
+                            <ul>
+                                <li style="border-bottom-width: 3px; border-bottom-style: solid; border-bottom-color: rgb(28, 99, 161); color: rgb(28, 99, 161);" id="qiye_setting" onclick="tab_qiyesetting(this.id)">企业设置</li>
+                                <li id="qiye_stylesetting" onclick="tab_qiyesetting(this.id)">风格设置</li>
+                                <li id="qiye_guyuansetting" onclick="tab_qiyesetting(this.id)">雇员访问设置</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="list" style="height: 82%;" id="list_nei">
+                    <div class="fd_ye" style="height: auto;">
+                        <div style="padding-top: 15px; font-size: 14px;">
+                            部门层级
+                        </div>
+                        <div style="padding-top: 15px; font-size: 14px;">
+                            <input type="text"  disabled='disabled' style="width: 160px; border: 1px solid #000000;" name="" value="一级">
+                        </div>
+                    </div>
+                    <div class="fd_ye" style="height: auto;">
+                        <div style="padding-top: 15px; font-size: 14px;">
+                            部门名称
+                        </div>
+                        <div style="padding-top: 15px; font-size: 14px;">
+                            <input type="text" style="width: 160px; border: 1px solid #000000;" name="" value="销售部">
+                        </div>
+                    </div>
+
+                 <!--    <div class="fd_ye" style="height: auto;">
+                        <div style="padding-top: 15px; font-size: 13px;">
+                            创建部门账户
+                        </div>
+                        <div style="padding-top: 5px; font-size: 14px;">
+                            <input type="checkbox">是
+                        </div>
+                    </div> -->
+
+
+              <!--       <div class="fd_ye" style="height: auto;">
+                        <div style="padding-top: 15px; font-size: 13px; font-weight: bold;">
+                            管理员列表
+                        </div>
+                    </div>
+
+                    <div class="show_list" style="margin-top: 20px;">
+                        <div class="list_head" style="width: 93%;margin-left: 26px">
+                            <div class="head_font" style="width: 16%;">帐号名称</div>
+                            <div class="head_font" style="width: 16%;">姓名</div>
+                            <div class="head_font" style="width: 16%;">手机号</div>
+                            <div class="head_font" style="width: 16%;">角色</div>
+                            <div class="head_font" style="width: 16%;">备注</div>
+                            <div class="head_font" style="width: 16%;">操作</div>
+                        </div>
+                        <div class="list_con" style="width: 93%;margin-left: 26px">
+                            <div class="head_font" style="width: 16%;">收入</div>
+                            <div class="head_font" style="width: 16%;">企业账户</div>
+                            <div class="head_font" style="width: 16%;">15/04/10</div>
+                            <div class="head_font" style="width: 16%;">充值</div>
+                            <div class="head_font" style="width: 16%;">1000</div>
+                            <div class="head_font" style="width: 16%;">
+                                <span class="edit">编辑</span> <span class="edit">撤销</span>
+                            </div>
+                        </div>
+                        <div class="list_con" style="width: 93%;margin-left: 26px; border-bottom:0px;">
+                            <div class="head_font" style="width: 16%; color:#6896C0;">添加</div>
+                        </div>
+                    </div> -->
+                    <div class="fd_ye" style="margin-top:10px;height: auto; border-bottom: 0px;">
+                        <input type="submit" style="width: 100px; background:#c40001; font-size:14px; font-weight: bold; color: #ffffff; height: 30px;border-radius: 5px;" rel="_request" value="提交">
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    window.addEvent('domready',function(){
+        /*
+        $("getyuangongsearch").addEvent("click",function(){
+            var getyuangongsearch_id_action = $('getyuangongsearch_id').action;
+            var postArgs = $('getyuangongsearch_id').toQueryString();
+
+            new Request.HTML({
+                url:getyuangongsearch_id_action,
+                update:$('list'),
+                method:'POST',
+                data:postArgs,
+                onComplete:function(res){
+                    $('list').show();
+                }
+            }).send();
+        });
+        */
+    });
+
+    function totab_qiye(id){
+        $(id).getParent('div').getElements("div").each(function(el){
+            if(el.hasClass("sel_tit")){
+                el.removeClass("sel_tit");
+                el.addClass("unsel_tit");
+            }
+
+        });
+
+        $(id).addClass('sel_tit');
+
+        new Request.HTML({
+            url:'<{link app=qiyecenter ctl=site_member act=getbumentable}>',
+            update:$('list'),
+            method:'POST',
+            data:'type='+encodeURIComponent(id)+'&customer_no='+$('customer_no').get("value"),
+            onComplete:function(res){
+                $('list').show();
+            }
+        }).send();
+    }
+
+</script>

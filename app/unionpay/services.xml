@@ -1,0 +1,18 @@
+<services>	
+    <service id="ectools_payment.ectools_mdl_payment_cfgs" optname="支付插件列表">
+		<class>unionpay_payment_plugin_unionpay</class>
+	</service>
+
+	<service id="ectools_refund.ectools_mdl_refund_cfgs" optname="退款插件列表">
+		<class>unionpay_payment_plugin_unionpay</class>
+	</service>
+
+	<service id="unionpay_tools.log">
+		<class>unionpay_tools_logs</class>
+	</service>
+
+	<service id="desktop_finder.unionpay_mdl_logs">
+		<class>unionpay_finder_logs</class>
+	</service>
+	
+</services>

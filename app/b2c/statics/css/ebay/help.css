@@ -1,0 +1,196 @@
+
+body {
+    font-family: '微软雅黑', 'Microsoft YaHei', Arial, Helvetica, sans-serif;
+}
+h2,div,body,html,p{
+	margin:0;
+	padding:0;
+}
+.cf {
+    clear: both;
+    zoom: 1
+}
+.cf:before,
+.cf:after {
+    content: "";
+    display: block
+}
+.cf:after {
+    clear: both
+}
+a,
+a:active {
+    border: 0;
+    outline: none;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+#wrapper{
+	width: 1000px;
+	margin:97px auto 131px;
+}
+.mainContant {
+    width: 960px;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    margin: 0 auto;
+    padding:0 20px;
+}
+.useExTit {
+    display: block;
+    font-size: 24px;
+    color: #0075c9;
+    font-weight: normal;
+    padding: 10px 0 20px;
+    margin-top: 20px;
+}
+.useExCatelog {
+    margin-top: 30px;
+    padding-bottom: 60px;
+    padding-left: 10px;
+}
+.useExCatelog .tit {
+    display: block;
+    width: 120px;
+    height: 32px;
+    line-height: 32px;
+    color: #4c4c4c;
+    background-color: #f6f6f6;
+    font-size: 18px;
+    font-weight: normal;
+    text-align: center;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+}
+
+.useExCatelog .pcate {
+    margin-top: 23px;
+}
+
+.useExCatelog .cate {
+    display: block;
+    float: left;
+    height: 20px;
+    line-height: 20px;
+    margin-right: 48px;
+}
+
+.useExCatelog .cate i {
+    display: block;
+    float: left;
+    width: 19px;
+    height: 19px;
+    line-height: 19px;
+    color: #fff;
+    text-align: center;
+    font-size: 16px;
+    font-style: normal;
+    background: url(../images/round.png) no-repeat;
+    margin-top: 1px;
+}
+
+.useExCatelog .cate a {
+    display: block;
+    float: left;
+    color: #0075c9;
+    font-size: 18px;
+    margin-left: 5px;
+}
+
+.useExCatelog .cate .arw {
+    display: block;
+    float: left;
+    margin-left: 75px;
+    margin-top: 4px;
+}
+
+.useExCateDl {
+    padding: 48px 0;
+    border-top: 1px dashed #ddd;
+}
+
+.useExCateDl .tit {
+    background-color: #0075c9;
+    color: #fff;
+    font-size: 18px;
+    font-weight: normal;
+    padding: 6px 40px;
+    line-height: 30px;
+    text-align: center;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    border-radius: 30px;
+    cursor: default;
+}
+
+.useExCateDl .tit i {
+    font-style: normal;
+    font-size: 16px;
+    padding-right: 5px;
+}
+.useExCateDl img{
+	margin-left: 17px;
+	margin-top: 50px;
+}
+.useExCateDl .txt {
+    font-size: 13px;
+    line-height: 20px;
+}
+
+.useExCateDl .txtBg {
+    padding: 17px 14px;
+    height: 74px;
+    line-height: 20px;
+    font-size: 14px;
+    background-color: #fafafa;
+    border:1px solid #f2f2f2;
+    margin-left: 30px;
+    margin-bottom: 10px;
+}
+
+.useExCateDl .q {
+    font-weight: bold;
+    color: #0075c9;
+    line-height: 22px;
+    margin-bottom: 5px;
+    font-size: 16px;
+}
+.useExCateDl .txtBg i {
+    display: block;
+    float: left;
+    width: 22px;
+    height: 22px;
+    font-size: 14px;
+    line-height: 22px;
+    text-align: center;
+    color: #fff;
+    font-style: normal;
+    background-color: #0075c9;
+    margin-right: 10px;
+}
+
+.useExCateDl .a span {
+    display: block;
+    float: left;
+    font-size: 14px;
+    color: #808080;
+    width: 860px;
+}
+
+.uxMb25 {
+    margin-bottom: 25px;
+}
+
+.uxMb20 {
+    margin-bottom: 20px;
+}
+
+.imgBlock {
+    display: block;
+}

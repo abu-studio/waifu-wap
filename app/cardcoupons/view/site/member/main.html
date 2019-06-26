@@ -1,0 +1,70 @@
+<div class="personInfo" style="min-height:510px;">
+    <div class="personInfo-banner">
+
+    </div>
+    <script>
+        var mouseEnterFunction = function(){
+            $(this).addClass('active');
+        }
+        var mouseLeaveFunction = function(){
+            $(this).removeClass('active');
+        }
+
+        var clickFunction = function(){
+            $$('#accordion li').removeClass('active');
+            $(this).addClass('active');
+        }
+        window.addEvent('domready', function() {
+            $$('#accordion li').addEvent('mouseenter', mouseEnterFunction);
+            $$('#accordion li').addEvent('mouseleave', mouseLeaveFunction);
+            $$('#accordion li').addEvent('click', clickFunction);
+        });
+    </script>
+    <div class="personInfo-content">
+        <div class="u_left box_border">
+            <div class="u_left_h">用户中心</div>
+            <div class="u_left_ct">
+                <ul class="menu_1">
+                    <li class="menu_li_1">
+                        <a class="menu_li_a1 active" href="<{link app=cardcoupons ctl=site_member act=orders}>">我的订单</a>
+                        <ul class="menu_2">
+                            <li class="menu_li_2">
+                                <a href="<{link app=cardcoupons ctl=site_member act=return_list }>" class="menu_li_a2">退货管理</a>
+                            </li>
+                        </ul>
+                        <ul class="menu_2">
+                            <li class="menu_li_2">
+                                <a href="<{link app=cardcoupons ctl=site_cards act=showcard arg=$card_id }> " class="menu_li_a2">继续兑换</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <script type="text/javascript">
+            window.addEvent('domready', function() {
+                $$('.menu_li_a1').addEvent('click', function(){
+                    $$('.menu_li_a1').removeClass('active');
+                    $$(".menu_li_2 .menu_li_a2").removeClass('active');
+                    $(this).addClass('active');
+                    var el = $(this).getNext(".menu_2");
+                    if (el) {
+                        var val = el.getStyle("display");
+                        if (val == "none") {
+                            el.setStyle("display", "block");
+                        } else {
+                            el.setStyle("display", "none");
+                        }
+                    }
+                });
+                $$('.menu_li_a2').addEvent('click', function() {
+                    $$('.menu_li_a1').removeClass('active');
+                    $$(".menu_li_2 .menu_li_a2").removeClass('active');
+                    $(this).addClass('active');
+                });
+            });
+        </script>
+        <{include file=$_PAGE_ app=$app_id}>
+    </div>
+    <div class="clearfix"></div>
+</div>

@@ -1,0 +1,14 @@
+<h3 class="head-title"><{t}>基本设置 <{/t}></h3>
+<form action="index.php?app=b2c&ctl=admin_apply&act=index" method="post" class="tableform">
+<input type="hidden" name="jiaofei[id]" value="<{$jiaofei.id}>"/>
+<input type="hidden" name="jiaofei_set" value="jiaofei_set"/>
+	<table>
+		<tr>
+			<th>水电煤默认商品设置:</th>
+			<td><{input type="object" vtype="required" object="goods@b2c" value=$jiaofei.value name="jiaofei[value]" textcol="name" cols="name" filter=$goodsselect_filter}> &nbsp;</td>
+		</tr>
+	</table>
+	<div class="table-action">
+  <{button label=$___image="保存"|t:'image' class="btn-primary" type="submit"}>
+	</div>
+</form>

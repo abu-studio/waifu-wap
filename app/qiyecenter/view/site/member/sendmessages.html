@@ -1,0 +1,144 @@
+<{capture name="header"}>
+    <style type="text/css">
+        .r_list{border-left:1px solid #eee;border-right: 1px solid #eee; width: 100%; float: left;}
+        .list_head{height: 35px; width: 100%; background:#f1f1f1;border-top:1px solid #eee;}
+        .head_font{text-align:center;float: left;font-size:12px;height: 35px; line-height: 35px; overflow:hidden;}
+        .list_con{width: 100%; height: 35px; border-bottom: 1px solid #eee;}
+        .show_fenye{height:50px;background:white; width: 100%; float: left;}
+        .feny{float: left; margin-top:20px;height:50px;margin-left:21px;}
+        .page_link{display: inline-block; width: 15px;  height: 28px;  line-height: 28px;  padding: 0px 8px;  border: 1px solid #eee;  margin: 0 2px;  text-align: center;}
+        .show_fenye .feny a.on{background: #c40001; color: #fff; border-color: #c40001;}
+        .SM_main{width: 100%;height: auto;float: left;}
+        .SM_row{width: 100%;height: 50px; float: left;}
+        .SM_block{width: 49%; height: 50px;line-height: 50px; text-align: right; border-top: 1px solid black; float: left;border-left: 1px solid black; float: left;}
+        .SM_colour{background-color:rgb(190,190,190);}
+        .SM_block_right{border-right: 1px solid black;  text-align: left;padding-left: 5px;}
+        .SM_block_bottom{border-bottom: 1px solid black; height: 47px;}
+    </style>
+<{/capture}>
+
+
+<div style="width: 100%; height: auto;">
+    <div style="float: left; width: 100%; height: 50px; line-height:50px; text-align: center; font-size: 16px; font-weight: bold;">发送短信</div>
+    <div style="width: 90%; float: left; height: 50px; line-height: 50px; margin-left: 55px;">
+        <div style="width:150px; float: right; height: 50px; line-height: 50px;">
+            <input type="button" value="发送" id="SM_sendmessage"  style="margin-left: 10px; display: inline-block;zoom: 1;color: rgb(255, 255, 255);font-size: 12px;font-family: 微软雅黑;cursor: pointer;vertical-align: middle;height: 24px;line-height: 24px;background: rgb(196, 0, 1);padding: 0px 15px;border-width: initial;border-style: none;border-color: initial;border-image: initial;overflow: visible;text-decoration: none;border-radius: 5px;">
+        </div>
+        <div style="width:80px; float: right; height: 50px; line-height: 50px;">
+            <input type="button" value="保存" id="SM_save"  style="margin-left: 10px; display: inline-block;zoom: 1;color: rgb(255, 255, 255);font-size: 12px;font-family: 微软雅黑;cursor: pointer;vertical-align: middle;height: 24px;line-height: 24px;background: rgb(196, 0, 1);padding: 0px 15px;border-width: initial;border-style: none;border-color: initial;border-image: initial;overflow: visible;text-decoration: none;border-radius: 5px;">
+        </div>
+    </div>
+    <div class="SM_main">
+        <input type="hidden" name="REC_ACT_TYPE" id="REC_ACT_TYPE" value="<{$sfscdata.REC_ACT_TYPE}>">
+        <input type="hidden" name="SEND_MEG_ID" id="SEND_MEG_ID" value="<{$sfscdata.SEND_MEG_ID}>">
+        <input type="hidden" name="SEND_METHOD" id="SEND_METHOD" value="1">
+        <input type="hidden" name="ORDER_ID" id="ORDER_ID" value="<{$ORDER_ID}>">
+        <div class="SM_row">
+            <div class="SM_block SM_colour">参数格式：</div>
+            <div class="SM_block SM_block_right">
+                {name}雇员姓名或者雇员编号,
+                {price}发放金额
+            </div>
+        </div>
+        <div class="SM_row">
+            <div class="SM_block SM_colour">短信示例：</div>
+            <div class="SM_block SM_block_right">
+                亲爱哒{name}，鉴于工作能力突出，特奖励{price}以资鼓励。
+            </div>
+        </div>
+        <div class="SM_row">
+            <div class="SM_block SM_colour">内容：</div>
+            <div class="SM_block SM_block_right">
+                <textarea rows="3" cols="75" id="CONTENTS"><{$sfscdata.CONTENTS}></textarea>
+            </div>
+        </div>
+        <div class="SM_row">
+            <div class="SM_block SM_colour SM_block_bottom">发送类型：</div>
+            <div class="SM_block SM_block_right SM_block_bottom">
+                <input type="radio" name="" value="" checked>短信
+            </div>
+        </div>
+    </div>
+    <div class="r_list" id="HUMBAS_LIST">
+        <div class="list_head">
+            <div class="head_font" style="width: 10%;">
+            <input type="checkbox" onclick="allcheck(this)">
+            操作</div>
+            <div class="head_font" style="width: 15%;">接受人ID</div>
+            <div class="head_font" style="width: 10%;">姓名</div>
+            <div class="head_font" style="width: 15%;">身份证号</div>
+            <div class="head_font" style="width: 40%;">手机号</div>
+            <div class="head_font" style="width: 10%;">邮箱</div>
+        </div>
+        <{foreach from=$sfscdata.EMPLIST item=item}>
+            <div class="list_con">
+                <div class="head_font" style="width: 10%;"><input type="checkbox" name="HUMBAS_NO" value="<{$item.HUMBAS_NO}>" /></div>
+                <div class="head_font" style="width: 15%;"><{$item.REC_ID}></div>
+                <div class="head_font" style="width: 10%;"><{$item.NAME}></div>
+                <div class="head_font" style="width: 15%;"><{$item.ID}></div>
+                <div class="head_font" style="width: 40%;"><{$item.MP}></div>
+                <div class="head_font" style="width: 10%;"><{$item.MAIL}></div>
+            </div>
+        <{/foreach}>
+    </div>
+    <input type='hidden' id='current_page' value='0' />
+    <div class="show_fenye">
+        <div class="feny" id="page_navigation">
+        </div>
+    </div>
+</div>
+
+
+<{capture name="footbar"}>
+<div class="table-action">
+    <{button id="dlg_ok-{$sid}" class="btn btn-primary" onclick="javascript:window.opener=null;window.open('','_self');window.close();" label=$___ectools="确定"|t:'ectools'}>
+    <{button id="dlg_cancel-{$sid}" class="btn btn-secondary" label=$___ectools="取消"|t:'ectools' onclick="window.close();"}>
+</div>
+<{/capture}>
+
+<script type="text/javascript">
+    function allcheck(stats) {
+        var input = document.getElementsByTagName("input");
+        for (var i=0;i<input.length ;i++ )
+        {
+            if(input[i].type=="checkbox"){
+                input[i].checked = stats.checked;
+            }
+        }
+        
+    }
+</script>
+
+<script type="text/javascript">
+    //MessageBox.show("请选择要删除的数据！");
+    window.addEvent('domready',function(){
+        $('SM_sendmessage').addEvent('click',function(){
+            ////ORDER_ID、SEND_METHOD、REC_ACT_TYPE
+            var url = '<{link app=qiyecenter ctl=site_member act=sendmessageaction}>';
+            var ORDER_ID = $("ORDER_ID").getValue();
+            var SEND_METHOD = $("SEND_METHOD").getValue();
+            var REC_ACT_TYPE = $("REC_ACT_TYPE").getValue();
+            new Request.HTML({
+                url:url,
+                method:'post',
+                data:'ORDER_ID='+ORDER_ID+'&SEND_METHOD='+SEND_METHOD+'&REC_ACT_TYPE='+REC_ACT_TYPE,
+            }).send();
+
+        });
+        //保存短信内容
+        $('SM_save').addEvent('click',function(){
+            //ORDER_ID,SEND_MEG_ID,SEND_TYPE,CONTENTS
+            var url = '<{link app=qiyecenter ctl=site_member act=save_message}>';
+            var ORDER_ID = $("ORDER_ID").getValue();
+            var SEND_MEG_ID = $("SEND_MEG_ID").getValue();
+            var SEND_TYPE = '0';
+            var CONTENTS = $("CONTENTS").getValue();
+            new Request.HTML({
+                url:url,
+                method:'post',
+                data:'ORDER_ID='+ORDER_ID+'&SEND_MEG_ID='+SEND_MEG_ID+'&SEND_TYPE='+SEND_TYPE+'&CONTENTS='+CONTENTS,
+            }).send();
+
+        });
+    });
+</script>

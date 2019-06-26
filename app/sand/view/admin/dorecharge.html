@@ -1,0 +1,63 @@
+<div class="division">
+<form action="index.php?app=sand&ctl=admin_sandorder&act=torecharge" id="member-form" method="POST" enctype="multipart/form-data" encoding="multipart/form-data">
+<table>
+	<input type="hidden" name="log_id" value="<{$data.log_id}>"/>
+	<tr style="height:50px;line-height:50px">
+		<td width="100px" align="right">充值金额：</td>
+		<td><span style="color: red;padding: 0px 5px;font-size: 14px;"><{$data.amount|cur}></span></td>
+	</tr>
+	<tr>
+		<td align="right">充值备注：</td>
+		<td>
+			<textarea cols="50" rows="5" name="mark_text"></textarea>
+		</td>
+	</tr>
+</table>
+</form>
+<div class="table-action">
+	<button class="btn" id="member-form-submit"><span><span><{t}>确定<{/t}></span></span></button>
+</div>
+</div>
+
+<script>
+
+
+(function(){
+	var _form = $('member-form');
+	var savebtn =$('member-form-submit');
+	
+	savebtn.addEvent('click',function(){
+		_form.fireEvent('submit',{stop:$empty});
+	});
+	
+	_form.store('target',{
+		onComplete:function(response){
+					var _dialogIns = _form.getParent('.dialog').retrieve('instance');
+					_dialogIns.close();
+			}	
+	});
+	
+})();
+
+
+		
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

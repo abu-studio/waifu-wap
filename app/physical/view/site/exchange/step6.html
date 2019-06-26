@@ -1,0 +1,40 @@
+<div class="top">
+	<div class="left">
+		预约套餐：<a href="javascript:void(0);"><{$package_info.package_name}></a>
+	</div>
+	<div class="right" >
+		<div class="xm_step6">						
+		</div>
+	</div>
+</div>
+<div class="center">
+	<div class="mendian_title">
+		预约成功
+	</div>
+	<div class="mendian_main">
+		<div class="yy_success">
+			<div class="yy_success_img">
+				<img src="<{$res_url}>/image/mdxz_10.png">
+			</div>
+			<div class="yy_success_message">
+				<div class="yy_success_status">恭喜你，体检预约单提交成功</div>
+				<div class="yy_success_status2">悠福寄语：养成良好生活习惯，积极乐观的面对生活，是获取健康的最好方法。</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script>
+function jumpurl(){
+	<{if $type eq 0}>
+	var url = "<{link app='b2c' ctl='site_member' act='orderPayments' args=array($order_id,1,1)}>";
+	<{elseif $type eq 1}>
+	var url = "<{link app='b2c' ctl='site_member' act='orders'}>";
+	<{elseif $type eq 2}>
+	var url = "<{link app='cardcoupons' ctl='site_member' act='orders'}>";
+	<{/if}>
+	window.location.href= url;
+}
+var SiteSplash = setTimeout('jumpurl()',1000);
+</script>

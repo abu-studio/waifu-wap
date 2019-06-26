@@ -1,0 +1,109 @@
+<div class="clb"  style="position: relative; z-index: 10;  background: url('<{$cardinfo.card_style.left.bgcolor1|storager:'b'}>');">
+    <div style="margin:0 auto; width: <{$cardinfo.card_style.top.width}>px; height: <{$cardinfo.card_style.top.height}>px;    background: url('<{$cardinfo.card_style.top.image|storager:'b'}>') 50% 50% no-repeat;"></div>
+    <div class="card_left" style=" width: <{$cardinfo.card_style.left.width}>px; height: <{$cardinfo.card_style.left.height}>px; position: absolute; left: 0px; z-index: -1; background: url('<{$cardinfo.card_style.left.image|storager:'b'}>') 50% 50% no-repeat;"></div>
+    <div class="card_right" style=" width: <{$cardinfo.card_style.right.width}>px; height: <{$cardinfo.card_style.right.height}>px; position: absolute; right: 0px; z-index: -1; background: url('<{$cardinfo.card_style.right.image|storager:'b'}>') 50% 50% no-repeat;"></div>
+
+    <div class="showcard webwidth">
+        <div class="top">
+	<div class="fl">
+		<span class="lb">卡名称/Card Name：</span>
+		<span><{$cardinfo.name}></span>
+	</div>
+	<div class="fr">
+		<span>可选择<span id="cardrules"><{$cardinfo.rules}></span>份</span>
+		<span>Please select<span id="cardrules_en"><{$cardinfo.rules}></span>gift</span>
+	</div>
+</div>
+<div style="margin-bottom:20px;">
+<{if $cardinfo.card_type == "01"}>
+	<div class="title" style="height: 50px;"><!--实物商品--></div>
+	<div class="content clb">
+		<ul>
+			<{foreach from=$cardinfo.item item=item}>
+			<li class="goods-card">
+				<div>
+					<div class="pic">
+						<img src="<{$item.image_default_id|storager:'s'}>"/>
+					</div>
+					<input type="hidden" name="goods[<{$item.goods_id}>]" value="<{$item.goods_id}>">
+					<div class="info">
+						<div class="price" style="display: none;"><{$item.price|cur_odr}></div>
+						<div class="name"><{$item.name}></div>
+					</div>
+				</div>
+			</li>
+			<{/foreach}>
+		</ul>
+	</div>
+
+
+<{elseif $cardinfo.card_type == "02"}>
+	<div class="title" style="height: 50px;"><!--生活服务--></div>
+	<div class="content clb">
+		<ul>
+			<{foreach from=$cardinfo.item item=item}>
+			<li class="fuheka">
+				<div>
+					<div class="pic">
+						<img src="<{$item.image|storager:'s'}>"/>
+					</div>
+					<span style="display: none;" class="fuheka_span"><{$item.package_id}></span>
+					<div class="info">
+						<div class="price" style="display: none;"><{$item.price|cur_odr}></div>
+						<div class="name"><{$item.package_name}></div>
+					</div>
+				</div>
+			</li>
+			<{/foreach}>
+		</ul>
+	</div>
+<{elseif $cardinfo.card_type == "03"}>
+	<{if $cardinfo.item != ""}>
+	<div class="title" style="height: 50px;"><!--实物商品--></div>
+	<div class="content clb">
+		<ul>
+			<{foreach from=$cardinfo.item item=item}>
+			<li class="goods-card">
+				<div>
+					<div class="pic">
+						<img src="<{$item.image_default_id|storager:'s'}>"/>
+					</div>
+					<input type="hidden" name="goods[<{$item.goods_id}>]" value="<{$item.goods_id}>">
+					<div class="info">
+						<div class="price" style="display: none;"><{$item.price|cur_odr}></div>
+						<div class="name"><{$item.name}></div>
+					</div>
+				</div>
+			</li>
+			<{/foreach}>
+		</ul>
+	</div>
+	<{/if}>
+	<{if $cardinfo.itemtype != ""}>
+	<div class="title" style="height: 50px;"><!--生活服务--></div>
+	<div class="content clb">
+		<ul>
+			<{foreach from=$cardinfo.itemtype item=itemtype}>
+			<li class="fuheka">
+				<div>
+					<div class="pic">
+						<img src="<{$itemtype.image|storager:'s'}>"/>
+					</div>
+					<span style="display: none;" class="fuheka_span"><{$itemtype.package_id}></span>
+					<div class="info">
+						<div class="price" style="display: none;"><{$itemtype.price|cur_odr}></div>
+						<div class="name"><{$itemtype.package_name}></div>
+					</div>
+				</div>
+			</li>
+			<{/foreach}>
+
+		</ul>
+	</div>
+	<{/if}>
+<{/if}>
+	<div class="clear"></div>
+</div>
+
+</div>
+</div>

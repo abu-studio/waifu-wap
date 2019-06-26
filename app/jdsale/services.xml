@@ -1,0 +1,14 @@
+<services>
+    <service id="desktop_finder.jdsale_mdl_jdorders">
+        <class>jdsale_finder_jdorders</class>
+    </service>
+	<service id="site_view_helper">   
+		<class>jdsale_view_helper</class>
+	</service>
+	<service id="desktop_finder.jdsale_mdl_balance">
+        <class>jdsale_finder_balance</class>
+    </service>
+	<service id="desktop_finder.jdsale_mdl_afs_log">
+        <class>jdsale_finder_afs_log</class>
+    </service>
+</services>

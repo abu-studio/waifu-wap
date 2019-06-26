@@ -1,0 +1,125 @@
+<{css src="style.css" app="business"}>
+<{script src="dialog.js" app="business" pdir="js"}>
+<{script src="modedialog.js" app="business" pdir="js"}>
+<{script src="load.js" app="business" pdir="js"}>
+<{lang_script src="lang.js" app="desktop"}>
+
+
+<!-- right-->
+<div class="member-main member-main2">
+   <div>
+
+       <div class="title"><{t}>店铺促销列表<{/t}></div>
+
+        <table width="100%" cellpadding="3" cellspacing="0" class="gridlist border-all">
+            <col class="span-3"></col>
+            <col class="span-2"></col>
+            <col class="span-2"></col>
+            <col class="span-2"></col>
+            <col class="span-2"></col>
+            <col class="span-2"></col>
+        <thead>
+        <tr>
+          <th class="first"><{t}>促销名称<{/t}></th>
+          <th><{t}>开始时间<{/t}></th>
+          <th><{t}>结束时间<{/t}></th>
+          <th><{t}>是否开启<{/t}></th>
+          <th><{t}>备注<{/t}></th>
+          <th><{t}>操作<{/t}></th>
+        </tr>
+        </thead>
+        <tbody><{if count($rules)>0}>
+        <{foreach from=$rules item=item key=key}>
+        <tr>
+          <td><{$item.name}></td>
+          <td align="center"><{$item.from_time|date_format:"%Y-%m-%d %H:%M:%S"}></td>   
+          <td align="center"><{$item.to_time|date_format:"%Y-%m-%d %H:%M:%S"}></td>
+          <td align="center"><{if $item.status=='true'}><{t}>是<{/t}><{else}><{t}>否<{/t}><{/if}></td>
+          <td align="center"><{$item.comments}></td>
+		  <td align="center">
+			<a onclick="getruleorderinfo(<{$item.rule_id}>)" ><{t}>编辑<{/t}></a>  <a  class="delete_addr"  onclick='delRuleOrder(<{$item.rule_id}>)'  ><{t}>删除<{/t}></a></td>
+        </tr>
+        <{/foreach}>
+        <{else}>
+        <tr>
+        <td height="30" colspan="5" class="no_bk">
+          <{t}>暂无店铺促销规则<{/t}></td>
+        </tr>
+        <{/if}>
+        
+        </tbody>
+        </table>
+        <{pagers data=$pager}>
+    </div>
+	<div style='height:20px;'>
+    </div>
+   
+     <div style='height:40px;'>
+            <span style="float:left"><span id='add' class="disc add-icon" >
+            <a href="javascript:void(0);" >
+            <{t}>发布促销规则<{/t}></a></span></span>
+            <span class="noticebox"><{t}>在此发布本店铺促销规则。<{/t}></span>
+    </div>
+     <div id='addr_div' style="display:none">
+           <{include file="site/promotion/frame.html" app=business}>
+    </div> 
+</div>
+<script>
+ $("add").addEvent('click',function(e){
+          
+           $('addr_div').setStyle('display','inline');
+           //$('addr_div').setStyle('float','left');
+           
+        });
+		function getruleorderinfo(input){
+			 var update=$('addr_div');
+			 if(request)request.cancel();
+		  
+			 var request = new Request.HTML({
+						url:'<{link app="business" ctl="site_promotion" act="editOrder" }>',
+						update:update,
+						async:false,
+						onComplete:function(res){
+							update.show();
+							$('addr_div').setStyle('display','inline');
+						}                                        
+			 }).post($H({rule_id:input}));
+
+     
+		}
+	function  delRuleOrder(input) {
+  // href="<{link app=business ctl=site_store act=del_storecoupon arg0=$item.cpns_id }>"
+     var  src = '<{link app=business ctl=site_promotion act=deleteOrder}>';
+
+      Ex_Dialog.confirm('<{t}>确认删除此优惠规则？<{/t}>', function(e){
+                if(!e) return;
+                new Request({
+                    url:src,
+                    data:'rule_id='+input,
+                    onComplete:function(re){
+                        if(re ==null)return;
+                        var _success_res = JSON.decode(re);
+
+                        if(_success_res.status =='success') {
+                            Message.success(_success_res.message, function(){
+                                location.reload();
+                            });
+
+                        } else {
+                             Message.error(_success_res.message, function(){
+                                location.reload();
+                            });
+
+                        }
+                    }
+                }).post();
+      });
+
+
+ }
+</script>
+
+
+
+
+

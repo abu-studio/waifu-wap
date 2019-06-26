@@ -1,0 +1,184 @@
+<!--
+<div class="site dis_bl clb">
+    <div class="login_title">
+    <span class="site_l fl">当前位置：<a href="/">首页</a> &gt; <a class="red" href="#">用户登录</a></span> 
+    <span class="site_r fr">如果您尚未注册，请<a href="<{link app=b2c ctl=site_passport act=signup}>" class="lan">注册新用户</a></span> 
+    </div>
+</div>
+-->
+<h3>企业登录<font style="color:#CDCDCD;font-size: 16px;"> Login</font></h3>
+<form action="<{link app=qiyecenter ctl=site_enter act=loginDeal}>" method="post" id="frmLogin">
+  <div class="loginbox login_body" style="border:0px;" <{if $mini_passport}>style="margin-bottom:0;padding-left:5px;padding-right:5px;border:0px;"<{/if}>> 
+  <div>
+    <ul class="login_ul">
+      <li>
+      <label class="login-k"><!--<i>*</i>--><{t}>用户名 <font style="font-size: 14px;color:#CDCDCD;">User Name：</font><{/t}></label>
+      <div class="login-v aling_left">
+        <{input name="uname" class="inputstyle" id="uname" tabindex="1" value=""  class="user_name"}>
+        <!-- <a href="<{$singup_url}>"><{t}>立即注册<{/t}></a> -->
+		<div class="crl_sz">
+			<span id="remind_uname"></span>
+			<span id="mobile_info" style="display: none;"></span>
+		</div>
+      </div>
+      </li>
+      <li>
+      <label class="login-k"><!--<i>*</i>--><{t}>密码 <font style="font-size: 14px;color:#CDCDCD;margin-left: 14px;">Password：</font><{/t}></label>
+      <div class="login-v"><{input name="password" type="password" class="inputstyle password" id="password" tabindex="2"}></div>
+      </li>
+      
+      
+      
+      <li id="pictureCode" style="display: none;">
+      <label class="login-k"><!--<i>*</i>--><{t}>手机验证码<font style="font-size: 14px;color:#CDCDCD;margin-left: 14px;">Verify Code：</font><{/t}></label>
+      <div class="login-v">
+      <{input  vtype="number" size="6" maxlength="6" name="phcode" id="phcode"  style="width:60px;padding:6px 0px 6px 14px;" tabindex="3"}>
+      <{button class="button" type="button" id="gmcId" label="获取手机验证码" onclick="getMobileCode();" }>
+      </div>
+      </li>
+	  <li class="zidong_for">
+		<a href="https://cloudtest.fsgplus.com/wf_efescoCn/UserAction.do?method=forgetPwd&languageType=zh_CN" target="_blank" <{if $mini_passport==1}> target="_blank"<{/if}>><{t}>忘记密码  Forget the password？<{/t}></a>
+	  </li>
+      <li>
+      <div class="login-v login-w">
+        <{button class="login_button" type="submit" label=$__b2c="登录Login" tabindex="4" onclick="return loginDeal();" }>
+        <input type="hidden" name="forward" value="<{$forward}>">
+      </div>
+      </li>
+    </ul>
+	</div>
+	<div class="crl"></div>
+  </div>
+</form>
+<script>
+	//倒计时时间
+	var wait=120;
+
+	//获取手机验证码
+	function getMobileCode(){
+		var url = '<{link app=qiyecenter ctl=site_enter act=getMobileCode}>';
+		var unameObj = document.getElementById("uname");
+		var passwordObj = document.getElementById("password");
+		var gmcIdObj = document.getElementById("gmcId");
+		
+		if(unameObj.value==''){
+			top.Message.error('请输入用户名！');
+			return false;
+		}
+		if(passwordObj.value==''){
+			top.Message.error('请输入密码！');
+			return false;
+		}
+		//设置倒计时
+
+		new Request.JSON({
+            url:url,
+            onComplete:function(response){
+               if(response.code == 1){
+
+                   time(gmcIdObj);
+               }else{
+                   if(response.msg){
+                       top.Message.error(response.msg);
+                       return false;
+                   }else{
+                       top.Message.error("未知错误！");
+                       return false;
+                   }
+
+               }
+            },
+            method:'post',
+            data:{
+                'LOGINNAME':unameObj.value,
+                'PASSWORD':passwordObj.value
+            }
+        }).send();
+
+        return false;
+	}
+
+	//用户登录
+	function loginDeal(){
+		var frmLoginObj = document.getElementById('frmLogin');
+		var unameObj = document.getElementById("uname");
+		var passwordObj = document.getElementById("password");
+		//var phcodeObj = document.getElementById("phcode");
+		if(unameObj.value==''){
+			top.Message.error('请输入用户名！');
+			return false;
+		}
+		if(passwordObj.value==''){
+			top.Message.error('请输入密码！');
+			return false;
+		}
+        /*
+		if(phcodeObj.value==''){
+			top.Message.error('请输入验证码！');
+			return false;
+		}
+		*/
+		//frmLoginObj.submit();
+		//return false;
+		
+		var url = '<{link app=qiyecenter ctl=site_enter act=loginDeal}>';
+		new Request({
+            url:url,
+            onComplete:function(response){
+				response = JSON.parse(response);
+				if(response.code){
+					top.Message.success(response.msg);
+				}else{
+					top.Message.error("用户名或密码或验证码错误！");
+					return false;
+				}
+				setTimeout(function(){
+	        		window.location.href="<{link app=qiyecenter ctl=site_member act=index}>";
+	        	},3000);
+            },
+            method:'post',
+            data:{
+            	'uname':unameObj.value,
+                'password':passwordObj.value
+                //'CODE':phcodeObj.value
+            }
+        }).send();
+
+        return false;
+	}
+
+	
+	
+	function time(o) {
+		if (wait == 0) {
+			o.removeAttribute("disabled");  
+			o.innerHTML = "<span><span>获取手机验证码</span></span>";
+			wait = 60;
+			document.getElementById("phcode").value='';
+		}else{
+			o.setAttribute("disabled", true);
+			o.innerHTML = "重新获取(" + wait + ")";
+			wait--;
+			setTimeout(function() {
+			 time(o)
+			},
+			1000);
+		}
+	}
+
+
+ /*   function checkUname(input){
+        new Request({
+            url:'<{link app=b2c ctl=site_passport act=checkuname}>',
+            onComplete:function(response){
+                if(response == 1){
+                    $('remind_uname').set('html','');
+                }else{
+                    $('remind_uname').set('html',response);
+                }
+            },
+            method:'post',
+            data:'login_name='+encodeURIComponent(input.value.trim())
+        }).send();
+    }*/
+</script>

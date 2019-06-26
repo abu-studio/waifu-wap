@@ -1,0 +1,114 @@
+
+            <input type="hidden" id="customer_no" value="<{$customer_no}>">
+            <div class="title">
+                <div class="sel_tit" id="totab_yuangong" onclick="totab_qiye(this.id)">员工</div>
+              <!--   <div class="unsel_tit" id="totab_zhanghu" onclick="totab_qiye(this.id)">福点账户</div>
+                <div class="unsel_tit" id="totab_order" onclick="totab_qiye(this.id)">福利订单</div> -->
+                <div class="unsel_tit" id="totab_setting" onclick="totab_qiye(this.id)">部门设置</div>
+            </div>
+            <div class="list" style="height: 82%;" id="list">
+                <form action="<{link app=qiyecenter ctl=site_member act=getyuangongsearch}>" method="post" id="getyuangongsearch_id">
+                    <input type="hidden" name="customer_no" value="<{$customer_no}>">
+                    <div class="fd_ye">
+                        <div class="fd_one" style="width: 35px;">姓名</div>
+                        <div class="fd_one" style="width: 11%;">
+                            <input  type="text" name="name" style="width: 80px; border: 1px solid #000000;"/>
+                        </div>
+                        <div class="fd_one" style="width: 35px;">性别</div>
+                        <div class="fd_one" style="width: 10%;" >
+                            <select  name="sex" style="width:80px;font-family: 微软雅黑,宋体;font-size: 14px;">
+                                <option value="">请选择</option>
+                                <option value="1">男</option>
+                                <option value="0">女</option>
+                            </select>
+                        </div>
+                        <div class="fd_one" style="width: 55px;">证件号</div>
+                        <div class="fd_one" style="width: 23%;">
+                            <input type="text" name="id" style="border: 1px solid #000000; width:160px"/>
+                        </div>
+                        <div class="fd_one" style="width: 35px;">职位</div>
+                        <div class="fd_one" style="width: 13%;">
+                            <input type="text" name="position" style="border: 1px solid #000000; width:80px"/>
+                        </div>
+                        <div class="fd_one" style="margin-left:20px">
+                            <input type="button" value="搜索" style="font-family: 微软雅黑,宋体;font-size: 14px;" id="getyuangongsearch"/>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="show_list">
+
+                    <div class="list_head" style="width: 93%;margin-left: 26px">
+                        <div class="head_font" style="width: 9%;">姓名</div>
+                        <div class="head_font" style="width: 9%;">性别</div>
+                        <div class="head_font" style="width: 9%;">生日</div>
+                        <div class="head_font" style="width: 9%;">证件号</div>
+                        <div class="head_font" style="width: 9%;">企业</div>
+                        <div class="head_font" style="width: 9%;">入职时间</div>
+                        <div class="head_font" style="width: 9%;">职位</div>
+                        <div class="head_font" style="width: 9%;">发放福点</div>
+                    </div>
+                    <{foreach from=$sfsc_qiyemember item=item}>
+                    <div class="list_con" style="width: 93%;margin-left: 26px">
+                        <div class="head_font" style="width: 9%;"><{$item.NAME}></div>
+                        <div class="head_font" style="width: 9%;">
+                            <{if $item.SEX==1}>
+                            男
+                            <{else}>
+                            女
+                            <{/if}>
+                        </div>
+                        <div class="head_font" style="width: 9%;"><{$item.BIRTHDAY.time}></div>
+                        <div class="head_font" style="width: 9%;"><{$item.}></div>
+                        <div class="head_font" style="width: 9%;"><{$item.COMPANY_NO}></div>
+                        <div class="head_font" style="width: 9%;"><{$item.NODE_TYPE_NAME}></div>
+                        <div class="head_font" style="width: 9%;"><{$item.USER_ROLE_NAME}></div>
+                        <div class="head_font" style="width: 9%;"><{$item.}></div>
+                    </div>
+                    <{/foreach}>
+                </div>
+            </div>
+
+
+<script type="text/javascript">
+    window.addEvent('domready',function(){
+        $("getyuangongsearch").addEvent("click",function(){
+            var getyuangongsearch_id_action = $('getyuangongsearch_id').action;
+            var postArgs = $('getyuangongsearch_id').toQueryString();
+
+            new Request.HTML({
+                url:getyuangongsearch_id_action,
+                update:$('list'),
+                method:'POST',
+                data:postArgs,
+                onComplete:function(res){
+                    $('list').show();
+                }
+            }).send();
+        });
+    });
+
+    function totab_qiye(id){
+        $(id).getParent('div').getElements("div").each(function(el){
+            if(el.hasClass("sel_tit")){
+                el.removeClass("sel_tit");
+                el.addClass("unsel_tit");
+            }
+
+        });
+
+        $(id).addClass('sel_tit');
+
+        new Request.HTML({
+            url:'<{link app=qiyecenter ctl=site_member act=getbumentable}>',
+            update:$('list'),
+            method:'POST',
+            data:'type='+encodeURIComponent(id)+'&customer_no='+$('customer_no').get("value"),
+            onComplete:function(res){
+                $('list').show();
+            }
+        }).send();
+    }
+
+
+</script>

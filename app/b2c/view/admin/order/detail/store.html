@@ -1,0 +1,171 @@
+<!--<div class="action-bar">
+</div>-->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+      <td style="vertical-align:top">
+        <div class="tableform">
+        <table border="0" cellpadding="0" style="margin-top:10px" cellspacing="0" class="orderdetails_basic">
+        <tr>
+        <td style=" padding:0;" >
+          <h5 align="center" style=" "><{t}>店铺信息<{/t}></h5>
+          <table class="multi-cols" border="0" cellpadding="0" cellspacing="0" >      
+            <tr>
+              <th ><{t}>店主名：<{/t}></th>
+              <td>
+<a href="index.php?app=b2c&ctl=admin_member&act=index&action=detail&id=<{$shopinfo[account_id]}>&singlepage=true&target=_blank" target="_blank"><{$shopinfo[shop_name]}>
+              </td>
+            </tr>
+            <tr>
+              <th ><{t}>店主实名：<{/t}></th>
+              <td><{$shopinfo[store_idcardname]}></td>
+            </tr>
+            <tr>
+              <th ><{t}>身份证号：<{/t}></th>
+              <td><{$shopinfo[store_idcard]}></td>
+            </tr>
+            <tr>
+              <th ><{t}>店铺名称：<{/t}></th>
+              <td><{$shopinfo[store_name]}></td>
+            </tr>
+            <tr>
+              <th ><{t}>所在地区：<{/t}></th>
+              <td><{$shopinfo[area]}></td>
+            </tr>
+            <tr>
+              <th ><{t}>详细地址：<{/t}></th>
+              <td><{$shopinfo[addr]}></td>
+            </tr>
+            <tr>
+              <th ><{t}>手机号码:<{/t}></th>
+              <td><{$shopinfo[tel]}></td>
+            </tr>
+            <tr>
+              <th ><{t}>邮箱：<{/t}></th>
+              <td><{$shopinfo[zip]}></td>
+            </tr>
+            <tr>
+              <th ><{t}>有效期：<{/t}></th>
+              <td><{$shopinfo[last_time]}></td>
+            </tr>
+            <tr>
+              <th ><{t}>保证金：<{/t}></th>
+              <td><{$shopinfo[earnest]}></td>
+            </tr> 
+            <tr>
+              <th ><{t}>店铺备注：<{/t}>  </th>
+              <td><{$shopinfo[remark]}></td>
+            </tr>          
+          </table>
+        </td>
+
+        <td style=" padding:0;" >
+          <h5 align="center" style=" "><{t}>店铺状态<{/t}></h5>
+          <table class="multi-cols" border="0" cellpadding="0" cellspacing="0" >      
+            <tr>
+              <th ><{t}>开启状态：<{/t}></th>
+              <td><{if $shopinfo.status==0}>未开启<{else}>已开启<{/if}></td>
+            </tr>
+            <tr>
+              <th ><{t}>推荐状态：<{/t}></th>
+              <td><{if $shopinfo.recommend==0}>未推荐<{else}>已推荐<{/if}></td>
+            </tr>
+            <tr>
+              <th ><{t}>审核状态：<{/t}></th>
+              <td><{if $shopinfo.approved ==1}>
+          <{t}>审核通过<{/t}>
+          <{elseif $shopinfo.approved ==2}>
+          <{t}>审核未通过<{/t}>
+          <{else}>
+          <{t}>待审核<{/t}>
+          <{/if}></td>
+            </tr>
+            <tr>
+              <th ><{t}>审核备注：<{/t}></th>
+              <td><{$shopinfo[approvedremark]}></td>
+            </tr>
+          </table>
+        </td>
+        <td style=" padding:0;" >
+          <h5 align="center" style=" "><{t}>企业信息<{/t}></h5>
+          <table class="multi-cols" border="0" cellpadding="0" cellspacing="0" >      
+            <tr>
+              <th ><{t}>企业名称：<{/t}></th>
+              <td><{$shopinfo[company_name]}></td>
+            </tr>
+            <tr>
+              <th ><{t}>统一社会信用代码：<{/t}></th>
+              <td><{$shopinfo[company_no]}></td>
+            </tr>
+<!--             <tr>
+              <th ><{t}>税务登记证号：<{/t}></th>
+              <td><{$shopinfo[company_taxno]}></td>
+            </tr>
+            <tr>
+              <th ><{t}>组织机构代码：<{/t}></th>
+              <td><{$shopinfo[company_codename]}></td>
+            </tr> -->
+            <tr>
+              <th ><{t}>法人：<{/t}></th>
+              <td><{$shopinfo[company_idname]}></td>
+            </tr>
+            <tr>
+              <th ><{t}>法人身份证号：<{/t}></th>
+              <td><{$shopinfo[company_idcard]}></td>
+            </tr>
+            <tr>
+              <th ><{t}>注册地区：<{/t}></th>
+              <td><{$shopinfo[company_area]}></td>
+            </tr>
+            <tr>
+              <th ><{t}>注册地址：<{/t}></th>
+              <td><{$shopinfo[company_addr]}></td>
+            </tr>
+            <tr>
+              <th ><{t}>注册资金：<{/t}></th>
+              <td><{$shopinfo[company_earnest]}>万元</td>
+            </tr>
+            <tr>
+              <th ><{t}>成立时间：<{/t}></th>
+              <td><{$shopinfo[company_time]}></td>
+            </tr>
+            <tr>
+              <th ><{t}>营业执照经营范围：<{/t}></th>
+              <td><{$shopinfo[company_remark]}></td>
+            </tr>
+            <tr>
+              <th ><{t}>营业执照有效期：<{/t}></th>
+              <td><{$shopinfo[company_timestart]}>&nbsp;&nbsp;~&nbsp;&nbsp;<{$shopinfo[company_timeend]}></td>
+            </tr>
+            <tr>
+              <th ><{t}>企业官网地址：<{/t}></th>
+              <td><a href="<{$shopinfo[company_url]}>" target="_blank"><{$shopinfo[company_url]}></a></td>
+            </tr>
+          </table>
+        </td>
+        <td style=" padding:0;" >
+          <h5 align="center" style=" "><{t}>企业负责人<{/t}></h5>
+          <table class="multi-cols" border="0" cellpadding="0" cellspacing="0" >
+            <tr>
+              <th ><{t}>姓名：<{/t}></th>
+              <td><{$shopinfo[company_cname]}></td>
+            </tr>
+            <tr>
+              <th ><{t}>身份证号：<{/t}></th>
+              <td><{$shopinfo[company_cidcard]}></td>
+            </tr>
+            <tr>
+              <th ><{t}>职务：<{/t}></th>
+              <td><{$shopinfo[company_charge]}></td>
+            </tr>
+            <tr>
+              <th ><{t}>联系电话：<{/t}></th>
+              <td><{$shopinfo[company_ctel]}></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      </table>
+      </div>
+      </td>
+    </tr>
+</table>

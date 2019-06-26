@@ -1,0 +1,45 @@
+<div container="true"/>
+<div container='true'>
+<div class="tableform">
+    <div>往期负结算金额：<span style="color:red;font-weight:bold;"><{$data.pre_settlement_cut|cur}></span></div>
+    <table class="gridlist" width="100%" border="0" cellspacing="0" cellpadding="0">
+	<thead>  
+       <tr>
+          <th><{t}>结算报表号<{/t}></th>
+          <th><{t}>订单金额<{/t}></th>
+          <th><{t}>店铺结算金额<{/t}></th>
+          <th><{t}>平台抽成金额<{/t}></th>
+          <th><{t}>售前退款总金额<{/t}></th>
+          <th><{t}>售后退款总金额<{/t}></th>
+          <th><{t}>使用积分折算金额<{/t}></th>
+          <th><{t}>赠送积分折算金额<{/t}></th>
+          <th><{t}>往期售后退款总金额<{/t}></th>
+          <th><{t}>负结算报表金额<{/t}></th>
+       </tr>
+    </thead>
+	<tbody>
+        <{if $items}>
+            <{foreach from=$items item=item key=key}>
+              <tr>  
+                 <td><{$item.settlement_no}></td>
+                 <td><{$item.order_money|cur}></td>
+                 <td><{$item.account|cur}></td>
+                 <td><{$item.order_cut|cur}></td> 
+                 <td><{$item.refund|cur}></td>
+                 <td><{$item.re_cut|cur}></td>
+                 <td><{$item.score_use|cur}></td>
+                 <td><{$item.score_give|cur}></td>
+                 <td><{$item.pre_refund_recut|cur}></td>
+                 <td><{$item.pre_settlement_cut|cur}></td>
+                 
+              </tr>
+            <{/foreach}>
+        <{else}>
+            <tr><td style="text-align:center;" colspan="11">无往期负结算报表</td></tr>
+        <{/if}>
+       
+	</tbody>
+    </table>
+     <{$pager}>
+</div>
+</div>

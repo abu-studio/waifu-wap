@@ -1,0 +1,245 @@
+<script >
+function promotion_order(a,id){
+	var content=document.getElementById(id);
+	if(content.style.display!='none'){
+		content.style.display='none';
+		a.innerHTML='+';
+	}else{
+		content.style.display='';
+		a.innerHTML='-';
+	}
+}
+</script>
+<input type="hidden" name="split_order" value='<{$aCart.json_order_split}>'>
+<{foreach from=$aCart.order_split item=store key=store_key name=store_name}>
+    <{foreach from=$store.slips item=slip key=slip_key name=slip_name}>
+        <table style="margin-left: 0px;width: 1200px;" class="pro_list_cart_xu section" width="100%" border="0" cellspacing="0" cellpadding="0" class="ddqr_info" store_id="<{$store_key}>" slip_id="<{$slip_key}>" id="storeid_<{$store_key}>_<{$slip_key}>" <{if $smarty.foreach.slip_name.first}>style="margin-top:10px;"<{/if}>>
+          <colgroup>
+          <col style="width:35%"></col>
+          <col style="width:16%"></col>
+          <col style="width:16%"></col>
+          <col style="width:17%"></col>
+          <col style="width:16%"></col>
+          </colgroup>
+          <{if $smarty.foreach.slip_name.first}>
+          <thead>
+            <tr>  
+              <th class="bl_none" width="360">
+                    <p class="goods_shop_info">
+                    <span class="cjm_logo"></span>
+                        <span class="pl_10 pr_10" style="line-height: 15px;color: #727272;font-family : 微软雅黑,宋体;font-size : 10px">店铺
+						
+						Shop
+						
+						<span class="lan"><{$store.info.store_name}></span></span>
+                        <!--<span class="pl_10 pr_10">商家：<span class="lan"><{$store.info.shop_name}></span></span> -->
+                 </p>
+              </th>
+             <th class="c_969696" width="166" style="line-height: 20px;text-align: center;color: #727272;font-family : 微软雅黑,宋体;font-size : 10px"><{t}>
+			 
+				
+			<p style="border-right: 1px solid #CDCDCD">
+		   规格
+				  <font style="color:">
+				  Specifications
+				  </font>
+				  </p><{/t}>
+			 
+			  </th>
+              <th class="c_969696" width="98" style="line-height: 20px;text-align: center;color: #727272;font-family : 微软雅黑,宋体;font-size : 10px">
+			  <{t}>
+			  <p style="border-right: 1px solid #CDCDCD">
+			  单价Unit Price</p>
+			  <{/t}></th>
+              <th class="c_969696" width="140" style="line-height: 20px;text-align: center;color: #727272;font-family : 微软雅黑,宋体;font-size : 10px"><{t}>
+				   <p style="border-right: 1px solid #CDCDCD">
+				  数量Amount
+				  </p>
+			  <{/t}></th>
+              <th class="c_969696" width="180" style="line-height: 20px;text-align: center;color: #727272;font-family : 微软雅黑,宋体;font-size : 10px"><{t}>
+					 <p style="border-right: 1px solid #CDCDCD">
+				  优惠方式Preferential way
+				  </p>
+			  <{/t}></th>
+              <th class="c_969696" width="166" style="line-height: 20px;text-align: center;color: #727272;font-family : 微软雅黑,宋体;font-size : 10px"><{t}><p style="border-right: 1px solid #CDCDCD">
+			  小计（元）subtotal</p><{/t}></th>
+              
+            </tr>
+          </thead>
+              <{/if}>
+          <tbody>
+          <{if $item_section}>
+              <{foreach from=$item_section item=section}>
+                  <{include file=$section.file app=$section.app }>
+              <{/foreach}>
+          <{/if}>
+          
+          </tbody>
+       </table>
+       <table width="100%" border="0" cellspacing="0" cellpadding="0" class="cart_checkout_order section" style="margin-left:0px;width: 1200px;">
+       <tbody>
+       <!--如果是最后一张订单-->
+          <tr class="goods_bj" style="background: #F8F8F8;">
+		  <!--此处暂时不显示优惠信息，在店铺优惠中显示-->
+	<{if $cart_promotion_display == 'true' && false}>
+	<td style="width:200px;">
+  
+  <!-- 订单获得的优惠促销 -->
+  <div<{if !$aCart.promotion.order||!in_array($store.info.store_id,$aCart.promotion.store_ids)}> style="display:none;"<{/if}>>
+    <h3><a href="javascript:void(0);" onclick="promotion_order(this,'promotion_centent<{$store.info.store_id}>')"class="cart-promotion-order">-</a><{t}>订单优惠<{/t}></h3>
+	  <ul class="cart-promotion-order-centent" id="promotion_centent<{$store.info.store_id}>">
+	    <{foreach from=$aCart.promotion.order item=item}>
+		<{if $item.store_id ==$store.info.store_id}>
+	    <li><{$item.name}></li>
+		<{/if}>
+	    <{/foreach}>
+	  </ul>
+  </div>
+  <!-- 未享受到的优惠促销 -->
+  <div <{if !$unuse_rule||!in_array($store.info.store_id,$unuse_rule.0.store_ids)}>style="display:none;"<{/if}>>
+      <h3><a href="javascript:void(0);"onclick="promotion_order(this,'unpromotion_centent<{$store.info.store_id}>')" class="cart-promotion-order">-</a><{t}>您还未享受到的优惠<{/t}>
+      <{if $fororder_show == 'true'}>
+      <a href="javascript:void(0);" class="action-fororder"><em><{t}>凑单<{/t}>?</em></a>
+      <{/if}>
+    </h3>
+    <ul class="cart-promotion-order-centent"id="unpromotion_centent<{$store.info.store_id}>">
+      <{foreach from=$unuse_rule item=rule}>
+	  <{if $rule.store_id ==$store.info.store_id}>
+      <li><{$rule.name}></li>
+	  <{/if}>
+      <{/foreach}>
+    </ul>
+  </div>
+  
+</td>
+    <{/if}> 
+	
+	
+          <td id="store_<{$store_key}>" style="padding:15px 0 15px 15px;width:1px;font-family : 微软雅黑,宋体;font-size : 10px">
+           补充说明
+		   <font style="color:#CDCDCD">
+		   Supplement：</font><br/><input type="text" class="inputstyle" size="60" name="shipping[<{$store_key}>][<{$slip_key}>][memo]" style="height:42px" />
+           </td>
+           <td  style="padding:15px 10px 15px 0;width:400px;">
+           <table width="100%" store_id="<{$store_key}>" slip_id="<{$slip_key}>" class="J_order_total J_order_total_<{$store_key}>">
+           <colgroup>
+           <col style="width:25%"></col>
+           <col style="width:60%"></col>
+           <col style="width:15%"></col>
+           </colgroup>
+                
+                <tr>
+                    <td class="bb_none"><p class='fr' style="color:#656565;width: 160px;font-family : 微软雅黑,宋体;font-size : 10px">配送方式
+						
+						Delivery mode：
+						
+					</p></td>
+                    <td class="bb_none">
+                      <{if $areaerro}> 
+                        <p class="fl red">收货地址信息不全！<br>
+                        <font style="color:#CDCDCD">
+                        <!-- Not to support the selected area distribution -->
+                        </font>
+                      <{else}>
+                    <{if $slip.shipping}>
+                       <select style="border: 1px solid #ddd;width: 210px;" class="shippingSel J_shippingSel_<{$slip_key}> J_shippingSel_<{$store_key}>_<{$slip_key}>" onchange="if(Order)Order.shippingChangeSplit(this,<{$store_key}>,<{$slip_key}>);"  store_id="<{$store_key}>" slip_id="<{$slip_key}>" name="shipping[<{$store_key}>][<{$slip_key}>][shipping_id]">
+                          <{foreach from=$slip.shipping item="shipping" key="key" name="shippings"}>
+                          <option protect="<{$shipping.protect}>" protect_money="<{$shipping.protect_money}>" protect_text="<{$shipping.protect_text}>" value="<{$shipping.dt_id}>"><{$shipping.dt_name}>：<{if $shipping.money==0}>免运费<{else}><{$shipping.money|cur_odr}><{/if}></option>
+                          <{/foreach}>
+                        </select>
+                   <{else}>
+                    <p class="fl red">暂不支持所选地区的配送<br>
+						<font style="color:#CDCDCD">
+						Not to support the selected area distribution
+						</font>
+					</p>
+                   <{/if}>
+                   <{/if}>
+                    </td>
+                    <td  class="bb_none fr">
+                    <{if $slip.shipping}>
+                    <{foreach from=$slip.shipping item="shipping" key="key" name="shippings"}>
+                        <{if $shipping.default_type && $shipping.default_type=='true'}>
+                        <em class="red1" style='width:100px;' id="shipping_money_<{$slip_key}>"><{$shipping.money|cur_odr}></em>
+                        <{/if}>
+                    <{/foreach}>
+                        
+                     <{/if}>
+                    </td>
+			    </tr>
+            
+            <{if $slip.shipping}>
+            <{foreach from=$slip.shipping item="shipping" key="key" name="shippings"}>
+                <{if $shipping.protect=='true'}>
+                <tr id='protect_<{$shipping.dt_id}>' class="J_project_<{$store_key}>_<{$slip_key}> J_project" <{if $shipping.default_type && $shipping.default_type=='true'}><{else}>style="display:none;"<{/if}>>
+                    <td class="bb_none" ><p class='fr'><{t}>物流保价：<{/t}></p></td>
+                    <td class="bb_none">
+                   <label>
+                   <input id="use_protect_<{$shipping.dt_id}>" type="checkbox" name="shipping[<{$store_key}>][<{$slip_key}>][is_protect]" value="1" onchange="if(Order)Order.protectChange(this,<{$store_key}>,<{$slip_key}>,<{$shipping.dt_id}>);"/>
+                    <{$shipping.protect_text}>
+                    </label>
+                    </td >
+                    <td  class="bb_none fr">
+                    <em class="" style='width:100px;color:#717070' id="protect_money_<{$shipping.dt_id}>"><{$shipping.protect_money|cur_odr}></em>
+                    </td>
+                </tr>
+                <{/if}>
+            <{/foreach}>
+            <{/if}>
+             <{if $smarty.foreach.slip_name.total>1}>            
+             <!--<tr>                    
+                <td class="bb_none"></td>
+                <td class="bb_none"><p class='fr'>订单合计（含运费）：</p>
+                </td>
+                <td  class="bb_none fr">
+                <em class="font_16 red1" style='width:100px;' id="subtotal_slip_<{$store_key}>_<{$slip_key}>">                    
+                    <{$slip.subtotal_prefilter_after|cur_odr}>
+                </em>
+                </td>
+             </tr>-->
+             <{/if}>
+             <{if $smarty.foreach.slip_name.last}>
+                <tr>
+                    <td class="bb_none"><p class='fr' style="color:#656565;width: 160px;font-family : 微软雅黑,宋体;font-size : 10px">店铺优惠<br>
+					
+						Shop discount：
+						
+					</p></td>
+                    <td class="bb_none">
+                    <{if $cart_promotion_display == 'true'}>					
+					<ul class="cart-promotion-order-centent" style="padding-left:2px; margin-top: -10px;"id="promotion_centent<{$store.info.store_id}>">
+						<{foreach from=$aCart.promotion.order item=item}>
+						<{if $item.store_id ==$store.info.store_id}>
+						<li><{$item.name}></li>
+						<{/if}>
+						<{/foreach}>
+					</ul>
+					<{/if}>
+                    </td>
+                    <td  class="bb_none fr">
+                    <em class="red1" style='width:100px;' id='discount_<{$store_key}>'>-<{$discount.$store_key|cur_odr}></em>
+                    </td>
+                </tr>
+                <{/if}>
+             <{if $smarty.foreach.slip_name.last}>
+                <tr>
+                    
+                    <td class="bb_none"><p class='fr' style="color:#656565;width: 160px;font-family : 微软雅黑,宋体;font-size : 10px">店铺合计（含运费）<br>
+						
+						Total stores ：
+						</p></td>
+                    <td class="bb_none fr" style="margin-right: -26%;">
+                    <em class="font_16 red1" style='width:100px;' id="subtotal_slip_<{$store_key}>"><{if ($aCart.subtotal_store_good_price.$store_key-$discount.$store_key) > 0  }><{($aCart.subtotal_store_good_price.$store_key-$discount.$store_key)|cur_odr}><{else}><{0|cur_odr}><{/if}></em>
+                    
+                </tr>
+             <{/if}>
+            </table>
+           </td>
+          </tr>
+       </tbody>
+       </table>
+    <{/foreach}>
+<{/foreach}>
+<div style="height:50px;background:#EEEEEE;margin-top: 30px;">
+	<div style="font-family: 微软雅黑,宋体;font-size: 28px;margin-left: 22px;padding-top: 15px;">订单结算</div>
+</div>

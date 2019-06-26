@@ -1,0 +1,29 @@
+<{lang_script src="lang.js" app="site"}>
+<{if defined("DEBUG_JS") && DEBUG_JS}>
+  <{script src="mootools.js" app="site"}>
+  <{script src="formplus.js" app="site"}>
+  <{script src="jstools.js" app="site"}>
+  <{script src="shoptools.js" app="b2c"}>
+<{else}>
+  <{script src="moo_min.js" app="site" pdir="js_mini"}>
+  <{script src="tools_min.js" app="site" pdir="js_mini"}>
+  <{script src="shoptools_min.js" app="b2c" pdir="js_mini"}>
+<{/if}>
+<{lang_script src="lang.js" app="b2c"}>
+ <script>
+  $('loginBar').getElement('.login_button').store('_ajax_config', {
+    onComplete:function(rs){
+      if (!rs) return;
+        rs=JSON.decode(rs[0]);
+        if(rs.msg) return top.Message.error(rs.msg);
+        else{
+            top.Message.success('登录成功');
+            top.location.href=rs.url;
+        }
+    }
+  });
+  </script>
+<div class="register-wrap">
+  <{include file="site/enter/member-login.html"}>
+</div>
+

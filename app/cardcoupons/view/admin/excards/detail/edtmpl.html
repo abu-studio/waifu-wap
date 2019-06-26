@@ -1,0 +1,22 @@
+<div class="tableform">
+	<h3><{$msg_desc}><{t}>短信模板 <{/t}><span class="c-gray f-12"></span></h3>
+	<div class="division" style="padding:0">
+		<div class="b-gray">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+		  <tr>
+			<th><{t}>可使用变量标签：<{/t}></th>
+			<td class="varmap">用户名：&lt;{$user_name}&gt;<br/>卡券名：&lt;{$card_name}&gt;<br/>卡号：&lt;{$card_no}&gt;<br/>密码：&lt;{$card_password}&gt;<br/>有效期起始：&lt;{$date_start}&gt;<br/>有效期终止：&lt;{$date_end}&gt;</td>
+		  </tr>
+		</table>
+		</div>
+	</div>
+	<div class="division">
+	<table width="100%" border="0" cellspacing="0" cellpadding="0">
+		<tr>
+			<th><{t}>内容：<{/t}></th>
+			<td><{input type="textarea" value=$cards.msg_templet name="msg_templet" vtype="required" cols=50 rows=20}></td>
+		</tr>
+
+	</table>
+	</div>
+</div>

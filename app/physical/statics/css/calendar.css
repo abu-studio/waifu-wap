@@ -1,0 +1,21 @@
+#PL_rili_tit{height:66px;line-height:66px;border-bottom:1px solid #005ea4;width:100%;font-size:15px;font-weight:bold;color:#444;position:relative;letter-spacing:2px;}
+#PL_rili_tit div{margin-bottom:4px;color:#486297; margin-top:5px;}
+#PL_rili_tit .btn{width:auto;background:none repeat scroll 0 0 #637BAD;border-color:#637BAD #28447E #637BAD #FFF;border-style:solid;border-width:0 0 0 1px;color:#FFF;font-size:13px;font-weight:bold;height:45px;padding:3px 10px;cursor:pointer;}
+#PL_rili_box{width:100%;font-size:12px;color:#444;position:relative;}
+#PL_rili_box td{text-align:center;}
+#PL_rili_box input{border-width:1px;width:98%;}
+#PL_rili_box #r1 td{border-bottom:1px solid #D6D6D6;font-weight:bold;padding:4px 0;text-align:center;vertical-align:top; height:45px;line-height:45px;font-size:16px;width:14.2857%;}
+#PL_rili_box .r2{height:80px;vertical-align:top;color:#444;}
+#PL_rili_box .r2 td{border-right:1px solid #FFFFFF;border-bottom:1px solid #FFFFFF;}
+#PL_rili_box .r2 div{overflow:hidden;position:relative;width:100%;height:75px;text-align:center;padding:2px 0;}
+#PL_rili_box .r2 div.act{cursor: pointer;}
+#PL_rili_box .r2 div.act:hover,#PL_rili_box .r2 div.on{width:92%;height:69px;border:3px solid #FF0000;}
+#PL_rili_box .r2 div.void{background-color:#DDDDDD;}
+#PL_rili_box .r2 .xiu{background-color:#e7f8ff;}
+#PL_rili_box .r2 .man{background-color:#fff0f1;}
+#PL_rili_box .r2 .sp{display:block; height:20px; line-height:20px;}
+#PL_rili_box .r2 .tl{text-align:left;}
+#PL_rili_box .r2 .a{height:20px; line-height:20px;padding-right:3px;font-size:12px;font-weight:normal;display:block;}
+#PL_rili_box .r2 .b b{font-size:13px;}
+#PL_rili_box .r2 .b em{color:#888888;font-style:normal;font-size:12px;}
+#PL_rili_box .r2 .c{color:#333;float:left;text-align:left;text-indent:4px;width:100%;font-size:12px;font-weight:normal;}

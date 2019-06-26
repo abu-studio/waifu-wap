@@ -1,0 +1,99 @@
+
+  
+<input class="actbtn btn-fastbuy" id="btn_lj" value="" type="button" />
+ 
+<script>
+     window.addEvent('domready', function() {
+        buyljBtn=$('btn_lj');
+		if (buyljBtn) buyljBtn.store('tip:text','');
+		if (buyljBtn) new Tips(buyljBtn, {
+            showDelay: 0,
+            hideDelay: 0,
+            className: 'cantbuy',
+            onShow: function(tip) {
+                if (!tip.getElement('.tip-text') || ! tip.getElement('.tip-text').get('text')) {
+                    buyljBtn.setStyle('cursor', 'pointer');
+                    return tip.setStyle('visibility', 'hidden');
+                } else {
+                    buyljBtn.setStyle('cursor', 'not-allowed');
+                }
+
+                tip.setStyle('visibility', 'visible');
+            }
+        });
+		
+        if (buyljBtn){
+				buyljBtn.removeEvent('click');
+				buyljBtn.addEvent('click', function(e) {
+				var msg = '请选择完整地区：';
+				var specCheck = false;
+				var url = '<{link app=jdsale ctl=site_product act=getStore}>';
+				var buyRegion = $('jdarea').value;
+				if(buyRegion == ''){
+					var specCheck = true;
+				}else{
+					var msg = '所选地区没有足够的库存';
+					var bn = <{$goods.bn}>;
+					var buyNum = $('Num').value;
+					new Request({
+						url:url,
+						method:'post',
+						data:'bn='+bn+'&region='+buyRegion+'&num='+buyNum,
+						onComplete:function(re){
+							if(re != '有货'){
+								var specCheck = true;
+							}
+						}
+					}).send();
+				
+				}
+				if(specCheck){
+					Message.error(msg);
+				}else{
+					var form=buyljBtn.getParent('form');
+					var backup =form.action;
+					/*
+					msg = '';
+					e.stop();
+					this.blur();
+					if (this.retrieve('tip:text')) return false;
+					
+					
+					var sign = false;
+					new Request({
+						url:"<{link app=fastbuy ctl='site_cart' act='addCheck' arg0='goods' arg1='fastbuy'}>",
+						async:false,
+						method:'post',
+						data:form,
+						onSuccess:function(re){
+							re = JSON.decode(re);
+							if(re.status=='succ'){
+								sign = true;
+							}else if(re.status=='nologin'){
+								window.location = '<{link app=b2c ctl=site_passport act=login}>';
+							}else{
+								msg = re.error;
+							}
+						}
+					}).send();
+					
+					 
+					if(sign){
+						form.action="<{link app=fastbuy ctl='site_cart' act='add' arg0='goods' arg1='fastbuy'}>";
+						form.target = '_blank';
+						form.submit();
+						form.action=backup;
+					}else{
+						 Message.error(msg);
+					}
+						*/
+					form.action="<{link app=fastbuy ctl='site_cart' act='add' arg0='goods' arg1='fastbuy'}>";
+					form.target = '_blank';
+					form.submit();
+					form.action=backup;
+					
+				}
+				});
+		}
+     });
+</script>

@@ -1,0 +1,307 @@
+<style>
+	.left_tree .tree_head .head_center .con {padding-top: 18px;}
+	.sel_tit{padding-top:0px}	
+	.list_on .head_font{width:80px;
+                overflow:hidden;
+				height: 30px;
+				float: left;
+				margin-left: 15px;
+				margin-top: 15px;
+				text-align: center;
+				background: #c40001;
+				color: white;
+				line-height: 30px;
+				cursor: pointer;
+				border-radius: 5px;
+			}
+	.show_fenye .feny a {
+		display: inline-block;
+		width: 15px;
+		height: 28px;
+		line-height: 28px;
+		padding: 0px 8px;
+		border: 1px solid #eee;
+		margin: 0 2px;
+		text-align: center;
+	}
+	.show_fenye .feny a.on {
+		background: #c40001;
+		color: #fff;
+		border-color: #c40001;
+	}
+</style>
+<div class="fafuli_con">
+    <div class="fafuli_tit" style="height:29px;border-bottom:1px solid #A02043">
+        <p class="fafuli_titf" style="font-size:17px">人员管理</p>
+    </div>
+    <div style="height:500px">
+        <div class="left_tree" style="font-size: 14px;">
+             <{$qiyemenu}>
+        </div>
+        <div class="zzright_list"  id="zzright_list">
+            <input type="hidden" id="customer_no" value="<{$customer_no}>">
+            <div class="title">
+                <div class="sel_tit" id="totab_getUnspecifyEmployees" onclick="totab_qiye(this.id)">未指定</div>
+                <div class="unsel_tit" id="totab_getSpecifyEmployees" onclick="totab_qiye(this.id)">已指定</div>
+            </div>
+            <div class="list" style="height: 82%;" id="list">
+                <form action="<{link app=qiyecenter ctl=site_member act=getSearchEmployeesByConds}>" method="post" id="getyuangongsearch_id">
+                <div class="fd_ye" style="border-bottom:none">
+                    <div class="fd_one" style="width:35px;font-size:14px">姓名</div>
+                    <div class="fd_one" style="width: 11%;">
+                        <input  type="text" name="NAME" style="width: 80px; border: 1px solid #a9a9a9;"/>
+                    </div>
+                    <div class="fd_one" style="width: 35px;font-size:14px">性别</div>
+                    <div class="fd_one" style="width:10%;" >
+                        <select  name="SEX" style="width:80px;font-family: 微软雅黑,宋体;font-size: 12px;">
+                            <option value="">请选择</option>
+                            <option value="1">男</option>
+                            <option value="0">女</option>
+                        </select>
+                    </div>
+                    <div class="fd_one" style="width:50px;font-size:14px;margin-left:10px">证件号</div>
+                    <div class="fd_one" style="width: 21%;">
+                        <input type="text" name="ID" style="border: 1px solid #a9a9a9; width:160px"/>
+                    </div>
+                    <div class="fd_one" style="width: 35px;font-size:14px">职位</div>
+                    <div class="fd_one" style="width: 13%;">
+                        <input type="text" name="POSITION" style="border: 1px solid #a9a9a9; width:80px"/>
+                    </div>
+                    <div class="fd_one" style="margin-left:20px">
+						<input type="button" value="搜索" style="background: #c40001;padding: 0 15px;border: none;display: inline-block;zoom: 1;overflow: visible;color: #FFFFFF;cursor: pointer;vertical-align: middle;height: 24px;line-height: 24px;border-radius: 5px;font-family: 微软雅黑,宋体;font-size: 14px;" id="getyuangongsearch" onclick='getSearchEmployeesByConds(this);'/>
+                    </div>
+                </div>
+                </form>
+                <div class="show_list" id="show_list">
+					<{if $employeeList}>
+                    <div class="list_head" style="width:93%;margin-top:8px;border: 1px solid #CDCDCD;margin-left:25px">
+                    	<div class="head_font" style="width:7%;height: 28px;line-height: 28px;"><input type="checkbox" name="selectAll"  onclick="selectAll2(this);"/> 全选</div>
+				        <div class="head_font" style="width:9%;height: 28px;line-height: 28px;">姓名</div>
+				        <div class="head_font" style="width:9%;height: 28px;line-height: 28px;">性别</div>
+				        <div class="head_font" style="width:10%;height: 28px;line-height: 28px;">生日</div>
+				        <div class="head_font" style="width:18%;height: 28px;line-height: 28px;">证件号</div>
+				        <div class="head_font" style="width:18%;height: 28px;line-height: 28px;">企业</div>
+				        <div class="head_font" style="width:10%;height: 28px;line-height: 28px;">部门级别</div>
+				        <div class="head_font" style="width:10%;height: 28px;line-height: 28px;">职位</div>
+				        <div class="head_font" style="width:9%;height: 28px;line-height: 28px;">发放福点</div>
+				    </div>
+				    <{foreach from=$employeeList item=item}>
+				    <div class="list_con" style="width:93%;margin-left: 25px;border:1px solid #cdcdcd;border-top:none">
+				    	<div class="head_font" style="width:7%;height: 25px;line-height: 25px;"><input type="checkbox" name="selectItem" lang="<{$item.COMPANY_NO}>" id="<{$item.HUMBAS_NO}>"/></div>
+				        <div class="head_font" style="width:9%;height: 25px;line-height: 25px;"><{$item.NAME}></div>
+				        <div class="head_font" style="width:9%;height: 25px;line-height: 25px;"><{if $item.SEX == '1'}>男<{elseif $item.SEX == '2'}>女<{else}>--<{/if}></div>
+				        <div class="head_font" style="width:10%;height: 25px;line-height: 25px;"><{$item.BIRTHDAY.time}></div>
+				        <div class="head_font" style="width:18%;height: 25px;line-height: 25px;"><{$item.ID}></div>
+				        <div class="head_font" style="width:18%;height: 25px;line-height: 25px;"><{$item.COMPANY_NO}></div>
+				        <div class="head_font" style="width:10%;height: 25px;line-height: 25px;"><{$item.NODE_TYPE_NAME}></div>
+				        <div class="head_font" style="width:10%;height: 25px;line-height: 25px;"><{$item.NODE_TYPE_NAME}></div>
+				        <div class="head_font" style="width:9%;height: 25px;line-height: 25px;"><input type="text" name='fudian'  id='<{$item.HUMBAS_NO}>inpt' value=''/></div>
+				    </div>
+				    <{/foreach}>
+				    <div class="list_on" style="width: 93%;margin-left: 26px; border-bottom:0px;">
+					    <div class="head_font"  onclick="saveEmployees(this);">指定</div>
+					    <div class="head_font" >导出名单</div>
+					    <div class="head_font" >导入</div>
+					</div>
+					<p style="clear:both"></p>
+					<input type='hidden' id='current_page' value='0' />
+					<div class="show_fenye" style="margin-left: 25px;margin-top: 15px;">
+						<div class="feny" id="page_navigation"></div>
+					</div>
+					<{else}>
+					<div style="border:1px solid #eee;height:40px;line-height:40px;text-align:center">没有找到相应的订单</div>
+					<{/if}>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+	var per_page = 10; 
+	var items = document.getElementsByClassName("list_con");
+	var pages = Math.ceil(items.length/per_page);
+	gotopage(0);
+	
+	function gotopage(page){
+		for(var i=0;i<items.length;i++){
+			items[i].style.display='none';
+		}
+		for(var i=page*per_page;i<(page+1)*per_page;i++){
+			if(i<items.length){
+			items[i].style.display='block';
+			}
+		}
+		var navigation_html = '<a class="page_link" title="上一页" href="javascript:prepage();">&lt;</a>';
+		
+		for(var current_link = 0; current_link < pages; current_link++){
+			current_link == page?navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>':navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';			
+		}
+		navigation_html += '<a class="page_link" title="下一页" href="javascript:nextpage();">&gt;</a>';
+		document.getElementById("page_navigation").innerHTML= navigation_html;
+		document.getElementById("current_page").value= page;
+		
+	}
+	function nextpage(){
+		var page = parseInt(document.getElementById("current_page").value);
+		if(page < pages -1){
+			gotopage((page+1));
+			document.getElementById("current_page").value= page+1;
+		}	
+	}
+	function prepage(){
+		var page = parseInt(document.getElementById("current_page").value);		
+		if(page > 0){
+			gotopage((page - 1));
+			document.getElementById("current_page").value= page - 1;
+		}
+	}
+	
+	
+</script>
+ <script type="text/javascript">
+ //按照条件查询
+function getSearchEmployeesByConds(obj){
+	var getyuangongsearch_id_action = $('getyuangongsearch_id').action;
+    var frmIdObj = document.getElementById('frmId');
+	var dataObj = {};
+  	//企业
+  	var rdoObj = document.getElementsByName('bumen_id');
+  	for(var i=0; i<rdoObj.length; i++){
+		if(rdoObj[i].checked){
+			dataObj.NODE_TYPE = rdoObj[i].lang;
+	       	dataObj.NODE_ID = rdoObj[i].id;
+	       	break;
+		}
+     }
+   	dataObj.ORDER_ID = frmIdObj.ORDER_ID.value;//订单Id
+  //0未指定， 1指定
+   	if($("totab_getUnspecifyEmployees").hasClass("sel_tit")){
+    	dataObj.IS_NULL = '0';
+    }else{
+    	dataObj.IS_NULL = '1';
+    } 
+
+   	var frmIdObj = document.getElementById('getyuangongsearch_id');
+   	dataObj.NAME = frmIdObj.NAME.value;
+   	dataObj.SEX = frmIdObj.SEX.value;
+   	dataObj.ID = frmIdObj.ID.value;
+   	dataObj.POSITION = frmIdObj.POSITION.value;
+   	new Request.HTML({
+        url:getyuangongsearch_id_action,
+        update:$('show_list'),
+        method:'POST',
+        data:dataObj,
+        onComplete:function(res){
+            $('show_list').show();
+        }
+    }).send();
+}
+//指定员工
+ function saveEmployees(obj){
+ 	if(!confirm("您确定要指定这些人")){
+ 		return false;
+ 	}
+ 	
+ 	var url="<{link app=qiyecenter ctl=site_member act=createItemUser}>";
+ 	var frmIdObj = document.getElementById('frmId');
+ 	var dataObj = {};
+ 	//企业保存员工
+ 	dataObj.ORDER_ID = frmIdObj.ORDER_ID.value;//订单Id
+ 	dataObj.REC_ACT_TYPE = frmIdObj.REC_ACT_TYPE.value;
+ 	dataObj.PAY_ACT_TYPE = frmIdObj.PAY_ACT_TYPE.value;
+ 	
+ 	var itemArray = new Array();
+ 	var chkInput = document.getElementsByName("selectItem");
+ 	for(var i=0; i<chkInput.length;i++){
+ 		if(chkInput[i].checked){
+ 			var itemList = {};
+ 			var chkId = chkInput[i].id;
+ 			itemList.REC_ID = chkId;
+ 			itemList.PRICE = document.getElementById(chkId+'inpt').value;;
+ 			itemList.CUSTOMER_ID = chkInput[i].lang;
+ 			itemArray.push(itemList);
+ 		}
+ 	}
+ 	dataObj.ITEM_LIST = itemArray;
+ 	itemArray = [];
+ 	new Request({
+ 		url:url,
+ 		method:'post',
+ 		data:dataObj,
+ 		onComplete: function(rs){
+ 			//隐藏数据
+ 			for(var i=0; i<chkInput.length;i++){
+ 				if(chkInput[i].checked){
+ 					var chkId = chkInput[i].id;
+ 					var divsObj = $(chkId).getParent('div').getParent('div');
+ 					divsObj.setStyle('display', 'none');
+ 				}
+ 			}
+ 			
+ 		}
+ 	}).send();
+ }
+
+ //全选反选
+ function selectAll2(obj){
+ 	//var chkInput = document.getElementsByTagName('input');
+ 	var chkInput = document.getElementsByName("selectItem");
+ 	if(obj.checked){
+ 		for(var i=0; i<chkInput.length;i++){
+ 			if(!chkInput[i].checked){
+ 				chkInput[i].checked = true;
+ 			}
+ 		}
+ 	}else{
+ 		for(var i=0; i<chkInput.length;i++){
+ 			if(chkInput[i].checked){
+ 				chkInput[i].checked = false;
+ 			}
+ 		}
+ 	}
+ 	
+ }
+
+
+ 
+     function totab_qiye(id){
+         $(id).getParent('div').getElements("div").each(function(el){
+            if(el.hasClass("sel_tit")){
+                el.removeClass("sel_tit");
+                el.addClass("unsel_tit");
+            }
+         });
+         $(id).addClass('sel_tit');
+         
+        var frmIdObj = document.getElementById('frmId');
+    	var dataObj = {};
+      	//企业
+      	var rdoObj = document.getElementsByName('bumen_id');
+      	for(var i=0; i<rdoObj.length; i++){
+			if(rdoObj[i].checked){
+				dataObj.NODE_TYPE = rdoObj[i].lang;
+		       	dataObj.NODE_ID = rdoObj[i].id;
+		       	break;
+			}
+         }
+       	dataObj.ORDER_ID = frmIdObj.ORDER_ID.value;//订单Id
+       	if(id=='totab_getUnspecifyEmployees'){
+       		dataObj.IS_NULL = 0; //0未指定， 1指定
+       	}else{
+       		dataObj.IS_NULL = 1; //0未指定， 1指定
+        }
+		dataObj.type = id;
+
+        new Request.HTML({
+             url:'<{link app=qiyecenter ctl=site_member act=getqiyetable}>',
+             update:$('show_list'),
+             method:'POST',
+             data:dataObj,
+             onComplete:function(res){
+                 $('show_list').show();
+             }
+         }).send();
+     }
+
+
+</script>

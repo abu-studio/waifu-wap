@@ -1,0 +1,73 @@
+<table class="gridlist table-goods-list gridlist_member " style="border-bottom:none" width="100%" border="0" cellspacing="0"  cellpadding="0">
+    <{if !$msg}>
+        <{if $getSubActListtype == "all"}>
+            <tr>
+                <th class="first"><{t}>账户<{/t}></th>
+                <!--<th><{t}>账户类型<{/t}></th>-->
+                <th><{t}>状态<{/t}></th>
+                <th><{t}>福点余额<{/t}></th>
+                <th><{t}>操作<{/t}></th>
+            </tr>
+            <tbody style="text-align: center;">
+               <{foreach from=$getSubActList item=order}>
+                    <tr>
+                        <td class="vt no_bk"><{$order.SUB_ACT_NAME}></td>
+                        <!--<td class="horizontal-m"><{$order.sub_act_name}></td>-->
+                        <td><{$order.STATUS_NAME}></td>
+                        <td style="color:#FD8700;"><{$order.BALANCE}></td>
+                        <td>--</td>
+                    </tr>
+               <{/foreach}>
+            </tbody>
+        <{else}>
+            <tr>
+                <th class="first"><{t}>收支类型<{/t}></th>
+                <th><{t}>账户类型<{/t}></th>
+                <th><{t}>记录时间<{/t}></th>
+                <th><{t}>事件/备注<{/t}></th>
+                <th><{t}>额度<{/t}></th>
+            </tr>
+            <tbody style="text-align: center;">
+                <{foreach from=$getSubActList item=order}>
+                    <tr>
+                        <td class="vt no_bk"><{$order.TRANSACTION_NAME}></td>
+                        <td class="horizontal-m"><{$order.SUB_ACT_NAME}></td>
+                        <td><{$order.TRANSACTION_TIME}></td>
+                        <{if $order.TRANSACTION_TYPE == "I00601"}>
+                            <td><a href="<{link app='b2c' ctl='site_member' act='orderdetail' arg=$order.ORDER_ID}>"><{$order.DESCRIPTION}></a></td>
+                        <{elseif $order.TRANSACTION_TYPE == "I00602"}>
+                            <td><a href="<{link app='aftersales' ctl='site_member' act='return_details' arg=$order.return_id}>"><{$order.DESCRIPTION}></a></td>
+                        <{else}>
+                            <td><{$order.DESCRIPTION}></td>
+                        <{/if}>
+                        <td style="color:#FD8700;"><{$order.BALANCE}></td>
+                    </tr>
+                <{/foreach}>
+            </tbody>
+        <{/if}>
+    <{else}>
+    <tr><td><{$msg}></td></tr>
+    <{/if}>
+</table>
+<{if !$msg}>
+    <{if $page_array != ""}>
+        <div class="pager">
+            <{foreach from=$page_array item=page}>
+                <{$page}>
+            <{/foreach}>
+        </div>
+        <script>
+            function java_page(id){
+                new Request.HTML({
+                    url:'<{link app=b2c ctl=site_member act=get_liushuizhanginfo}>',
+                    update:$('my_order'),
+                    method:'POST',
+                    data:'page='+encodeURIComponent(id.getProperty("title")),
+                    onComplete:function(res){
+                        $('my_order').show();
+                    }
+                }).send();
+            }
+        </script>
+    <{/if}>
+<{/if}>

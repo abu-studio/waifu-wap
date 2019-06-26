@@ -1,0 +1,301 @@
+<div class="action-bar">
+<script>
+$$('.order-ctls button[act]').each(function(btn){
+
+	   var flow = btn.getPrevious('input[name="flow"]'),
+		disabled = btn.getPrevious('input[name="disabled"]'),
+		cfm_str = btn.get('confirm'),
+		_dialog = null,
+		_app	= btn.get('app'),
+		act_url = "index.php?app="+_app+"&ctl=admin_order&act={action}&p[0]=<{$order.order_id}>";
+	   if(disabled){
+		   return btn.set({'opacity':.5,styles:{'cursor':'not-allowed'}});
+	   }
+
+	   btn.addEvent('click',function(){
+		   if(cfm_str&&!confirm(cfm_str)){ return;  }
+		   if(flow){
+			 _dialog = new Dialog( act_url.substitute({'action':'go'+btn.get('act')}),
+			{title:btn.get('text')+":<{$order.order_id}>",width:.7,height:.8,onLoad:function(){
+
+					  var _dialog_form = this.dialog;
+					  this.dialog.getElement('form').store('target',{
+					  onRequest:function(){
+						_dialog_form.getElement('.table-action .order-action').set('disabled','disabled');
+					  },
+					  onComplete:function(){
+
+						 <{if !$env.get.singlepage}>
+								<{if $env.get.finder_id}>
+									finderGroup['<{$env.get.finder_id}>'].request({
+										method:'post',
+										onComplete:function(){
+										   _dialog.close();
+										   this.loadPacket();//refersh finder packet(tabs);
+										}});
+								<{/if}>
+						  <{else}>
+								_dialog.close();
+								if (opener.finderGroup&&opener.finderGroup['<{$env.get.finder_id}>'])
+									opener.finderGroup['<{$env.get.finder_id}>'].refresh();
+								 location.reload();
+						  <{/if}>
+					  }});
+
+
+			 }});
+
+		   }else{
+			  W.page( act_url.substitute({'action':'do'+btn.get('act')}),{onComplete:function(re){
+					try{re = JSON.decode(re)}catch(e){}
+					if(re&&re.error){return;}
+					<{if !$env.get.singlepage}>
+					   <{if $env.get.finder_id}>
+							finderGroup['<{$env.get.finder_id}>'].refresh();
+					   <{/if}>
+					<{else}>
+						if (opener.finderGroup&&opener.finderGroup['<{$env.get.finder_id}>'])
+							opener.finderGroup['<{$env.get.finder_id}>'].refresh();
+						location.reload();
+					<{/if}>
+
+				}});
+		   }
+
+	   });
+
+  });
+</script>
+</div>
+
+
+
+<{assign var="order_id" value=$order.order_id}>
+<{if $is_bklinks == 'true'}>
+<{input type='refer' id=$order.order_id ident='order' name='order' show='refer_id,refer_url'}>
+<{/if}>
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td>
+			<div class="tableform">
+			<table cellpadding="0"  cellspacing="0" width="100%" border="0">
+			<tr>
+				<th ><{t}>服务单号：<{/t}></th>
+				<td><{$data.afsServiceId}></td>
+				<th ><{t}>服务名称：<{/t}></th>
+				<td>
+					<{if $data.customerExpect == 10}>
+						退货
+					<{elseif $data.customerExpect == 20}>
+					    换货
+					<{elseif $data.customerExpect == 30}>
+					    维修
+					<{/if}>
+				</td>
+				<th ><{t}>服务单申请时间：<{/t}></th>
+				<td><{$data.afsApplyTime}></td>
+				<th ><{t}>订单号：<{/t}></th>
+				<td><{$data.orderId}></td>
+				<th ><{t}>是否有发票：<{/t}></th>
+				<td>
+					<{if $data.isHasInvoice == 1}>
+						是
+					<{else}>
+						否
+					<{/if}>
+				</td>
+				<th ><{t}>是否有检测报告：<{/t}></th>
+				<td>
+					<{if $data.isNeedDetectionReport == 1}>
+						是
+					<{else}>
+						否
+					<{/if}>
+				</td>
+			 </tr>
+			 <tr>
+				<th ><{t}>是否有包装：<{/t}></th>
+				<td>
+					<{if $data.isHasPackage == 1}>
+						是
+					<{else}>
+						否
+					<{/if}>
+				</td>
+				<th ><{t}>服务单环节：<{/t}></th>
+				<td><{$data.afsServiceStepName}></td>
+				<th ><{t}>问题描述：<{/t}></th>
+				<td><{$data.questionDesc}></td>
+				<th ><{t}>审核结果：<{/t}></th>
+				<td><{$data.approvedResultName}></td>
+				<th ><{t}>处理结果：<{/t}></th>
+				<td><{$data.processResultName}></td>
+			 </tr>
+			</table>
+			</div>
+		</td>
+	</tr>
+    <tr>
+      <td style="vertical-align:top">
+        <div class="tableform">
+        <table border="0" cellpadding="0" style="margin-top:10px" cellspacing="0" class="orderdetails_basic">
+  <tr>
+    <td style=" padding:0;" >
+	<h5 align="center" style=" margin-top:10px;"><{t}>客户信息<{/t}></h5>
+    <table class="multi-cols" border="0" cellpadding="0" cellspacing="0" >
+      <tr>
+        <th ><{t}>客户京东账号：<{/t}></th>
+        <td><{$data.serviceCustomerInfoDTO.customerPin}></td>
+      </tr>
+	  <tr>
+        <th ><{t}>用户昵称：<{/t}></th>
+        <td><{$data.serviceCustomerInfoDTO.customerName}></td>
+      </tr>
+	  <tr>
+        <th ><{t}>服务单联系人：<{/t}></th>
+        <td><{$data.serviceCustomerInfoDTO.customerContactName}></td>
+      </tr>
+	  <tr>
+        <th ><{t}>联系电话：<{/t}></th>
+        <td><{$data.serviceCustomerInfoDTO.customerTel}></td>
+      </tr>
+	  <tr>
+        <th ><{t}>手机号：<{/t}></th>
+        <td><{$data.serviceCustomerInfoDTO.customerMobilePhone}></td>
+      </tr>
+	  <tr>
+        <th ><{t}>电子邮件地址：<{/t}></th>
+        <td><{$data.serviceCustomerInfoDTO.customerEmail}></td>
+      </tr>
+    </table>
+    </td>
+    <td style=" padding:0" >
+<h5 align="center" style=" margin-top:10px"><{t}>售后地址信息<{/t}></h5>
+    <table class="multi-cols" border="0" cellpadding="0" cellspacing="0" >
+	  <tr>
+        <th ><{t}>电子邮件地址：<{/t}></th>
+        <td><{$data.serviceAftersalesAddressInfoDTO.address}></td>
+      </tr>
+	  <tr>
+        <th ><{t}>售后电话：<{/t}></th>
+        <td><{$data.serviceAftersalesAddressInfoDTO.tel}></td>
+      </tr>
+	  <tr>
+        <th ><{t}>售后联系人：<{/t}></th>
+        <td><{$data.serviceAftersalesAddressInfoDTO.linkMan}></td>
+      </tr>
+	  <tr>
+        <th ><{t}>售后邮编：<{/t}></th>
+        <td><{$data.serviceAftersalesAddressInfoDTO.postCode}></td>
+      </tr>
+    </table>
+    </td>
+    <td style=" padding:0" >
+    <h5 align="center" style=" margin-top:10px"><{t}>客户发货信息<{/t}></h5>
+    <table class="multi-cols" border="0" cellpadding="0" cellspacing="0" >
+		<tr>
+			<th ><{t}>服务单号：<{/t}></th>
+			<td><{$data.serviceExpressInfoDTO.afsServiceId}></td>
+		</tr>
+		<tr>
+			<th ><{t}>运费：<{/t}></th>
+			<td><{$data.serviceExpressInfoDTO.freightMoney}></td>
+		</tr>
+		<tr>
+			<th ><{t}>快递公司名称：<{/t}></th>
+			<td><{$data.serviceExpressInfoDTO.expressCompany}></td>
+		</tr>
+		<tr>
+			<th ><{t}>客户发货日期：<{/t}></th>
+			<td><{$data.serviceExpressInfoDTO.deliverDate}></td>
+		</tr>
+		<tr>
+			<th ><{t}>快递单号：<{/t}></th>
+			<td><{$data.serviceExpressInfoDTO.expressCode}></td>
+		</tr>
+    </table>
+    </td>
+    <td style=" padding:0;" >
+        <h5 align="center" style=" margin-top:10px"> <{t}>退款明细<{/t}></h5>
+        <table class="multi-cols" border="0" cellpadding="0" cellspacing="0" >
+			<tr>
+				<th ><{t}>退款方式：<{/t}></th>
+				<td><{$data.serviceFinanceDetailInfoDTOs.0.refundWayName}></td>
+			</tr>
+			<tr>
+				<th ><{t}>状态：<{/t}></th>
+				<td><{$data.serviceFinanceDetailInfoDTOs.0.statusName}></td>
+			</tr>
+			<tr>
+				<th ><{t}>退款金额：<{/t}></th>
+				<td><{$data.serviceFinanceDetailInfoDTOs.0.refundPrice}></td>
+			</tr>
+			<tr>
+				<th ><{t}>商品名称：<{/t}></th>
+				<td><{$data.serviceFinanceDetailInfoDTOs.0.wareName}></td>
+			</tr>
+			<tr>
+				<th ><{t}>商品编号：<{/t}></th>
+				<td><{$data.serviceFinanceDetailInfoDTOs.0.wareId}></td>
+			</tr>
+			<tr>
+				<th ><{t}>服务单号：<{/t}></th>
+				<td><{$data.serviceFinanceDetailInfoDTOs.0.afsServiceId}></td>
+			</tr>
+			<tr>
+				<th ><{t}>追踪标题：<{/t}></th>
+				<td><{$data.serviceFinanceDetailInfoDTOs.0.title}></td>
+			</tr>
+			<tr>
+				<th ><{t}>追踪内容：<{/t}></th>
+				<td><{$data.serviceFinanceDetailInfoDTOs.0.context}></td>
+			</tr>
+			<tr>
+				<th ><{t}>提交时间：<{/t}></th>
+				<td><{$data.serviceFinanceDetailInfoDTOs.0.createDate}></td>
+			</tr>
+			<tr>
+				<th ><{t}>操作人账号：<{/t}></th>
+				<td><{$data.serviceFinanceDetailInfoDTOs.0.createPin}></td>
+			</tr>
+        </table>
+     </td>
+  </tr>
+</table></div></td>
+      </tr>
+</table>
+
+<script>
+
+
+if($('order_receiver_copy')){
+$('order_receiver_copy').addEvent('click',function(e){
+    if($('order_receiver_copy').get('receiver_copy_status') == "Y"){
+        copy_code($('order_receiver_copy').get('info'));
+        $('order_receiver_copy').set('receiver_copy_status','N');
+    }
+});
+}
+
+function copy_code(copyText){
+    if (window.clipboardData){
+        window.clipboardData.setData("Text", copyText);
+    }else{
+        prompt('<{t}>请复制收货人信息：<{/t}>',copyText);
+    }
+    $$('#order_receiver_copy span')[1].setText('<{t}>信息已经复制到剪切板中<{/t}>');
+    (function(){
+        if(!$('order_receiver_copy'))return;
+        $$('#order_receiver_copy span')[1].setText('<{t}>复制收货人信息<{/t}>');
+        $('order_receiver_copy').set('receiver_copy_status','Y');
+    }).delay(2000);
+}
+
+
+$$('.x-view-img').each(function(item){
+		 item.store('tip:text','<div style="width:220px;height:220px;overflow:hidden;"><img  src="'+item.get('imgsrc')+'" onload="$(this).zoomImg(220,220);" /></div>');
+	     Xtip.attach(item);
+});
+
+
+</script>

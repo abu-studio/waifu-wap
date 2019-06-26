@@ -1,0 +1,38 @@
+<services>
+	<service id="desktop_finder.cardcoupons_mdl_cards">
+		<class>cardcoupons_finder_cards</class>
+	</service>
+	<service id="desktop_finder.cardcoupons_mdl_cards_exchangelog">
+		<class>cardcoupons_finder_cards_exchangelog</class>
+	</service>
+	<service id="desktop_finder.cardcoupons_mdl_cards_balance">
+		<class>cardcoupons_finder_cards_balance</class>
+	</service>
+	<service id="desktop_finder.cardcoupons_mdl_cards_service">
+		<class>cardcoupons_finder_cards_service</class>
+	</service>
+	<service id="desktop_finder.cardcoupons_mdl_cards_pass">
+		<class>cardcoupons_finder_cards_pass</class>
+	</service>
+	<service id="desktop_finder.cardcoupons_mdl_cards_pass_create">
+		<class>cardcoupons_finder_cards_pass_create</class>
+	</service>
+	<service id="desktop_finder.cardcoupons_mdl_cards_pass_update">
+		<class>cardcoupons_finder_cards_pass_update</class>
+	</service>
+	<service id="site_view_helper">   
+        <class>cardcoupons_view_helper</class>
+    </service>
+	<service id="order.pay_finish_extend">
+		<class>cardcoupons_order_pay</class>
+	</service>
+	 <service id="order_goodstype_operation">
+        <class>cardcoupons_order_service_goods</class>
+    </service>
+    <service id="openapi.cardcoupons_sfscorder">
+        <class>cardcoupons_sfscorder_create</class>
+    </service>
+	<service id="openapi.a">
+        <class>cardcoupons_cmp_api</class>
+    </service>
+</services>

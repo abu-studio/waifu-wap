@@ -1,0 +1,7 @@
+<site>
+    <module id='cellphone' controller='site_member' >
+      <name>cellphone</name>
+      <title>供应商服务</title>
+      <disable>false</disable>
+    </module>
+</site>

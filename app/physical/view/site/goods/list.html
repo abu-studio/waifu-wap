@@ -1,0 +1,67 @@
+<div class="tijian_main_leftPl clb">
+	<div class="one">
+		<div class="addr">
+			<img src="<{$res_url}>/image/tjlb_01.png"/>     
+			<span>您所在的位置：</span>
+			<a href="<{link app=physical ctl=site_index act=index}>">体检首页</a>
+			<span>></span>
+			<span style="color: black;">体检产品</span>                
+		</div>
+	</div>
+	<div class="two clb">
+		<form id="goods_list" name="goods_list" method="GET" action="<{link app='physical' ctl='site_index' act='goodslist' args=array($order)}>">
+			<span class="lb">产品名称</span>
+			<span>
+				<input type="text" name="name" value="<{$name}>" style="width: 188px;"/>
+			</span>
+			<span class="lb">
+				价格区间
+			</span>
+			<span>
+				<input type="text" name="price1" value="<{$price1}>" style="width: 48px;"/>-<input type="text" name="price2" value="<{$price2}>" style="width: 48px;"/>
+			</span>
+			<span class="tijian_search" onclick="document.getElementById('goods_list').submit();">
+				搜索
+			</span>
+		</form>
+	</div>
+	<div class="three clb">
+		<div class="lt">	
+			找到体检产品<span><{$count}></span>件
+		</div>
+		<div class="rt">	
+			<span>排序</span>
+			<a class="<{if $order eq 0}>act<{/if}>" href="<{link app=physical ctl=site_index act=goodslist args=array(0,$pager.current)}>?name=<{$name}>&price1=<{$price1}>&price2=<{$price2}>">默认</a><a class="<{if $order eq 1}>act<{/if}>" href="<{link app=physical ctl=site_index act=goodslist args=array(1,$pager.current)}>?name=<{$name}>&price1=<{$price1}>&price2=<{$price2}>">价格</a>
+		</div>	
+	</div>
+	<div class="list clb">
+		<ul>
+		<{foreach from=$goods_list item=item key=key}>
+			<li>
+				<div class="left">
+					<img src="<{$item.image_default_id|storager:'s'}>"/>
+				</div>
+				<div class="right">
+					<div class="r1">
+						<div class="lt">
+							<span class="name"><{$item.name}></span><br>
+							<span class="price"><{$item.price|cur}></span>&nbsp;&nbsp;&nbsp;&nbsp;
+							<span class="mktprice">市场价：<{$item.mktprice|cur}></span>
+						</div>
+						<div class="rt">
+							<a href="<{link app=physical ctl=site_index act=storelist args=array($item.goods_id)}>">可用门店</a>
+						</div>
+					</div>
+					<div class="r2">
+						<{$item.brief}>
+					</div>
+					<div class="r3">
+						<a href="<{link app=physical ctl=site_index act=goodsdetail args=array($item.goods_id)}>">查看详情</a>
+					</div>
+				</div>
+			</li>
+		<{/foreach}>
+		</ul>
+		<{pagers data=$pager}>
+	</div>
+</div>

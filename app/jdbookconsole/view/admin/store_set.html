@@ -1,0 +1,12 @@
+<h3 class="head-title"><{t}>基本设置 <{/t}></h3>
+<form action="index.php?app=jdbookconsole&ctl=admin_manage&act=to_setting" method="post" class="tableform">
+	<table>
+		<tr>
+			<th>图书店铺设置:</th>
+			<td><{input  type="object" vtype="required"  object="storemanger@business" value=$setting.bookshopId name="bookshopId" textcol="store_name" cols="store_name" filter="disabled=false&shopstatus=1&status=1&approved=1"}> &nbsp;</td>
+		</tr>
+	</table>
+	<div class="table-action">
+  <{button label=$___image="保存"|t:'image' class="btn-primary" type="submit"}>
+	</div>
+</form>

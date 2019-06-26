@@ -1,0 +1,30 @@
+<div container='true'>
+	<div class="tableform">
+		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="gridlist">
+			<thead>
+			<tr>
+			  <th><{t}>卡券名称<{/t}></th>
+			  <th><{t}>卡券编号<{/t}></th>
+			  <th><{t}>类型<{/t}></th>
+			  <th><{t}>审核状态<{/t}></th>
+			  <th><{t}>开始时间<{/t}></th>
+			  <th><{t}>结束时间<{/t}></th>
+			  <th><{t}>有效性<{/t}></th>
+			  <th><{t}>状态<{/t}></th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr>
+			   <td><{$pass_info.card_name}></td>
+			   <td><{$pass_info.card_no}></td>
+			   <td><{$type_arr[$pass_info.type]}></td>
+			   <td><{$ex_status_arr[$pass_info.ex_status]}></td>
+			   <td><{$pass_info.from_time|cdate:FDATE_FTIME}></td>
+			   <td><{$pass_info.to_time|cdate:FDATE_FTIME}></td>
+			   <td><{$disabled_arr[$pass_info.disabled]}></td>
+			   <td><{$status_arr[$pass_info.status]}></td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

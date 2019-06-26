@@ -1,0 +1,16 @@
+<h3 class="head-title"><{t}>手机充值规则描述<{/t}></h3>
+<form action="index.php?app=b2c&ctl=admin_apply&act=recharge" method="post" class="tableform">
+<input type="hidden" name="recharge_rules[id]" value="<{$recharge_rules.id}>"/>
+<input type="hidden" name="jiaofei_set" value="jiaofei_set"/>
+	<table>
+		<tr>
+		<!-- xhk 2015/11/05 配置缴费规则 -->
+			<th>手机充值规则描述（在前台缴费页面显示）:</th>
+			<td>
+			<div style="width:1000px;"><{input type="html" vtype="required" value=$recharge_rules.value name="recharge_rules[value]" textcol="name" cols="name" filter="disabled=false"}> &nbsp;</div></td>
+		</tr>
+	</table>
+	<div class="table-action">
+  <{button label=$___image="保存"|t:'image' class="btn-primary" type="submit"}>
+	</div>
+</form>

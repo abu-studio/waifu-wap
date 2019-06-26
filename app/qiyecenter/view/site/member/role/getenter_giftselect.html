@@ -1,0 +1,124 @@
+ <div class="r_list" id="HUMBAS_LIST_NEW">
+        <div class="list_head">
+            <div class="head_font" style="width: 10%;">接收日期</div>
+            <div class="head_font" style="width: 10%;">过期日期</div>
+            <div class="head_font" style="width: 10%;">礼包名称</div>
+            <div class="head_font" style="width: 15%;">卡号</div>
+            <div class="head_font" style="width: 15%;">接受人</div>
+            <div class="head_font" style="width: 15%;">商城订单</div>
+            <div class="head_font" style="width: 10%;">接受状态</div>
+        </div>
+        <{foreach from=$sfscdata item=item}>
+            <div class="list_con">
+                <div class="head_font" style="width: 10%;"><{$item.REC_TIME}></div>
+                <div class="head_font" style="width: 10%;"><{$item.OVERDUE_TIME}></div>
+                <div class="head_font" style="width: 10%;"><{$item.GOODS_NAME}></div>
+                <div class="head_font" style="width: 15%;"><{$item.CARD_NUMBER}></div>
+                <div class="head_font" style="width: 15%;"><{$item.NAME}></div>
+                <div class="head_font" style="width: 15%;"><{$item.SELL_ORDER_ID}></div>
+                <div class="head_font" style="width: 10%;"><{$item.GIFT_STATE}></div>
+            </div>
+        <{/foreach}>
+    </div>
+    <script type="text/javascript">
+    var per_page = 10;
+    var items = document.getElementsByClassName("list_con");
+    var pages = Math.ceil(items.length/per_page);
+    gotopage(0);
+
+    function gotopage(page){
+        for(var i=0;i<items.length;i++){
+            items[i].style.display='none';
+        }
+        for(var i=page*per_page;i<(page+1)*per_page;i++){
+            if(i<items.length){
+                items[i].style.display='block';
+            }
+        }
+        var navigation_html = '<a class="page_link" title="上一页" href="javascript:prepage();">&lt;</a>';
+
+        for(var current_link = 0; current_link < pages; current_link++){
+            if(pages<=10){
+                current_link == page?navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>':navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+            }else{
+                if(current_link == page){
+                    navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+                }
+                if(current_link <= (page+4)&&current_link >= (page-4)&&current_link != page){
+                    navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';
+                }
+            }
+        }
+        navigation_html += '<a class="page_link" title="下一页" href="javascript:nextpage();">&gt;</a>';
+        document.getElementById("page_navigation").innerHTML= navigation_html;
+        document.getElementById("current_page").value= page;
+
+    }
+    function nextpage(){
+        var page = parseInt(document.getElementById("current_page").value);
+        if(page < pages - 1){
+            gotopage((page+1));
+            document.getElementById("current_page").value= page+1;
+        }
+    }
+    function prepage(){
+        var page = parseInt(document.getElementById("current_page").value);
+        if(page > 0){
+            gotopage((page - 1));
+            document.getElementById("current_page").value= page - 1;
+        }
+    }
+
+
+
+    //查询雇员信息 --  start
+    window.addEvent('domready',function(){
+        var url = '<{link app=qiyecenter ctl=site_member act=getenter_giftselect}>';
+        $('search_humbas').addEvent('click',function(){
+            new Request.HTML({
+                url:url,
+                method:'get',
+                // data:'NAME='+$('humbas_name').getValue(),
+                data:'STRAT_TIME='+$('STRAT_TIME').getValue()+'&END_TIME='+$('END_TIME').getValue()+'&CUSTOMER_ID='+$('CUSTOMER_ID').getValue()+'&FILTER_TIME='+$('FILTER_TIME').getValue()+'&GRANT_NAME='+$('GRANT_NAME').getValue(),
+                update:$('HUMBAS_LIST_NEW'),
+            }).send();
+
+        });
+
+
+
+        $('dlg_ok-<{$sid}>').addEvent('click',function(){
+            var HUMBAS_NO = "";
+            $$('#HUMBAS_LIST').getElements('input[name="HUMBAS_NO"]').each(function(item,index){
+                item.each(function(key){
+                    if(key.get('checked')){
+                        if(key.getValue() != ""){
+                            HUMBAS_NO += key.getValue() + '_'
+                        }
+                    }
+                });
+
+            });
+            if(HUMBAS_NO == ""){
+                alert('请选择操作项！');
+                return false;
+            }else{
+                new Request.JSON({
+                    url:"<{link app='qiyecenter' ctl='site_member' act='setcompanymanager'}>",
+                    method:'POST',
+                    data:"HUMBAS_NO="+HUMBAS_NO+"&COMPANY_NO=HK6609",
+                    onComplete:function(res){
+                        if(res.RESULT_CODE == '10001'){
+                            MessageBox.show('操作成功！');
+                            window.close();
+                        }else{
+                            MessageBox.show(res.RESULT_MSG);
+                            window.close();
+                        }
+                    }
+                }).send();
+            }
+        });
+    });
+    //查询雇员--end
+</script>

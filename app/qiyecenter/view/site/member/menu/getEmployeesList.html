@@ -1,0 +1,216 @@
+
+<div class="show_list" id="show_list">
+	<{if $employeeList}>
+	<div class="list_head" style="width:93%;margin-top:8px;border: 1px solid #CDCDCD;margin-left:25px">
+		<div class="head_font" style="width:7%;height: 28px;line-height: 28px;"><input type="checkbox" name="selectAll1" id='selectAll1'  onclick="selectAll2(this);"/> 全选</div>
+		<div class="head_font" style="width:9%;height: 28px;line-height: 28px;">姓名</div>
+		<div class="head_font" style="width:9%;height: 28px;line-height: 28px;">性别</div>
+		<div class="head_font" style="width:10%;height: 28px;line-height: 28px;">生日</div>
+		<div class="head_font" style="width:18%;height: 28px;line-height: 28px;">证件号</div>
+		<div class="head_font" style="width:18%;height: 28px;line-height: 28px;">企业</div>
+		<div class="head_font" style="width:10%;height: 28px;line-height: 28px;">入职时间</div>
+		<div class="head_font" style="width:10%;height: 28px;line-height: 28px;">职位</div>
+		<div class="head_font" style="width:9%;height: 28px;line-height: 28px;">发放福点</div>
+	</div>
+    <{foreach from=$employeeList item=item}>
+    <div class="list_con" style="width:93%;margin-left: 25px;border:1px solid #cdcdcd;border-top:none">
+    	<div class="head_font" style="width:7%;height: 25px;line-height: 25px;"><input type="checkbox" name="selectItem" id="<{$item.UUID}>" /></div>
+        <div class="head_font" style="width:9%;height: 25px;line-height: 25px;"><{$item.NAME}></div>
+        <div class="head_font" style="width:9%;height: 25px;line-height: 25px;">
+            <{if $item.SEX==1}>
+            男
+            <{else}>
+            女
+            <{/if}>
+        </div>
+        <div class="head_font" style="width:10%;height: 25px;line-height: 25px;"><{$item.BIRTHDAY.time}></div>
+        <div class="head_font" style="width:18%;height: 25px;line-height: 25px;"><{$item.}></div>
+        <div class="head_font" style="width:18%;height: 25px;line-height: 25px;"><{$item.COMPANY_NO}></div>
+        <div class="head_font" style="width:10%;height: 25px;line-height: 25px;"><{$item.NODE_TYPE_NAME}></div>
+        <div class="head_font" style="width:10%;height: 25px;line-height: 25px;"><{$item.USER_ROLE_NAME}></div>
+        <div class="head_font" style="width:9%;height: 25px;line-height: 25px;"><input type="text" name='fudian' value='<{$item.PRICE}>' id="<{$item.UUID}>inpt" lang="<{$item.UUID}>"/></div>
+    </div>
+    <{/foreach}>
+    
+    <div class="list_on" style="width: 93%;margin-left: 26px; border-bottom:0px;">
+	    <div class="head_font" onclick="delEmployees(this);">移除</div>
+	    <div class="head_font" onclick="updateEmployees(this);">批量修改</div>
+	    <div class="head_font">导出名单</div>
+	</div>
+	<p style="clear:both"></p>
+	<input type='hidden' id='current_page' value='0' />
+	<div class="show_fenye" style="margin-left: 25px;margin-top: 15px;">
+		<div class="feny" id="page_navigation">
+	</div>
+	<{else}>
+	<div style="border:1px solid #eee;height:40px;line-height:40px;text-align:center">没有找到相应的订单</div>
+	<{/if}>
+</div>
+<script type="text/javascript">
+	var per_page = 10; 
+	var items = document.getElementsByClassName("list_con");
+	var pages = Math.ceil(items.length/per_page);
+	gotopage(0);
+	
+	function gotopage(page){
+		for(var i=0;i<items.length;i++){
+			items[i].style.display='none';
+		}
+		for(var i=page*per_page;i<(page+1)*per_page;i++){
+			if(i<items.length){
+			items[i].style.display='block';
+			}
+		}
+		var navigation_html = '<a class="page_link" title="上一页" href="javascript:prepage();">&lt;</a>';
+		
+		for(var current_link = 0; current_link < pages; current_link++){
+			current_link == page?navigation_html += '<a class="page_link on" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>':navigation_html += '<a class="page_link" href="javascript:gotopage(' + current_link +')" >'+ (current_link + 1) +'</a>';			
+		}
+		navigation_html += '<a class="page_link" title="下一页" href="javascript:nextpage();">&gt;</a>';
+		document.getElementById("page_navigation").innerHTML= navigation_html;
+		document.getElementById("current_page").value= page;
+		
+	}
+	function nextpage(){
+		var page = parseInt(document.getElementById("current_page").value);
+		if(page < pages -1){
+			gotopage((page+1));
+			document.getElementById("current_page").value= page+1;
+		}	
+	}
+	function prepage(){
+		var page = parseInt(document.getElementById("current_page").value);		
+		if(page > 0){
+			gotopage((page - 1));
+			document.getElementById("current_page").value= page - 1;
+		}
+	}
+	
+	
+</script>
+<script>
+//单个修改
+function updateOneEmployee(obj){
+	if(!confirm("您确定要修改这些人")){
+		return false;
+	}
+	var url="<{link app=qiyecenter ctl=site_member act=updateEmployees}>";
+	var dataObj = {};
+	//企业保存员工
+	var itemArray = new Array();
+	var itemList = {};
+	itemList.UUID = obj.lang;
+	itemList.PRICE = obj.value;
+	itemArray.push(itemList);
+	dataObj.ITEM_LIST = itemArray;
+	itemArray = [];
+	new Request({
+		url:url,
+		method:'post',
+		data:dataObj,
+		onComplete: function(rs){
+			alert('修改成功');
+		}
+	}).send();
+}
+//批量修改
+function updateEmployees(obj){
+	if(!confirm("您确定要修改这些人")){
+		return false;
+	}
+	var url="<{link app=qiyecenter ctl=site_member act=updateEmployees}>";
+	var dataObj = {};
+	//企业保存员工
+	var itemArray = new Array();
+	var chkInput = document.getElementsByName("selectItem");
+	for(var i=0; i<chkInput.length;i++){
+		if(chkInput[i].checked){
+			var itemList = {};
+			var chkId = chkInput[i].id;
+			itemList.UUID = chkInput[i].id;
+			itemList.PRICE = $(chkId+'inpt').get("value");
+			itemArray.push(itemList);
+		}
+	}
+	dataObj.ITEM_LIST = itemArray;
+	itemArray = [];
+	new Request({
+		url:url,
+		method:'post',
+		data:dataObj,
+		onComplete: function(rs){
+			alert('修改成功');
+		}
+	}).send();
+}
+//按条件查询
+function searchByCond(){
+	var frmIdObj = document.getElementById('frmId');
+	var dataObj = {};
+
+	return false;
+	var url="<{link app=qiyecenter ctl=site_member act=createItemUser}>";
+	new Request({
+		url:url,
+		method:'post',
+		data:dataObj,
+		onComplete: function(rs){
+			alert(rs);
+		}
+	}).send();
+}
+//指定员工
+function delEmployees(obj){
+	if(!confirm("您确定要删除这些人")){
+		return false;
+	}
+	var url="<{link app=qiyecenter ctl=site_member act=deleteBatchItemUser}>";
+	var dataObj = {};
+	//企业保存员工
+	var itemArray = new Array();
+	var chkInput = document.getElementsByName("selectItem");
+	for(var i=0; i<chkInput.length;i++){
+		if(chkInput[i].checked){
+			var itemList = {};
+			itemList.UUID = chkInput[i].id;
+			itemArray.push(itemList);
+		}
+	}
+	dataObj.ITEM_LIST = itemArray;
+	itemArray = [];
+	new Request({
+		url:url,
+		method:'post',
+		data:dataObj,
+		onComplete: function(rs){
+			for(var i=0; i<chkInput.length;i++){
+				if(chkInput[i].checked){
+					var chkId = chkInput[i].id;
+ 					var divsObj = $(chkId).getParent('div').getParent('div');
+ 					divsObj.setStyle('display', 'none');
+				}
+			}
+		}
+	}).send();
+}
+//全选反选
+function selectAll2(obj){
+	//var chkInput = document.getElementsByTagName('input');
+	var chkInput = document.getElementsByName("selectItem");
+	if(obj.checked){
+		for(var i=0; i<chkInput.length;i++){
+			if(!chkInput[i].checked){
+				chkInput[i].checked = true;
+			}
+		}
+	}else{
+		for(var i=0; i<chkInput.length;i++){
+			if(chkInput[i].checked){
+				chkInput[i].checked = false;
+			}
+		}
+	}
+	
+}
+</script>
+
