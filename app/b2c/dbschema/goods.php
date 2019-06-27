@@ -338,8 +338,7 @@
       'type' => 'varchar(255)',
       'editable' => false,
     ),
-    'intro' => 
-
+    'intro' =>
     array (
       'type' => 'longtext',
       'sdfpath' => 'description',
@@ -350,6 +349,16 @@
       'filtertype' => 'normal',
       'in_list' => false,
     ),
+  'wapintro' =>
+      array (
+          'type' => 'longtext',
+          'label' => 'WAP详细介绍',
+          'width' => 110,
+          'hidden' => true,
+          'editable' => false,
+          'filtertype' => 'normal',
+          'in_list' => false,
+      ),
     'store_place' => 
     array (
       'type' => 'varchar(255)',

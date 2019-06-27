@@ -2896,4 +2896,12 @@ class b2c_mdl_goods extends dbeav_model
     {
         return '￥' . sprintf("%.2f", $row);
     }
+    /**
+     * @Author: panbiao <panbiaophp@163.com>
+     * @DateTime: 2019-06-27 13:34
+     * @Desc:保存详情页
+     */
+    function save_description($goods_description){
+        $rs = parent::save($goods_description);
+    }
 }

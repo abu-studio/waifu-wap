@@ -8,8 +8,13 @@
 
 class b2c_ctl_wap_product extends wap_frontpage{
 
-    function __construct($app){
+    var $_call = 'call';
+    var $type = 'goods';
+    var $seoTag = array('shopname','brand','goods_name','goods_cat','goods_intro','goods_brief','brand_kw','goods_kw','goods_price','update_time','goods_bn');
+    function __construct($app)
+    {
         parent::__construct($app);
+        kernel::single('base_session')->start();
         $this->shopname = app::get('wap')->getConf('wap.name');
         if(isset($this->shopname)){
             $this->title = app::get('b2c')->_('商品页').'_'.$this->shopname;
@@ -19,16 +24,16 @@ class b2c_ctl_wap_product extends wap_frontpage{
 
         $cur = app::get('ectools')->model('currency');
         //货币格式输出
-        $ret = $cur->getFormat();
-        $ret =array(
-            'decimals'=>$this->app->getConf('system.money.decimals'),
-            'dec_point'=>$this->app->getConf('system.money.dec_point'),
-            'thousands_sep'=>$this->app->getConf('system.money.thousands_sep'),
-            'fonttend_decimal_type'=>$this->app->getConf('system.money.operation.carryset'),
-            'fonttend_decimal_remain'=>$this->app->getConf('system.money.decimals'),
-            'sign' => $ret['sign']
-        );
-        $this->pagedata['money_format'] = json_encode($ret);
+//        $ret = $cur->getFormat();
+//        $ret =array(
+//            'decimals'=>$this->app->getConf('system.money.decimals'),
+//            'dec_point'=>$this->app->getConf('system.money.dec_point'),
+//            'thousands_sep'=>$this->app->getConf('system.money.thousands_sep'),
+//            'fonttend_decimal_type'=>$this->app->getConf('system.money.operation.carryset'),
+//            'fonttend_decimal_remain'=>$this->app->getConf('system.money.decimals'),
+//            'sign' => $ret['sign']
+//        );
+//        $this->pagedata['money_format'] = json_encode($ret);
     }
 
     //获取商品详情页中的配置信息
@@ -63,8 +68,371 @@ class b2c_ctl_wap_product extends wap_frontpage{
         return $setting;
     }
 
-
     public function index()
+    {
+        $productsModel = $this->app->model('products');
+        $goodsModel = $this->app->model('goods');
+        //获取参数
+        $_getParams = $this->_request->get_params();
+        $gid = $_getParams[0];
+        $specImg = $_getParams[1];
+        $spec_id = $_getParams[2];
+        $this->id = $gid;
+        $this->customer_template_id=$gid;
+        if(!$this->id){
+            $this->splash('failed', 'back', app::get('b2c')->_('无效商品！<br>可能是商品未上架'));
+        }else{
+            $rs = $goodsModel->dump(array('goods_id'=>$this->id),'goods_id');
+            if(!$rs || empty($rs)){
+                $this->splash('failed', 'back', app::get('b2c')->_('无效商品！<br>可能是商品未上架'));
+            }
+        }
+        if (isset($_getParams[3]))
+        {
+            $vcat_id = $_getParams[3];
+            if (intval($vcat_id) > 0){
+                $virCatObj = app::get('b2c')->model('goods_hfvirtual_cat');
+                $vcatList = $virCatObj->getList('cat_id,cat_path,virtual_cat_id,filter,virtual_cat_name as cat_name,goods_type,url',
+                    array('virtual_cat_id'=>intval($vcat_id)));
+                $vcat = $vcatList[0];
+                $_SESSION['sfsc']['vcat']=$vcat;
+                $this->set_tmpl("hfproduct");
+            }else{
+                if (!empty($_SESSION['sfsc']['vcat'])){
+                    unset($_SESSION['sfsc']['vcat']);
+                    $this->set_tmpl("product");
+                }
+            }
+        }
+
+        if(!empty($_SESSION['sfsc']['vcat'])){
+            $GLOBALS['runtime']['path'] = $goodsModel->getHfPath($gid,'');
+        }else{
+            $GLOBALS['runtime']['path'] = $goodsModel->getPath($gid,'');
+        }
+        $GLOBALS['runtime']['goods_id'] = $gid;
+        //当前登陆用户信息
+        $siteMember = $this->get_current_member();
+        //当前登陆用户等级
+        $this->site_member_lv_id = $siteMember['member_lv'];
+        $this->pagedata['this_member_lv_id'] = $this->site_member_lv_id;
+        //会员的等级图片
+        if(!empty($this->site_member_lv_id))
+        {
+            $member_lv_object = kernel::single("b2c_mdl_member_lv");
+            $member_lv_data = $member_lv_object->dump(array('member_lv_id'=>$this->site_member_lv_id),"*");
+            $this->pagedata['this_member_lv_name'] = $member_lv_data['name'];
+            if($this->site_member_lv_id == 1)
+            {
+                $this->pagedata['this_member_lv_pic'] = kernel::base_url().'/themes/simple/images/member_lv01.png';
+            }elseif($this->site_member_lv_id == 2)
+            {
+                $this->pagedata['this_member_lv_pic'] = kernel::base_url().'/themes/simple/images/member_lv02.png';
+            }elseif($this->site_member_lv_id == 3)
+            {
+                $this->pagedata['this_member_lv_pic'] = kernel::base_url().'/themes/simple/images/member_lv03.png';
+            }else{
+                $this->pagedata['this_member_lv_pic'] = kernel::base_url().'/themes/simple/images/member_lv01.png';
+            }
+        }
+        //商品基本信息 goods表获取
+        $fileds ='store_id,wapintro,goods_state,buy_m_count,fav_count,freight_bear,comments_count,avg_point,goods_id,name,bn,price,cost,mktprice,marketable,store,store_freeze,notify_num,score,weight,unit,brief,image_default_id,udfimg,thumbnail_pic,small_pic,big_pic,min_buy,package_scale,package_unit,package_use,score_setting,nostore_sell,goods_setting,disabled,spec_desc,adjunct,p_1,p_2,p_3,p_4,p_5,p_6,p_7,p_8,p_9,p_10,p_11,p_12,p_13,p_14,p_15,p_16,p_17,p_18,p_19,p_20,p_21,p_22,p_23,p_24,p_25,p_26,p_27,p_28,p_29,p_30,p_31,p_32,p_33,p_34,p_35,p_36,p_37,p_38,p_39,p_40,p_41,p_42,p_43,p_44,p_45,p_46,p_47,p_48,p_49,p_50,brand_id,type_id,cat_id,seo_info,act_type';
+        $aGoods_list = $goodsModel->getList($fileds,array('goods_id'=>$gid,'store_id|than'=>0));
+        $this->pagedata['page_product_basic'] = $aGoods_list[0];
+        //获取详细的商品数据（包含货品，品牌，规格，类型,图片）
+        $list2dump = kernel::single('b2c_goods_list2dump');
+        $aGoods = $list2dump->get_goods($aGoods_list[0],$this->site_member_lv_id);
+        //商品的真实库存（扣去了活动冻结库存）
+        $goods_real_store = $aGoods_list[0]['store'] - $aGoods_list[0]['store_freeze'];
+        $aGoods['store_id'] = $aGoods_list[0]['store_id'];
+        $aGoods['goods_state'] = $aGoods_list[0]['goods_state'];
+        $aGoods['buy_m_count'] = $aGoods_list[0]['buy_m_count'];
+        $aGoods['fav_count'] = $aGoods_list[0]['fav_count'];
+        $aGoods['gain_score'] = $aGoods_list[0]['score'];
+        $aGoods['freight_bear'] = $aGoods_list[0]['freight_bear'];
+        $aGoods['store_freeze'] = $aGoods_list[0]['store_freeze'];
+
+        if($spec_id) $aGoods['spec_node'] = $spec_id;
+        //$this->pagedata['store_info'] = $objGoods->getStoreInfo($aGoods['store_id']); // 店铺信息
+        $this->pagedata['store_id'] = $aGoods['store_id'];
+        $aInfo = app::get('business')->model('storemanger')->getList('area,account_id',array('store_id'=>$aGoods['store_id']));
+        if($aInfo[0]['area'])
+            list($a,$area_from,$b) = explode(':', $aInfo[0]['area']);
+        else $area_from ='';
+        if($area_from) $area_from = explode('/', $area_from);
+        if(is_array($area_from)) $area_from = (($area_from[0] == '北京' || $area_from[0] == '天津' || $area_from[0] == '上海' || $area_from[0] == '重庆')?'':$area_from[0]).$area_from[1];
+        else $area_from = '';
+        $this->pagedata['area_from'] = $area_from;
+
+        $this->pagedata['dlytype_info'] = $goodsModel->getDlytype($aGoods); // 运费信息
+        $objRegions = app::get('ectools')->model('regions');
+        $this->pagedata['region_info'] = $objRegions->getList('region_id,local_name', array('region_grade'=>1,'disabled'=>'false')); // 地区信息
+        $objPoint = app::get('business')->model('comment_goods_point');
+        $this->pagedata['goods_point'] = array('avg_num'=>$aGoods_list[0]['avg_point'],'avg'=>$objPoint->star_class($aGoods_list[0]['avg_point']));
+        $this->pagedata['total_discuss_nums'] = $aGoods_list[0]['comments_count'];
+
+        if(!$aGoods || $aGoods === false || !$aGoods['product'])
+        {
+            $this->_response->clean_all_headers()->set_http_response_code('404')->send_headers();
+            $this->splash('failed', 'back', app::get('b2c')->_('无效商品！<br>可能是商品未上架'));
+            echo '无效商品！<br>可能是商品未上架';
+            exit;
+        }
+        //反序列化商品配件信息
+        if(!is_array($aGoods['adjunct']))
+        {
+            $aGoods['adjunct'] = unserialize($aGoods['adjunct']);
+            $adjunct_goods_num = 0;
+            foreach($aGoods['adjunct'] as $goods_adjunct_key => $goods_adjunct_value)
+            {
+                if($goods_adjunct_value['items']['product_id'])
+                {
+                    $adjunct_goods_num += count($goods_adjunct_value['items']['product_id']);
+                }
+            }
+            $this->pagedata['adjunctGoodsNum'] = $adjunct_goods_num; //配件的商品数量
+            $this->pagedata['adjunctNum'] = count($aGoods['adjunct']); //配件组的数量
+        }
+        //设置模板
+        if( $aGoods['goods_setting']['goods_template'] )
+        {
+            $this->set_tmpl_file($aGoods['goods_setting']['goods_template']);                 //添加模板
+        }
+        if(is_array($aGoods['spec']))
+        {
+            foreach($aGoods['spec'] as $sv)
+            {
+                $specValue[] = $sv['spec_name'];
+            }
+            $this->pagedata['specShowItems'] =$specValue;
+        }
+        //计算商品冻结总数
+        $aGoods['freez'] = 0;
+        if(count($aGoods['product']))
+        {
+            foreach($aGoods['product'] as $pdk=>$pdv)
+            {
+                if($pdv['freez'])
+                {
+                    $aGoods['freez'] +=  $pdv['freez'];
+                }
+            }
+        }
+        //======商品会员价======
+        if ($aGoods['product']) //如果商品有货品处理价格
+        {
+            $priceArea = array();
+            if ($siteMember['member_lv'])
+            {
+                $mlv = $siteMember['member_lv'];
+            }
+            else
+            {
+                $level=&$this->app->model('member_lv');
+                $mlv=$level->get_default_lv();
+            }
+            if ($mlv){
+                foreach($aGoods['product'] as $gpk => &$gpv)
+                {
+                    $currentPriceArea[]=$gpv['price']['price']['current_price'];//销售价区域
+                    $priceArea[]=$gpv['price']['price']['price'];//销售价区域
+                    if( $gpv['price']['mktprice']['price'] == '' || $gpv['price']['mktprice']['price'] == null )
+                    {
+                        $mktpriceArea[]= $productsModel->getRealMkt($gpv['price']['mktprice']['price']);
+                    }else{
+                        $mktpriceArea[]=$gpv['price']['mktprice']['price'];//市场价区域
+                    }
+                }
+                if (count($currentPriceArea)>1)
+                {
+                    $aGoods['current_price'] = min($currentPriceArea);
+                }
+                if (count($priceArea)>1)
+                {
+                    $minprice = min($priceArea);
+                    $maxprice = max($priceArea);
+                    if ($minprice<>$maxprice)
+                    {
+                        $aGoods['minprice'] = $minprice;
+                        $aGoods['maxprice'] = $maxprice;
+                    }
+                }
+                if ($this->app->getConf('site.show_mark_price')=="true" && count($mktpriceArea)>1)
+                {
+                    $mktminprice = min($mktpriceArea);
+                    $mktmaxprice = max($mktpriceArea);
+                    if ($mktminprice<>$mktmaxprice)
+                    {
+                        $aGoods['minmktprice'] = $mktminprice;
+                        $aGoods['maxmktprice'] = $mktmaxprice;
+                    }
+                }
+            }
+        }
+        //======商品会员价 end======
+        if(empty($siteMember['member_id']))
+        {
+            $this->pagedata['login'] = 'nologin';
+        }
+        else
+        {
+            $obj_store = app::get('business')->model('storemanger');
+            $obj_smb = app::get('business')->model('storemember');
+            $is_business = $obj_store->count(array('account_id'=>$siteMember['member_id']));
+            if(!$is_business) $is_business = $obj_smb->count(array('member_id'=>$siteMember['member_id']));
+            if($is_business > 0) $this->pagedata['login'] = 'business';
+            else $this->pagedata['login'] = 'member';
+        }
+        //分配商品冻结库存总数
+        $this->pagedata['goods']['product_freez'] = $aGoods['freez'];
+        //当前用户使用货币相关信息
+        $cur = app::get('ectools')->model('currency');
+        $cur_info = $_COOKIE["S"]["CUR"]?$cur->getcur($_COOKIE["S"]["CUR"]):$cur->getFormat();
+        if($cur_info['cur_sign']) {
+            $cur_info['sign'] = $cur_info['cur_sign'];
+        }
+        $ret =array(
+            'decimals'=>$this->app->getConf('system.money.decimals'),
+            'dec_point'=>$this->app->getConf('system.money.dec_point'),
+            'thousands_sep'=>$this->app->getConf('system.money.thousands_sep'),
+            'fonttend_decimal_type'=>$this->app->getConf('system.money.operation.carryset'),
+            'fonttend_decimal_remain'=>$this->app->getConf('system.money.decimals'),
+            'sign' => $cur_info['sign']
+        );
+        if(isset($cur_info['cur_default']) && $cur_info['cur_default'] === "false") {
+            $ret['cur_rate'] = $cur_info['cur_rate'];
+        }
+        unset($cur_info);
+
+        $this->pagedata['goods']['setting']['score'] = $this->app->getConf('site.get_policy.method');
+        $this->pagedata['money_format'] = json_encode($ret);
+        $this->pagedata['goodsbndisplay'] = $this->app->getConf('goodsbn.display.switch');
+        $this->pagedata['goodsBnShow'] = $this->app->getConf('goodsbn.display.switch');
+        //配置数据
+        $setting['buytarget'] = $this->app->getConf('site.buy.target');
+        $setting['saveprice'] = $this->app->getConf('site.save_price');
+        $setting['mktprice'] = $this->app->getConf('site.show_mark_price');
+        $aGoods['setting'] = $setting;
+
+        $this->pagedata['goods']['images'] = $aGoods['images'];
+
+        $this->pagedata['spec_default_pic'] = $this->app->getConf('spec.default.pic');
+
+        $tTitle=(empty($aGoods['seo']['seo_title']) ? $aGoods['name'] : $aGoods['seo']['seo_title']).(empty($aCat['cat_name'])?"":" - ".$aCat['cat_name']);
+        if(empty($this->title)) $this->title = $tTitle;
+
+        $this->setSeo('site_product','index',$this->prepareSeoData(array('goods'=>$aGoods)));
+        if( is_string($aGoods['seo_info']) ){
+            $aGoods['seo_info'] = unserialize( $aGoods['seo_info'] );
+        }
+        if( $aGoods['seo_info']['seo_title'] ){
+            $this->title = $aGoods['seo_info']['seo_title'];
+        }
+        if( $aGoods['seo_info']['seo_keywords'] ){
+            $this->keywords = $aGoods['seo_info']['seo_keywords'];
+        }
+        if( $aGoods['seo_info']['seo_description'] ){
+            $this->description = $aGoods['seo_info']['seo_description'];
+        }
+        $setting['acomment']['switch']['ask'] = $this->app->getConf('comment.switch.ask');
+        $setting['acomment']['switch']['discuss'] = $this->app->getConf('comment.switch.discuss');
+        $this->pagedata['setting'] = $setting;
+
+        $goods_point_status = app::get('b2c')->getConf('goods.point.status');
+        $this->pagedata['point_status'] = $goods_point_status ? $goods_point_status: 'on';
+        $this->pagedata['seelist'] = kernel::single("b2c_goods_description_see2see")->showlist($gid);
+        $this->pagedata['gpromotion_info'] = kernel::single('business_goods_detail_promotion')->show($gid,$siteMember);
+        kernel::single('b2c_mdl_goods_view_history') -> add_history($siteMember['member_id'],$gid);
+        //相关商品数量统计
+        $aGoods['goodslink'] = $goodsModel->getLinkListNums($gid);
+
+        //判断限时抢购活动是否开启
+        if($aGoods_list[0]['act_type'] == 'timedbuy'){
+            $timed_bus_obj = app::get('timedbuy')->model('businessactivity');
+            $act_id = $timed_bus_obj->getList('aid,nums,discription,price,remainnums',array('gid'=>$gid,'disabled'=>'false','status'=>'2'));
+            if(isset($act_id[0]['aid'])){
+                $timed_act_obj = app::get('timedbuy')->model('activity');
+                $info = $timed_act_obj->getList('*',array('act_id'=>$act_id[0]['aid']));
+                if($info[0]['act_open'] == 'false' || $info[0]['active_status'] == 'start' || $info[0]['active_status'] == 'end'){
+                    $this->pagedata['isEnd'] = true;
+                }
+                $this->pagedata['TimedbuyNums'] = $act_id[0]['remainnums'];
+                $this->pagedata['TimedbuyPrice'] = $act_id[0]['price'];
+                $this->pagedata['TimedbuyDis'] = $act_id[0]['discription'];
+                $this->pagedata['isTimedbuy'] = true;
+                $this->pagedata['timedbuyInfo'] = $info[0];
+                $this->pagedata['timedbuyInfo']['stime'] = $info[0]['start_time'];
+                $this->pagedata['timedbuyInfo']['start_time'] = date('Y年m月d日 H:i',$info[0]['start_time']);
+                $this->pagedata['timedbuyInfo']['etime'] = $info[0]['end_time'];
+                $this->pagedata['timedbuyInfo']['end_time'] = date('Y年m月d日 H:i',$info[0]['end_time']);
+                $this->pagedata['goodshtml']['store'] = kernel::single('timedbuy_goods_detail_store')->show($gid,$aGoods);
+                $this->pagedata['timedbuy'] = 'true';
+                $this->pagedata['NOWTIME'] = time();
+            }else{
+                $this->pagedata['goodshtml']['store'] = kernel::single('b2c_goods_detail_store')->show($gid,$aGoods);
+            }
+        }else{
+            $this->pagedata['goodshtml']['store'] = kernel::single('b2c_goods_detail_store')->show($gid,$aGoods);
+        }
+        $this->pagedata['goodshtml']['pic'] = kernel::single('b2c_goods_detail_pic')->show($gid,$aGoods);
+        $this->pagedata['goodshtml']['mlv_price'] = kernel::single('b2c_goods_detail_mlvprice')->show($gid,$aGoods,$siteMember);
+        $this->pagedata['goodshtml']['promotion_info'] = kernel::single('b2c_goods_detail_promotion')->show($gid,$siteMember);
+        $this->pagedata['async_request_list'] = json_encode($this->get_body_async_url($aGoods));
+
+        //计算商品冻结总数
+        $aGoods['freez'] = 0;
+        if(count($aGoods['product'])){
+            foreach($aGoods['product'] as $pdk=>$pdv){
+                if($pdv['freez']) {
+                    $aGoods['freez'] +=  $pdv['freez'];
+                }
+            }
+        }
+        //分配商品冻结库存总数
+        $this->pagedata['goods']['product_freez'] = $aGoods['freez'];
+
+        //页面基本信息  servicelist
+        $this->pagedata['info_page_list'] = $this->_get_servicelist_by('b2c_products_index_info');
+        ///按钮  servicelist
+        $this->pagedata['btn_page_list'] = $this->_get_servicelist_by('b2c_products_index_btn',$this->pagedata['timedbuy']);
+
+        // 商品详情页添加项埋点
+        foreach( kernel::servicelist('goods_description_add_section') as $services ) {
+            if ( is_object($services) ) {
+                if ( method_exists($services, 'addSection') ) {
+                    $services->addSection($this,$this->pagedata['goods']);
+                }
+            }
+        }
+
+        //检查买家是否是店家
+        $checkSeller = kernel::service('business_check_goods_isMy');
+        if($checkSeller){
+            if($checkSeller->check_isSeller($msg)){
+                $this->pagedata['isSeller'] = 'true';
+            }else{
+                $this->pagedata['isSeller'] = 'false';
+            }
+        }
+        //微信相关
+        $this->pagedata['from_weixin'] = $this->from_weixin;
+        $this->pagedata['weixin']['appid'] = $this->weixin_a_appid;
+        $this->pagedata['weixin']['imgUrl'] = base_storager::image_path($this->pagedata['page_product_basic']['image_default_id']);
+        $this->pagedata['weixin']['linelink'] = app::get('wap')->router()->gen_url(array('app'=>'b2c','ctl'=>'wap_product','act'=>'index','arg0'=>$productId, 'full'=>1));
+        $this->pagedata['weixin']['shareTitle'] = $this->title;
+        $this->pagedata['weixin']['descContent'] = $this->pagedata['page_product_basic']['brief'];
+
+        //微信内置js调用
+        $wechat = kernel::single('weixin_wechat');
+        $signPackage = $wechat->getSignPackage();
+        $this->pagedata['signPackage'] = $signPackage;
+        //echo '<pre>';print_r($this->pagedata);exit;
+        $this->page('wap/product/index.html');
+    }
+
+
+
+    public function indexOld()
     {
 
         $productsModel = $this->app->model('products');
@@ -72,7 +440,7 @@ class b2c_ctl_wap_product extends wap_frontpage{
 
         //获取参数 货品ID
         $_getParams = $this->_request->get_params();
-
+        echo '<pre>';var_dump($_getParams);exit;
         $productId = $_getParams[0];
         $type = $_getParams[1];
         $guide_identity = $_getParams[2];
@@ -80,7 +448,7 @@ class b2c_ctl_wap_product extends wap_frontpage{
             $url = $this->gen_url(array('app'=>'b2c','ctl'=>'wap_cart','act'=>'qrCodeAddCart','arg0'=>$productId));
             $this->redirect($url);
         }
-
+        echo '<pre>';var_dump($_getParams);exit;
         $this->obj_session = kernel::single('base_session');
         $this->obj_session->start();
 
@@ -88,7 +456,7 @@ class b2c_ctl_wap_product extends wap_frontpage{
             $this->pagedata['show_status'] = 'off';
         }
         $siteMember = $this->get_current_member();
-        echo '<pre>';var_dump($siteMember);exit;
+
         if( empty($siteMember['member_id']) ){
             $this->pagedata['login'] = 'nologin';
             $member_id = '-1';
@@ -339,10 +707,12 @@ class b2c_ctl_wap_product extends wap_frontpage{
     }
 
     //基本信息
-    function productBasicIntro($product_id){
+    function productBasicIntro($gid){
         $this->_response->set_header('Cache-Control', 'no-store, no-cache');
-        $product = app::get('b2c')->model('products')->getList('*',array('product_id'=>$product_id));
-        if(!$product){
+        $objGoods = $this->app->model('goods');
+        $aGoods_row = $objGoods->getRow('*',array('goods_id'=>intval($gid)));
+        //$product = app::get('b2c')->model('products')->getList('*',array('product_id'=>$product_id));
+        if(!$aGoods_row){
             echo json_encode(array('error'=>app::get('b2c')->_('商品不存在')));
             return;
         }
@@ -350,8 +720,9 @@ class b2c_ctl_wap_product extends wap_frontpage{
         $aGoods = $aGoods[0];
         $aGoods['product'] = $product[0];
         $siteMember = $this->get_current_member();
-        $productBasic = $this->_get_product_basic($product_id,$aGoods,$siteMember);
-        $this->pagedata['page_product_basic'] = $productBasic;
+        //$productBasic = $this->_get_product_basic($product_id,$aGoods,$siteMember);
+        $this->pagedata['page_product_basic'] = $aGoods_row;
+        //echo '<pre>';var_dump($aGoods_row);exit;
         echo $this->fetch('wap/product/tab/basic_intro.html');
     }
 

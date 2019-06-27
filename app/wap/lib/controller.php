@@ -318,7 +318,6 @@ class wap_controller extends base_controller
         $this->tmpl_cachekey('__theme_main_page', $this->pagedata['_MAIN_']);
         $compile_id = $this->compile_id( $this->get_theme() . "/" . $tmpl );
         $last_modified = filemtime($tmpl_file);
-
         if (!$is_preview){
             if($this->force_compile || !cachemgr::get($compile_id.$last_modified, $compile_code)){
                 cachemgr::co_start();
@@ -383,10 +382,11 @@ class wap_controller extends base_controller
     final public function page($view, $no_theme=false, $app_id=null)
     {
         $params = $this->_request->get_params(true);
-        if (!$params['response_type']){
+        if (empty($params['response_type'])){
             $current_theme = ($params['theme'])?$params['theme']:kernel::single('wap_theme_base')->get_default();
             $is_preview = (isset($_COOKIE['wap']['preview'])&&$_COOKIE['wap']['preview']=='true')?true:false;
-            if($no_theme==false && $current_theme){
+            if($no_theme==false && $current_theme)
+            {
                 $this->set_theme($current_theme);
                 $this->pagedata['_MAIN_'] = $view;      //强制替换
                 $this->pagedata['_THEME_'] = kernel::base_url() . "/wap_themes/" . $this->get_theme();   //模版地址

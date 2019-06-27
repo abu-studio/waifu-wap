@@ -410,7 +410,10 @@ class b2c_ctl_admin_goods_editor extends desktop_controller{
         if( $_POST['goods']['images'] ){
             $oImage_attach = app::get('image')->model('image_attach');
             $arr_image_attach = $oImage_attach->getList('*',array('target_id'=>$goods['goods_id'],'target_type'=>'goods'));
-            foreach ((array)$arr_image_attach as $_arr_image_attach){
+            $post_image_id = array();
+            foreach ((array)$arr_image_attach as $_arr_image_attach)
+            {
+                $post_image_id[]=$_arr_image_attach['image_id'];
                 if (!in_array($_arr_image_attach['image_id'],$_POST['goods']['images'])){
                     $arr_remove_image[] = $_arr_image_attach['image_id'];
                 }
@@ -420,15 +423,58 @@ class b2c_ctl_admin_goods_editor extends desktop_controller{
         if ( !$oGoods->save($goods) ){
             $this->end(false,app::get('b2c')->_('您所填写的货号重复，请检查！'));
         }else{
-            if( $goods['images'] ){
+            if( $goods['images'] )
+            {
+                /*
                 $oImage = &app::get('image')->model('image');
                 if ($arr_remove_image){
                     foreach($arr_remove_image as $_arr_remove_image)
                         $test = $oImage->delete_image($_arr_remove_image,'goods');
                 }
-//                foreach($goods['images'] as $k=>$v){
-//                    $test = $oImage->rebuild($v['image_id'],array('S','M','L'),true);
-//                }
+                //foreach($goods['images'] as $k=>$v){
+                  //  $test = $oImage->rebuild($v['image_id'],array('S','M','L'),true);
+               // }
+*/
+                $oImage = app::get('image')->model('image');
+                if ($arr_remove_image){
+                    foreach($arr_remove_image as $_arr_remove_image)
+                        $test = $oImage->delete_image($_arr_remove_image,'goods');
+                }
+                $rebuild_image=array();
+                foreach($goods['images'] as $k=>$v){
+                    if(is_array($post_image_id) && !in_array($v['image_id'],$post_image_id)){
+                        $rebuild_image[$v['image_id']]=$oImage->getRow('l_ident',array('image_id'=>$v['image_id']));
+                        $test = $oImage->rebuild($v['image_id'],array('S','M','L'),true);
+                    }
+                }
+                //替换商品描述新增的图片地址
+                $temp_description=array();
+                if(!empty($rebuild_image))
+                {
+                    $_SESSION['edit_goods_id']=$goods['goods_id'];
+                    foreach($rebuild_image as $key=>$val){
+                        $new_image_url=$oImage->getRow('l_ident',array('image_id'=>$key));
+                        $_SESSION['temp_description'][$key]['old']=$val['l_ident'];
+                        $_SESSION['temp_description'][$key]['new']=$new_image_url['l_ident'];
+                        $_SESSION['temp_description'][$key]['time']=time();
+                    }
+                }
+                if(!empty($_SESSION['temp_description']))
+                {
+                    foreach($_SESSION['temp_description'] as $key=>$val){
+                        if($val['time']<(time()-1800)){
+                            unset($_SESSION['temp_description'][$key]);
+                            continue;
+                        }
+                        $goods['description']=str_replace($val['old'], $val['new'], $goods['description']);
+                        if(!empty($goods['wapintro']))
+                        {
+                            $goods['wapintro']=str_replace($val['old'], $val['new'], $goods['wapintro']);
+                        }
+                        $edit_description=array('goods_id'=>$goods['goods_id'],'description'=>$goods['description'],'wapintro'=>$goods['wapintro']);
+                        $oGoods->save_description($edit_description);
+                    }
+                }
             }
 
             if( $_POST['goods_static'] ){
