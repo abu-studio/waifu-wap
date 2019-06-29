@@ -1833,7 +1833,16 @@ class business_ctl_site_member extends b2c_ctl_site_member
         if(!$img_valite){
             $this->splash('failed',$url , app::get('b2c')->_('详细介绍中存在非法的图片引用地址'),'','',true);
         }
-
+        //@Desc新增WAP详细介绍验证 @Author:panbiao <panbiaophp@163.com> @DateTime:2019-06-29 07:53
+        $wapCustomhtml=$_POST['goods']['wapintro'];
+        $wapValite=kernel::single('business_url')->is_valid_html($wapCustomhtml);
+        $wapImg_valite=kernel::single('business_img_url')->is_valid_html($wapCustomhtml);
+        if(!$wapValite){
+            $this->splash('failed',$url , app::get('b2c')->_('WAP详细介绍中存在非法的图片或文字链接'),'','',true);
+        }
+        if(!$wapImg_valite){
+            $this->splash('failed',$url , app::get('b2c')->_('WAP详细介绍中存在非法的图片引用地址'),'','',true);
+        }
         /*$customhtml=preg_replace("/<script[^>]*>([\s\S]*?)<\/script>/i","",$customhtml);
         $burl=kernel::single('business_url');
         $customhtml=$burl->replace_html($customhtml);//非本地地址过滤
@@ -1917,18 +1926,21 @@ class business_ctl_site_member extends b2c_ctl_site_member
         if ( !$oGoods->save($goods) ){
             $this->splash('failed',$url , app::get('b2c')->_('您所填写的货号重复，请检查！'),'','',true);
         }else{
-            if( $goods['images'] ){
+            if( $goods['images'] )
+            {
                 $oImage = &app::get('business')->model('image');
                 if ($arr_remove_image){
                     foreach($arr_remove_image as $_arr_remove_image)
                         $test = $oImage->delete_image($_arr_remove_image,'goods',$this->store_id);
                 }
-                foreach($goods['images'] as $k=>$v){
+                foreach($goods['images'] as $k=>$v)
+                {
                     $test = $oImage->rebuild($v['image_id'],array('S','M','L'),true,$this->store_id,0);
                 }
             }
 
-            if( $_POST['goods_static'] ){
+            if( $_POST['goods_static'] )
+            {
                 $url = $oUrl->fetch_static( array( 'static'=>$_POST['goods_static'] ) );
                 $goods_url = app::get('site')->router()->gen_url( array( 'app'=>'b2c','real'=>1,'ctl'=>'site_product','args'=>array($goods['goods_id']) ) );
                 $goods_url = substr( $goods_url , strlen( app::get('site')->base_url() ) );
@@ -1950,31 +1962,8 @@ class business_ctl_site_member extends b2c_ctl_site_member
 
             $data_gdlytype = array_values(array_filter($_POST['gdlytype']));
             $objGoodsDly = app::get('b2c')->model('goods_dly');
-            if(is_array($data_gdlytype) && !empty($data_gdlytype)){
-//                $data_insert = array();
-//                $data_delete = array();
-//                $count_new = count($data_gdlytype);
-//                foreach((array)$objGoodsDly->getList('dly_id',array('goods_id'=>$goods['goods_id'],'manual'=>'normal'),0,-1) as $key => $rows){
-//                    if($key < $count_new){
-//                        $sql = ' update sdb_b2c_goods_dly '.
-//                            ' set dly_id='.intval($data_gdlytype[$key]).
-//                            ' where goods_id='.intval($goods['goods_id']).' and dly_id='.intval($rows['dly_id']).' and manual=\'normal\'';
-//                        $objGoodsDly->db->exec($sql);
-//                        unset($data_gdlytype[$key]);
-//                    }else{
-//                        $data_delete[] = intval($rows['dly_id']);
-//                    }
-//                }
-//                foreach((array)$data_gdlytype as $item){
-//                    if(!empty($item))$data_insert[] = '('.intval($goods['goods_id']).','.intval($item).',\'normal\')';
-//                }
-//                if(count($data_delete)){
-//                    $objGoodsDly->db->exec('delete from sdb_b2c_goods_dly where goods_id ='.intval($goods['goods_id']).' and dly_id in ('.implode(',',$data_delete).') and manual=\'normal\'');
-//                }
-//                if(count($data_insert)){
-//                    $objGoodsDly->db->exec('insert into sdb_b2c_goods_dly (goods_id,dly_id,manual) values '.implode(',',$data_insert));
-//                }
-
+            if(is_array($data_gdlytype) && !empty($data_gdlytype))
+            {
                 //修正已经存在的模板删除错误（主键冲突）
                 //先删除全部，再写入
                 $objGoodsDly->db->exec('delete from sdb_b2c_goods_dly where goods_id ='.intval($goods['goods_id']).' and manual=\'normal\'');

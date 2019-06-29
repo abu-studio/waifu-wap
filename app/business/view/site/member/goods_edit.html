@@ -218,13 +218,20 @@
     </div>
   </div>
   <div>
-    <div class="title_fb"><{t}>4. 相关商品<{/t}></div>
+    <div class="title_fb"><{t}>4. <em><font color="red">*</font></em>WAP详细介绍<{/t}></div>
+    <div class="tableform">
+    <{input type="vhtml" name="goods[wapintro]" value=$goods.wapintro includeBase=true}>
+    </div>
+  </div>
+
+  <div>
+    <div class="title_fb"><{t}>5. 相关商品<{/t}></div>
     <div class="tableform">
     <{input type="vobject" object="goods" return_url="{$return_url}" filter=$goodslink_filter multiple="true" rowselect="true"  textcol="name" name="linkid" value=$goods.glink.items view="b2c:admin/goods/detail/rel_items.html"}>
     </div>
   </div>
   <div>
-    <div class="title_fb"><{t}>5. SEO设置<{/t}></div>
+    <div class="title_fb"><{t}>6. SEO设置<{/t}></div>
       <{assign var=seo_info value=$goods.seo_info}>
       <div class="tableform" >
        <table border="0" cellpadding="0" cellspacing="0" class="liststyle tdright">
