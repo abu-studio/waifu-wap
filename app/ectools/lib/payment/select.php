@@ -17,11 +17,16 @@ class ectools_payment_select
 	 * @param boolean backend or not
 	 * @return string 结果html
 	 */
-	public function select_pay_method(&$controller, &$sdf, $member_id=0, $is_backend=false){
+	public function select_pay_method(&$controller, &$sdf, $member_id=0, $is_backend=false,$platform=array('iscommon','ispc'))
+    {
 		$payment_cfg = app::get('ectools')->model('payment_cfgs');
 		$currency = app::get('ectools')->model('currency');
-		$payments = array();
-		$arrPayments = $payment_cfg->getList('*', array('status' => 'true', 'platform'=>'ispc', 'is_frontend' => true));
+        $payments = array();
+        if( $is_backend )
+        {
+            $platform[] = 'iswap';
+        }
+		$arrPayments = $payment_cfg->getList('*', array('status' => 'true', 'platform'=>$platform, 'is_frontend' => true));
 		$arrDefCurrency = $currency->getDefault();
 		if (!$sdf['cur_code'])
 		{			
@@ -56,13 +61,14 @@ class ectools_payment_select
             if($member_id && $_SESSION['account']['SETUP_MANAGER_TYPE'] != ''){
                 $obj_com = app::get('qiyecenter')->model('abcommercial_sfscpayment_setting');
                 $member_sel = $obj_com->getList('target_id,target_type',array('m_id'=>$member_id));
-                if(! empty($member_sel[0]['target_id'])){
+                if(! empty($member_sel[0]['target_id']))
+                {
                     $isHasOrgPayments = true;
                 }
             }
+            $from_weixin = kernel::single('weixin_wechat')->from_weixin();
 			foreach($arrPayments as $key=>$payment)
 			{
-
 				if (!$member_id)
 				{
 					if (trim($payment['app_id']) == 'deposit')
@@ -71,9 +77,23 @@ class ectools_payment_select
 						continue;
 					}
 				}
-				
+                //@Desc 判断是否是微信进来的 @Author:panbiao <panbiaophp@163.com> @DateTime:2019-06-28 14:38
+                if ( !$is_backend && strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') == false && ($payment['app_id'] == 'wxpay' || $payment['app_id'] == 'wxpayjsapi' ))
+                {
+                    unset($arrPayments[$key]);
+                    continue;
+                }
+                //@Desc 微信进入是去掉支付宝支付 @Author:panbiao <panbiaophp@163.com> @DateTime:2019-06-28 14:41
+                if (trim($payment['app_id']) == 'malipaynew')
+                {
+                    if ($from_weixin)
+                    {
+                        continue;
+                    }
+                }
                 //预存款支付
-                 if(!$isHasOrgPayments && $_SESSION['account']['SETUP_MANAGER_TYPE'] != 'I03702' && $_SESSION['account']['SETUP_MANAGER_TYPE'] != 'I03703'){
+                 if(!$isHasOrgPayments && $_SESSION['account']['SETUP_MANAGER_TYPE'] != 'I03702' && $_SESSION['account']['SETUP_MANAGER_TYPE'] != 'I03703')
+                 {
 					if (trim($payment['app_id']) == 'deposit')
 					{
 						if ($shop_def_currency == $currency)
@@ -208,14 +228,16 @@ class ectools_payment_select
                          ),
                      ),
                     */
-                    foreach($sfscdata['RESULT_DATA'] as $k=>$v){
-                        if(!empty($v['CUSTOMER_NAME'])){
+                    foreach($sfscdata['RESULT_DATA'] as $k=>$v)
+                    {
+                        if(!empty($v['CUSTOMER_NAME']))
+                        {
                             $v['CUSTOMER_NAME'] =  $v['CUSTOMER_NAME'] . '-';
                         }
 
                         $payments[] = array(
-                            'platform' => 'ispc',
-                            'app_platform' => '标准版',
+                            'platform' => 'iscommon',
+                            'app_platform' => '通用版',
                             'app_name' => '福点支付',
                             'app_staus' => '开启',
                             'app_version' => '1.0',
@@ -249,19 +271,21 @@ class ectools_payment_select
 			{
 			    $str_html = $controller->fetch("site/common/paymethod.html",$controller->pagedata['app_id']);
 				$obj_ajax_View_help = kernel::service('ectools_payment_ajax_html');
-				if (!$obj_ajax_View_help)
+				if (!$obj_ajax_View_help){
 					return $str_html;
-				else
+                }else{
 					return $obj_ajax_View_help->get_html($str_html,'ectools_payment_select','select_pay_method');
+                }
 			}
 			else
 			{
 				$str_html = $controller->fetch("admin/order/paymethod.html",$controller->pagedata['app_id']);
 				$obj_ajax_View_help = kernel::service('ectools_payment_ajax_html');
-				if (!$obj_ajax_View_help)
+				if (!$obj_ajax_View_help){
 					return $str_html;
-				else
+                }else{
 					return $obj_ajax_View_help->get_html($str_html,'ectools_payment_select','select_pay_method');
+                }
 			}
 
 		}

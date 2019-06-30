@@ -26,11 +26,12 @@
     </service>
 
     <service id="ectools_payment.ectools_mdl_payment_cfgs" optname="支付插件列表">
+<!--
+        <class>weixin_payment_plugin_wxqrpay</class>
+-->
         <class>weixin_payment_plugin_wxpay</class>
         <class>weixin_payment_plugin_wxpayjsapi</class>
-        <class>weixin_payment_plugin_wxqrpay</class>
     </service>
-
     <service id="b2c.order.delivery.after">
         <class>weixin_transaction</class>
     </service>

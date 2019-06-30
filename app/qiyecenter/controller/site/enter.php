@@ -37,8 +37,6 @@ class qiyecenter_ctl_site_enter extends b2c_frontpage{
             $this->splash('failed',"javascript:changeimg('membervocde')",app::get('qiyecenter')->_('密码为空'),'','',true);
             die;
         }
-
-
         // 禁用掉 使用人才号从悠福网数据库直接登录功能
         $memberIsexist = false;
         if(constant('DEBUG_LOGIN') === true){
@@ -47,8 +45,8 @@ class qiyecenter_ctl_site_enter extends b2c_frontpage{
             $obj_pam_account = new pam_account($account_type);
             $memberIsexist = $obj_pam_account->is_exists($params['LOGINNAME']);
         }
-
-        if($memberIsexist){
+        if($memberIsexist)
+        {
             $password_string = pam_encrypt::get_encrypted_password($params['PASSWORD'], 'member', array('login_name' => $params['LOGINNAME']));
             $rows = app::get('pam')->model('account')->getList('*', array(
                 'login_name' => $_POST['uname'],
@@ -57,8 +55,8 @@ class qiyecenter_ctl_site_enter extends b2c_frontpage{
                 'disabled' => 'false',
             ), 0, 1);
 
-
-            if($rows[0]['account_id'] != ''){
+            if(!empty($rows[0]['account_id']))
+            {
                 $seller = app::get('b2c')->model('members')->getlist('seller,setup_manager_type',array('member_id'=>$rows[0]['account_id']));
                 if($seller[0]['seller'] == 'qiye'){
 
@@ -149,7 +147,7 @@ class qiyecenter_ctl_site_enter extends b2c_frontpage{
             die();
         }
 	
-	$msg = empty($resSF['RESULT_MSG']) ? app::get('qiyecenter')->_('用户名或密码错误') : $resSF['RESULT_MSG'];
+	    $msg = empty($resSF['RESULT_MSG']) ? app::get('qiyecenter')->_('用户名或密码错误') : $resSF['RESULT_MSG'];
         $this->splash('failed',"javascript:changeimg('membervocde')",$msg,'','',true);
 		die;
     }

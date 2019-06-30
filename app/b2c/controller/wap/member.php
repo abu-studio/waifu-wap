@@ -235,7 +235,8 @@ class b2c_ctl_wap_member extends wap_frontpage{
         $oImage = app::get('image')->model('image');
         $oGoods = app::get('b2c')->model('goods');
         $imageDefault = app::get('image')->getConf('image.set');
-        foreach($aData['data'] as $k => &$v) {
+        foreach($aData['data'] as $k => &$v)
+        {
             $order_payed = kernel::single('b2c_order_pay')->check_payed($v['order_id']);
             if($order_payed==$v['total_amount']){
                 $v['is_pay']=1;
@@ -294,8 +295,8 @@ class b2c_ctl_wap_member extends wap_frontpage{
 
         $arr_args = array($pay_status);
         $this->pagination($nPage,$aData['pager']['total'],'orders',$arr_args);
-        $mdl_b2c_refund_apply = $this->app->model('refund_apply');
-        $this->pagedata["field_refunds_reason"] = $mdl_b2c_refund_apply->get_field_refunds_reason(); //退款申请理由列表
+        //$mdl_b2c_refund_apply = $this->app->model('refund_apply');
+        //$this->pagedata["field_refunds_reason"] = $mdl_b2c_refund_apply->get_field_refunds_reason(); //退款申请理由列表
         $this->pagedata['res_url'] = $this->app->res_url;
         $this->pagedata['is_orders'] = "true";
 

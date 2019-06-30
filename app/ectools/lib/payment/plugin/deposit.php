@@ -39,7 +39,7 @@ final class ectools_payment_plugin_deposit extends ectools_payment_app implement
     /**
      * @var string 当前支付方式所支持的平台
      */
-    public $platform = 'ispc';
+    public $platform = 'iscommon';
 	
 	/**
      * 构造方法

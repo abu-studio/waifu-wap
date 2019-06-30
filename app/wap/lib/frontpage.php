@@ -15,7 +15,8 @@ class wap_frontpage extends wap_controller{
             setcookie("S[SIGN][REMEMBER]", null, time() - 3600);
             setcookie("loginName", null, time() - 3600);
         }
-        if($_COOKIE['autologin'] > 0){
+        if($_COOKIE['autologin'] > 0)
+        {
             kernel::single('base_session')->set_sess_expires($_COOKIE['autologin']);
         }
         $this->pagedata['site_b2c_remember'] = $_COOKIE['S']['SIGN']['REMEMBER'];

@@ -14,15 +14,23 @@ class b2c_ctl_wap_gallery extends wap_frontpage{
 
     public function __construct(&$app) {
         parent::__construct($app);
-        $shopname = app::get('wap')->getConf('wap.name');
+        $shopname = $app->getConf('system.shopname');
         $this->shopname = $shopname;
-        if ( isset($shopname) ) {
+        kernel::single('base_session')->start();
+        if ( isset($shopname) )
+        {
             $this->title = app::get('b2c')->_('商品分类').'_'.$shopname;
             $this->keywords = app::get('b2c')->_('商品分类_').'_'.$shopname;
             $this->description = app::get('b2c')->_('商品分类_').'_'.$shopname;
         }
         $this->_response->set_header('Cache-Control', 'no-store, no-cache');
+        $this->pagedata['request_url'] = $this->gen_url( array('app'=>'b2c','ctl'=>'wap_product','act'=>'get_goods_spec') );
+        $this->mdl_store=app::get('business')->model('storemanger');
+        $this->db=kernel::database();
+        $this->mdl_brand=$this->app->model('brand');
+        $this->arr_cat=array();
     }
+
 
     public function cat($cat_id = 0){
         $objCat = app::get('b2c')->model('goods_cat');

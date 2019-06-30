@@ -195,8 +195,10 @@ class business_view_input{
         
         return $html;
     }
-    function input_vhtml($params){
-        if(defined('EDITOR_ALL_SOUCECODE')&&EDITOR_ALL_SOUCECODE){
+    function input_vhtml($params)
+    {
+        if(defined('EDITOR_ALL_SOUCECODE')&&EDITOR_ALL_SOUCECODE)
+        {
 			$params['width'] = $params['width']?$params['width']:'100%';
 			$params['height'] = $params['height']?$params['height']:'100%';
 			$html = "<div class='input-soucecode-panel' style='border:1px #e9e9e9 solid;background:#fff;height:300px;'>";

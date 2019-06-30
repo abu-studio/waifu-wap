@@ -933,7 +933,8 @@ class b2c_ctl_site_passport extends b2c_frontpage
 
                 if ($mini != 1) {
                     //   $this->splash('success', $this->gen_url(array('app' => 'b2c', 'ctl' => 'site_member', 'act' => 'index')), app::get('b2c')->_('注册成功'), '', '', true);
-                    if (isset($_SESSION['signup_next']) && $_SESSION['signup_next']) {
+                    if (isset($_SESSION['signup_next']) && $_SESSION['signup_next'])
+                    {
                         //企业注册后直接跳转至入驻。
                         if ($_POST['seller'] == 'seller') {
                             $signup_next = $this->gen_url(array('app' => 'business', 'ctl' => 'site_store', 'act' => 'storeapplystep1'));
@@ -949,23 +950,24 @@ class b2c_ctl_site_passport extends b2c_frontpage
                             $this->splash('success', $signup_next, app::get('b2c')->_('注册成功'), '', '', true);
                         }
                         return;
-                    } else {
+                    }
+                    else
+                    {
                         //企业注册后直接跳转至入驻。
-                        if ($_POST['seller'] == 'seller') {
+                        if ($_POST['seller'] == 'seller')
+                        {
                             $re_next = $this->gen_url(array('app' => 'business', 'ctl' => 'site_store', 'act' => 'storeapplystep1'));
                         } else {
                             $re_next = $this->gen_url(array('app' => 'b2c', 'ctl' => 'site_member', 'act' => 'index'));
                         }
-
                         if ($errmsg) {
                             //echo json_encode(array('status' => 'succ', 'url' => $this->gen_url(array('app' => 'b2c', 'ctl' => 'site_member', 'act' => 'index')), 'msg' => app::get('b2c')->_('注册成功').$errmsg));
                             $this->splash('success', $re_next, app::get('b2c')->_('注册成功') . $errmsg, '', '', true);
 
-                        } else {
-
-                            //echo json_encode(array('status' => 'succ', 'url' => $this->gen_url(array('app' => 'b2c', 'ctl' => 'site_member', 'act' => 'index')), 'msg' => app::get('b2c')->_('注册成功')));
+                        }
+                        else
+                        {
                             $this->splash('success', $re_next, app::get('b2c')->_('注册成功'), '', '', true);
-
                         }
                         return;
                     }

@@ -9,7 +9,17 @@ class ectools_mdl_payment_cfgs {
                         'app_display_name'=>array('label'=>app::get('ectools')->_('支付方式'),'width'=>200,'is_title'=>true,'pkey'=>true),
                         'app_staus'=>array('label'=>app::get('ectools')->_('状态'),'width'=>100),
                         'app_version'=>array('label'=>app::get('ectools')->_('应用程序版本'),'width'=>200),
-                        'app_platform'=>array('label'=>app::get('ectools')->_('支持平台'),'width'=>200),
+                        'app_order_by'=>array('label'=>app::get('ectools')->_('排序'),'width'=>120),
+                        'app_platform'=>array(
+                            'type' =>array (
+                                'ispc'     => app::get('ectools')->_('标准版'),
+                                'iswap' => app::get('ectools')->_('触屏版'),
+                                'iscommon' => app::get('ectools')->_('通用版'),
+                            ),
+                            'default' => 'ispc',
+                            'label'=>app::get('ectools')->_('支持平台'),
+                            'width'=>120,
+                        ),
                    );
 
         $this->schema = array(
@@ -35,9 +45,12 @@ class ectools_mdl_payment_cfgs {
         return $this->schema;
     }
 
-    function count($filter=''){
+    function count($filter='')
+    {
         $arrServicelist = kernel::servicelist('ectools_payment.ectools_mdl_payment_cfgs');
-        foreach($arrServicelist as $class_name => $object){
+        $i = 0;
+        foreach($arrServicelist as $class_name => $object)
+        {
             $i++;
         }
         return $i;
@@ -58,7 +71,7 @@ class ectools_mdl_payment_cfgs {
         foreach($arrServicelist as $class_name => $object){
             if ($offset >= 0 && $limit > 0)
             {
-                if ($start_index >= ($offset+$limit) || $start_index < $offset)
+                if ($start_index >= ($offset+$limit) )
                 {
                     $start_index++;
                     continue;
@@ -67,15 +80,6 @@ class ectools_mdl_payment_cfgs {
             $strPaymnet = $this->app->getConf($class_name);
             $arrPaymnet = unserialize($strPaymnet);
 
-            $row['platform'] = $object->platform;
-            if($row['platform']=='ispc'){
-                $row['app_platform'] = '标准版';
-            }elseif($row['platform']=='ismobile'){
-                $row['app_platform'] = '触屏版';
-            }else{
-                $row['app_platform'] = '-';
-            }
-            
             $row['app_name'] = $object->name;
             $row['app_staus'] = (($arrPaymnet['status']===true||$arrPaymnet['status']==='true') ? app::get('ectools')->_('开启') : app::get('ectools')->_('关闭'));
             $row['app_version'] = $object->ver;
@@ -84,50 +88,110 @@ class ectools_mdl_payment_cfgs {
             $row['app_class'] = $class_name;
             $row['app_des'] = isset($arrPaymnet['setting']['pay_desc']) ? $arrPaymnet['setting']['pay_desc'] : "";
             $row['app_pay_type'] = $arrPaymnet['pay_type'];
-            $row['app_display_name'] = $arrPaymnet['setting']['pay_name'];
+            $row['app_display_name'] = isset ($arrPaymnet['setting']['pay_name']) ? $arrPaymnet['setting']['pay_name']:$object->name;
+            $row['app_pay_brief'] = $arrPaymnet['setting']['pay_brief'];
+            $row['app_order_by'] = $arrPaymnet['setting']['order_by'] ? $arrPaymnet['setting']['order_by'] : 1;
             $row['app_info'] = $object->intro();
             $row['support_cur'] = $arrPaymnet['setting']['support_cur'];
             $row['pay_fee'] = $arrPaymnet['setting']['pay_fee'];
             $row['supportCurrency'] = isset($object->supportCurrency) ? $object->supportCurrency : array();
+            if(isset($arrPaymnet['setting']['real_method'])){
+                $row['real_method']= $arrPaymnet['setting']['real_method'];
+            }
+
+            $row['app_platform'] = $object->platform;
+
 
             if($filter['app_id']){
                 $app_id = is_array($filter['app_id'])?$filter['app_id'][0]:$filter['app_id'];
                 return array($this->getPaymentInfo($app_id));
             }
-                    
-            
+
             if (isset($filter) && $filter)
             {
                 if (isset($filter['is_frontend']) && !$filter['is_frontend'])
                 {
-                     if($filter['platform'] == 'ispc'){
-                         if($object->platform == 'ispc'){
-                             $data[] = $row;
-                         }
-                     }elseif($filter['platform'] == 'ismobile'){
-                         if($object->platform == 'ismobile'){
-                             $data[] = $row;
-                         }
-                     }
-                }
-                else
-                {
-                    if (!isset($filter['is_frontend']))
+                    if(is_array($filter['platform']))
                     {
-                        $data[] = $row;
+                        foreach ($filter['platform'] as $key => $value)
+                        {
+                            if($object->platform == $value)
+                            {
+                                $start_index++;
+                                if ($start_index <= $offset)
+                                {
+                                    continue;
+                                }
+                                $data[] = $row;
+                            }
+                        }
                     }
                     else
                     {
-                        if (isset($arrPaymnet['status']) && $arrPaymnet['status'] === 'true')
+                        if($filter['platform'])
                         {
-                            if($filter['platform'] == 'ispc'){
-                                if($object->platform == 'ispc'){
+                            if($filter['platform'] == $object->platform)
+                            {
+                                $start_index++;
+                                if ($start_index <= $offset)
+                                {
+                                    continue;
+                                }
+                                $data[] = $row;
+                            }
+                        }
+                        else
+                        {
+                            $start_index++;
+                            if ($start_index <= $offset)
+                            {
+                                continue;
+                            }
+                            $data[] = $row;
+                        }
+                    }
+                }
+                else
+                {
+                    if (isset($arrPaymnet['status']) && $arrPaymnet['status'] === 'true')
+                    {
+                        if(is_array($filter['platform']))
+                        {
+                            foreach ($filter['platform'] as $key => $value)
+                            {
+                                if($object->platform == $value)
+                                {
+                                    $start_index++;
+                                    if ($start_index <= $offset)
+                                    {
+                                        continue;
+                                    }
                                     $data[] = $row;
                                 }
-                            }elseif($filter['platform'] == 'ismobile'){
-                                if($object->platform == 'ismobile'){
+                            }
+                        }
+                        else
+                        {
+                            if($filter['platform'])
+                            {
+                                if($filter['platform'] == $object->platform)
+                                {
+                                    $start_index++;
+                                    if ($start_index <= $offset)
+                                    {
+                                        continue;
+                                    }
                                     $data[] = $row;
                                 }
+                            }
+                            else
+                            {
+                                $start_index++;
+                                if ($start_index <= $offset)
+                                {
+                                    continue;
+                                }
+                                $data[] = $row;
                             }
                         }
                     }
@@ -135,17 +199,18 @@ class ectools_mdl_payment_cfgs {
             }
             else
             {
-                if($filter['app_id']){
-                
+                $start_index++;
+                if ($start_index <= $offset)
+                {
+                    continue;
                 }
                 $data[] = $row;
             }
 
-            $start_index++;
         }
-
         return $data;
     }
+
     
     /**
      * 取到特定的支付方式

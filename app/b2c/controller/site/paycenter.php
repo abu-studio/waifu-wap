@@ -240,7 +240,8 @@ class b2c_ctl_site_paycenter extends b2c_frontpage{
             }
 
             //包含福点支付时 获取帐号余额
-            if(strpos($sdf['pay_app_id'],'sfscpay') !== false){
+            if(strpos($sdf['pay_app_id'],'sfscpay') !== false)
+            {
                 //获取我的福点余额
                 $_sjson = array(
                     'METHOD'=>'getBalanceInfoByRelationId',

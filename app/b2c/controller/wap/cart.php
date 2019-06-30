@@ -129,7 +129,6 @@ class b2c_ctl_wap_cart extends wap_frontpage{
         /**
          * 处理校验各自的数据是否可以加入购物车
          */
-
          //预售商品进入购物车的判断
         $prepare=kernel::service('prepare_goods');
         if($prepare)

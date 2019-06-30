@@ -26,6 +26,11 @@ class ectools_view_input{
         if(ECAE_MODE){
             $render->pagedata['region_data']=app::get('ectools')->getConf('system.region_data');
         }
-        return $render->fetch('common/region.html');
+        if($params['platform']=='iswap'){
+            $views = 'wap/common/region.html';
+        }else{
+            $views = 'common/region.html';
+        }
+        return $render->fetch($views);
     }
 }

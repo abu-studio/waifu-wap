@@ -11,21 +11,36 @@ class ectools_ctl_payment_cfgs extends desktop_controller{
 		header("cache-control: no-store, no-cache, must-revalidate");
 	}
 	
-    function index(){
+    function index()
+    {
         $this->finder('ectools_mdl_payment_cfgs',array(
-            'title'=>app::get('ectools')->_('支付方式'),
-            'base_filter'=>array('platform'=>'ispc', 'is_frontend' => false),
-            // 'actions'=>array(
-					// array('label'=>app::get('ectools')->_('添加支付方式'),'icon'=>'add.gif','href'=>'index.php/shopadmin/#app=desktop&ctl=appmgr&act=index','target'=>'_blank'),
-				// ),
-				'use_buildin_recycle'=>false,'use_view_tab'=>true
-		));
+                'title'=>app::get('ectools')->_('支付方式'),
+                'use_buildin_recycle'=>false,
+                'use_view_tab'=>true,
+            )
+        );
     }
-    
+
     public function _views(){
         $o = $this->app->model('payment_cfgs');
+        $all_filter = array('is_frontend' => false);
         $pc_filter = array('platform'=>'ispc', 'is_frontend' => false);
-        $mobile_filter = array('platform'=>'ismobile', 'is_frontend' => false);
+        $mobile_filter = array('platform'=>'iswap', 'is_frontend' => false);
+        $all_num = count($o->getList('*',$all_filter));
+        $pc_num = count($o->getList('*',$pc_filter));
+        $mobile_num = count($o->getList('*',$mobile_filter));
+        $show_menu = array(
+            1=>array('label'=>app::get('ectools')->_('全部'),  'optional'=>false,'addon'=>$all_num,    'filter'=>$all_filter),
+            2=>array('label'=>app::get('ectools')->_('标准版'),'optional'=>false,'addon'=>$pc_num,     'filter'=>$pc_filter),
+            3=>array('label'=>app::get('ectools')->_('触屏版'),'optional'=>false,'addon'=>$mobile_num, 'filter'=>$mobile_filter)
+        );
+        return $show_menu;
+    }
+
+    public function _viewsOld(){
+        $o = $this->app->model('payment_cfgs');
+        $pc_filter = array('platform'=>'ispc', 'is_frontend' => false);
+        $mobile_filter = array('platform'=>'iswap', 'is_frontend' => false);
 
         $pc_num = count($o->getList('*',$pc_filter));
         $mobile_num = count($o->getList('*',$mobile_filter));

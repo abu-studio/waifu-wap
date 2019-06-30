@@ -860,7 +860,8 @@ class b2c_ctl_site_product extends b2c_frontpage{
         return date("c",$result['goods']['last_modify']);
     }
 
-    function recooemd(){
+    function recooemd()
+    {
         $back_url = $this->gen_url(array('app'=>'b2c','ctl'=>'site_product','act'=>'index','arg'=>$_POST['goods_id']));
         $app = app::get('desktop');
         $aTmp['usermail'] = $app->getConf('email.config.usermail');
@@ -876,7 +877,8 @@ class b2c_ctl_site_product extends b2c_frontpage{
         $url = &app::get('site')->router()->gen_url(array('app'=>'b2c','ctl'=>'site_product','full'=>1,'act'=>'index','arg'=>$_POST['goods_id']));
         $body = app::get('b2c')->_("尊敬的客户,您的好友").$_POST['name'].app::get('b2c')->_(',为您推荐了一款商品,请您点击查看').'<a href='.$url.'>'.$_POST['goods_name'].'</a>';
         $email = kernel::single('desktop_email_email');
-        if ($email->ready($aTmp)){
+        if ($email->ready($aTmp))
+        {
              $res = $email->send($acceptor,$subject,$body,$aTmp);
             if ($res) {
                 $this->splash('success',$back_url,app::get('b2c')->_('发送成功'),'','',true);
@@ -993,7 +995,7 @@ class b2c_ctl_site_product extends b2c_frontpage{
         /**** start 商品推荐 ****/
         $this->pagedata['goodsRecommend'] = $this->app->getConf('goods.recommend');
         /**** end 商品推荐 ****/
-        echo kernel::single("b2c_goods_description_intro")->show($gid,$aGoods,$this->custom_view);
+        echo kernel::single('b2c_goods_description_intro')->show($gid,$aGoods,$this->custom_view);
     }
 
     function goodsDescription($gid=0, $aGoods=null){

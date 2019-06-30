@@ -229,18 +229,22 @@ class pam_passport_basic implements pam_interface_passport{
                 }
             }
 
-            if($_POST['remember'] === "true") {
-		if(IS_DOMAIN){
+        if($_POST['remember'] === "true")
+        {
+		     if(IS_DOMAIN)
+		     {
 				setcookie('pam_passport_basic_uname', $rows[0]['login_name'], time()+365*24*3600, '/',COOKIE_DOMAIN,1);
-			}else{
+		     }else{
 				setcookie('pam_passport_basic_uname', $rows[0]['login_name'], time()+365*24*3600, '/');
-		}
-	    }else {
+		     }
+	    }
+        else
+	    {
 	    	if(IS_DOMAIN){
-		    setcookie('pam_passport_basic_uname', '', 0, '/',COOKIE_DOMAIN,1);
-		}else{
-		    setcookie('pam_passport_basic_uname', '', 0, '/');
-		}
+		        setcookie('pam_passport_basic_uname', '', 0, '/',COOKIE_DOMAIN,1);
+		    }else{
+		        setcookie('pam_passport_basic_uname', '', 0, '/');
+		    }
 	    }
 
             $usrdata['log_data'] = app::get('pam')->_('用户') . $_POST['uname'] . app::get('pam')->_('验证成功！');

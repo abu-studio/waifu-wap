@@ -69,7 +69,9 @@ $(function(){
     selectArea = function(sels) {
         var selected = [];
         $.each(sels,function(){
-            if($(this).css('display') != 'none'){
+            if($(this).css('display') != 'none')
+            {
+               if (!this.selectedOptions[0]) return;
                var text = this.selectedOptions[0].text;
                if(['<{t}>北京<{/t}>','<{t}>天津<{/t}>','<{t}>上海<{/t}>','<{t}>重庆<{/t}>'].indexOf(text)>-1)return;
                selected.push(text);

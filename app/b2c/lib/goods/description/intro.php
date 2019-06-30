@@ -10,7 +10,6 @@ class b2c_goods_description_intro{
             $o = kernel::single('b2c_goods_model');
             $aGoods = $o->getGoods($gid);
         }
-
         $render->pagedata['goods'] = $aGoods;
 		$render->pagedata['goodsbndisplay'] = $this->app->getConf('goodsbn.display.switch');
 		// 商品详情页添加项埋点

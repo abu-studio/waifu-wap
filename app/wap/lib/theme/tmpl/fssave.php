@@ -280,9 +280,14 @@ class wap_theme_tmpl_fssave
     
     private function __get_tmpl_list() {
         $ctl = array(
-            'index'=>app::get('wap')->_('首页'),
+            'index'=>app::get('wap')->_('登录后首页'),
+            'index_default'=>app::get('wap')->_('未登录首页'),
             'gallery'=>app::get('wap')->_('商品列表页'),
             'product'=>app::get('wap')->_('商品详细页'),
+            'couponlist'=>app::get('wap')->_('领券列表页'),
+            'couponcenter'=>app::get('wap')->_('领券中心页'),
+            'channel'=>app::get('wap')->_('频道页'),
+            'brandcenter'=>app::get('wap')->_('品牌中心页'),
             'article'=>app::get('wap')->_('文章页'),
             'articlelist'=>app::get('wap')->_('文章列表页'),
             'brandlist'=>app::get('wap')->_('品牌专区页'),
