@@ -1060,7 +1060,7 @@ class b2c_ctl_wap_member extends wap_frontpage{
             $this->splash('failed',$this->gen_url(array('app'=>'b2c','ctl'=>'wap_member','act'=>'receiver')),app::get('b2c')->_('最多添加10个收货地址'),'','',true);
         }
     }
-    
+
     /*
      * 获取评论咨询的数据
      *
