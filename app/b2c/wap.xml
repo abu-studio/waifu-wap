@@ -23,7 +23,16 @@
         <title>活动页</title>
         <disable>false</disable>
     </module>
-    
+    <module id='b2c' controller='wap_channel' >
+        <name>channel</name>
+        <title>频道页</title>
+        <disable>false</disable>
+    </module>
+    <module id='b2c' controller='wap_brandcenter' >
+        <name>brandcenter</name>
+        <title>品牌中心页</title>
+        <disable>false</disable>
+    </module>
     <module id='b2c' controller='wap_brand' >
         <name>brand</name>
         <title>品牌区</title>
