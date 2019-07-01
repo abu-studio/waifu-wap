@@ -1,0 +1,325 @@
+<div class="full-screen msg_page">
+    <header class="header_bar common_bar same_bar">
+        <div class="common_bar_left">
+            <a href="javascript:history.back()">返回</a>
+        </div>
+        <div class="a-name header_bar_center">
+            收件箱
+        </div>
+        <div class="common_bar_right"></div>
+    </header>
+    <{script src="jQUi/external/jquery/jquery.js" app="wap"}>
+    <{script src="jQUi/jquery-ui.js" app="wap"}>
+    <{css src="jQUi/jquery-ui.css" app="wap"}>
+    <script type="text/javascript">
+        var JQ = jQuery.noConflict();
+    </script>
+    <div class="hd_bg"></div>
+    <div class="full-padding">
+        <ul class="mem-order-list">
+         <li class="mem-order-tit"> 
+
+            <!--<div class="icon orange">
+            <a href="<{link app=b2c ctl=wap_member act=send}>">发消息</em></a>
+            </div>--> 
+            <div class="icon active">
+                <a href="javascript:void(0);"><span>收件箱<{if $inbox_num!=0}>(<{$inbox_num}>)<{/if}></span></a>
+            </div> 
+            <div class="icon">
+                <a href="<{link app=b2c ctl=wap_member act=track}>"><span>发件箱</span></a>
+            </div> 
+            <div class="icon">
+                <a href="<{link app=b2c ctl=wap_member act=outbox}>"><span>草稿箱</span></a>
+            </div>  
+<!--             <div class="icon send_to_admin">
+                <a href="<{link app=b2c ctl=wap_member act=message}>"><span>给管理员发消息</span></a>
+            </div>  -->
+         </li> 
+        <{if count($message)>0}>
+        <{foreach item=msg from=$message name=name}>
+            <li class="mem-order-item">
+            <!--<div class="icon orange">
+            </div> -->
+            <div class="gb">
+                <div class="col2">
+                    <div class="col">
+                        <div class="d-line">
+                            <div class="l-k">发件人：</div>
+                            <div class="l-v">
+                            <{if $msg.to_type == 1}><{t}>管理员<{/t}><{else}><{$msg.to_uname}><{/if}></div>
+                        </div>
+                        <div class="d-line">
+                            <div class="l-k">标题：</div>
+                            <div class="l-v">
+                                <{$msg.title|nl2br}>
+                            </div>
+                        </div>
+                        <div class="d-line">
+                            <div class="l-k">时间：</div>
+                            <div class="l-v">
+                                <{$msg.time|cdate:SDATE_STIME}>
+                            </div>
+                        </div>
+                        <div class="d-line">
+                            <div class="l-k">状态：</div>
+                            <div class="l-v">
+                                <{if $msg.mem_read_status=='false'}>未读<{else}>已读<{/if}>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col d-line">
+                        <div class="t-r">
+                            <a href="javascript:void(0)" onclick="showdetail('<{$msg.comment_id}>','<{$msg.mem_read_status}>')">
+                                查看详情
+                                <i class="arr right"></i>
+                            </a>
+                        </div>
+
+<!--                         <div class="t-r">
+                            <a href="javascript:void(0)" onclick="replyMsg('<{$msg.author}>','<{$msg.title}>')">
+                                回复
+                                <i class="arr right"></i>
+                            </a>
+                        </div> -->
+                        
+                        <div class="t-r">
+                            <a href="javascript:void(0)" onclick="showdelete('<{$msg.comment_id}>')">
+                                删除
+                                <i class="arr right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </li>
+            <table style="display:none;" id="detail-<{$msg.comment_id}>">
+          <tr> 
+                <td class="form-item">
+                  <label for="" class="form-label"><{t}>收件人<{/t}>：</label>
+                  <span class="form-act" id=''>
+                  <{if $msg.to_type == 1}><{t}>管理员<{/t}><{else}><{$msg.to_uname}><{/if}>
+                  </span>
+                </td>
+           </tr> 
+            <tr>        
+                <td class="form-item">
+                  <label for="" class="form-label"><{t}>标题<{/t}>：</label>
+                  <span class="form-act" id='title'>
+                  <{$msg.title|nl2br}>
+                  </span>
+                </td>
+           </tr> 
+            <tr>   
+
+                <td class="form-item">
+                  <label for="" class="form-label"><{t}>内容<{/t}>：</label>
+                  <span class="form-act" id='comment'>
+                  <{$msg.comment}>
+                  </span>
+                </td>   
+             </tr> 
+              <tr>    
+                <td class="form-item">
+                  <label for="" class="form-label"><{t}>时间<{/t}>：</label>
+                  <span class="form-act" id='time'>
+                  <{$msg.time|cdate:SDATE_STIME}>
+                  </span>
+                </td>  
+             </tr>           
+             </table>
+            <{/foreach}>
+
+        <{else}>
+         <tbody>
+          <tr class="first"><td colspan="5" class="no-information"><{t}>暂无消息<{/t}></td></tr>
+        </tbody>
+
+                <{/if}>
+        </ul>
+    </div>
+            <form id="showXq" style="display:none;">
+            </form>　
+            <form id="replyMsg" style="display:none;">
+            <table >
+            <tr> 
+                <td class="form-item">
+                  <label for="" class="form-label"><{t}>收件人<{/t}>：</label>
+                  <span class="form-act" id='author'>
+                    
+                  </span>
+                </td>
+           </tr> 
+            <tr>        
+                <td class="form-item">
+                  <label for="" class="form-label"><{t}>标题<{/t}>：</label>
+                  <span class="form-act" id='title'>
+                  <input type="text" name="subject" style="border:1px solid #aaaaaa;" id="for_msg_title" class="x-input" value="<{$msg.title}>" vtype="required">
+                  </span>
+                </td>
+           </tr> 
+            <tr>   
+
+                <td class="form-item">
+                  <label for="" class="form-label"><{t}>内容<{/t}>：</label>
+                  <span class="form-act" id='comment'>
+                  <textarea name="comment" style="border:1px solid #aaaaaa;" id="for_msg_content" cols="50" rows="5" vtype="required"></textarea>
+                  </span>
+                </td>   
+             </tr> 
+          
+             </table>
+            </form>
+
+</div>
+<{wap_pagers data=$pager}>
+
+
+
+<script type="text/javascript">
+    var browser = {
+        versions: function () {
+            var u = navigator.userAgent, app = navigator.appVersion;
+            return {//移动终端浏览器版本信息
+                trident: u.indexOf('Trident') > -1, //IE内核
+                presto: u.indexOf('Presto') > -1, //opera内核
+                webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+                gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+                mobile: !!u.match(/AppleWebKit.*Mobile.*/) || !!u.match(/AppleWebKit/), //是否为移动终端
+                ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+                android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+                iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者QQHD浏览器
+                iPad: u.indexOf('iPad') > -1, //是否iPad
+                webApp: u.indexOf('Safari') == -1 //是否web应该程序，没有头部与底部
+            };
+        }(),
+        language: (navigator.browserLanguage || navigator.language).toLowerCase()
+    }
+
+function showdetail(cId,rstatus){
+  
+    data = 'comment_id='+ cId;
+    if (rstatus=='false') 
+    {
+    $.post('<{link app=b2c ctl=wap_member act=view_msg}>',data,function(re){});
+    }
+    JQ('#detail-'+cId).dialog({
+        title : '详情',
+        //height: height,
+        //width: width,
+        resizable: false,
+        modal: true,
+        beforeClose : function () {
+          //状态改变
+          if (rstatus=='false') {
+              // data = 'comment_id='+ cId;
+              // $.post('<{link app=b2c ctl=wap_member act=view_msg}>',data,function(re){
+              //     var re = $.parseJSON(re);
+              //     if(re.status !='succ'){
+              //       alert(re.msg);
+              //     }else{
+              //      location.reload();
+              //     }
+              // });
+              location.reload();
+          }
+        },
+    });
+
+}
+
+function replyMsg(author,title){
+    JQ('#author').html(author);
+    JQ('#title').html(title);
+    JQ('#replyMsg').dialog({
+        title : '回复 '+author,
+        //height: height,
+        //width: width,
+        resizable: false,
+        modal: true,
+        buttons : {
+           '发送' : function () {
+            var title=JQ.trim(JQ('#for_msg_title').val());
+            var comment=JQ.trim(JQ('#for_msg_content').val());
+            //console.log(comment);
+            if (title == '' || comment=='') 
+            {
+              //popup('提交参数不能为空',2000);  
+               alert('提交参数不能为空');
+              return false;
+            }
+            data = 'msg_to='+ author+'&subject='+title+'&comment='+comment;
+            //    console.log(data);
+            $.post('<{link app=b2c ctl=wap_member act=send_msg}>',data,function(re){
+                var re = $.parseJSON(re);
+                if(re.status=='succ'){
+                 //popup(re.msg,2000); 
+                 alert(re.msg);   
+                 setTimeout(function(){location.reload();},2000);
+                }else{
+                  alert(re.msg);
+                  //popup(re.msg,2000);  
+                }
+            });
+        },
+           '保存到草稿箱' : function () 
+            {
+            var title=JQ.trim(JQ('#for_msg_title').val());
+            var comment=JQ.trim(JQ('#for_msg_content').val());
+            //console.log(comment);
+            if (title == '' || comment=='') 
+            {
+               alert('提交参数不能为空');
+              return false; 
+            }
+            data = 'has_sent=false&msg_to='+ author+'&subject='+title+'&comment='+comment;
+            //    console.log(data);
+            $.post('<{link app=b2c ctl=wap_member act=send_msg}>',data,function(re){
+                var re = $.parseJSON(re);
+                 if(re.status=='succ'){
+                 //popup(re.msg,2000); 
+                 alert(re.msg);   
+                 setTimeout(function(){location.reload();},2000);
+                }else{
+                  alert(re.msg);
+                  //popup(re.msg,2000);  
+                }
+               });
+            }
+      },
+    });
+}
+function showdelete(cId)
+{
+
+    JQ('#showXq').dialog({
+        title : '确定要删除消息吗？',
+        //height: height,
+        //width: width,
+        resizable: false,
+        modal: true,
+        buttons : {
+           '确定' : function () {
+            data = 'delete='+ cId;
+            //    console.log(data);
+            $.post('<{link app=b2c ctl=wap_member act=deleteMsg}>',data,function(re){
+                var re = $.parseJSON(re);
+                if(re.status=='succ'){
+                 popup(re.msg,2000);    
+                 setTimeout(function(){location.reload();},2000);
+                }else{
+                  popup(re.msg,2000);  
+                }
+            });
+        },
+           '取消' : function () {
+                JQ(this).dialog('close');
+        }
+      },
+
+    });
+}
+
+
+</script>
+
+

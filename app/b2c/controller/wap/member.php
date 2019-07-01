@@ -1604,10 +1604,13 @@ class b2c_ctl_wap_member extends wap_frontpage{
         $this->output();
     }
 
-    /*
-     *未评论商品
-     **/
-    public function nodiscuss($nPage=1){
+    /**
+     * @Author: panbiao <panbiaophp@163.com>
+     * @DateTime: 2019-07-01 21:04
+     * @Desc: 未评论商品
+     */
+    public function nodiscuss($nPage=1)
+    {
         //面包屑
         $this->path[] = array('title'=>app::get('b2c')->_('会员中心'),'link'=>$this->gen_url(array('app'=>'b2c', 'ctl'=>'wap_member', 'act'=>'index','full'=>1)));
         $this->path[] = array('title'=>app::get('b2c')->_('未评论商品'),'link'=>'#');
@@ -1837,13 +1840,15 @@ class b2c_ctl_wap_member extends wap_frontpage{
         }
     }
 
-    function cancel($order_id){
+    function cancel($order_id)
+    {
         $this->pagedata['cancel_order_id'] = $order_id;
         $this->page('wap/member/order_cancel_reason.html');
-
     }
 
-    function docancel(){
+
+    function docancel()
+    {
         $arrMember = kernel::single('b2c_user_object')->get_current_member(); //member_id,uname
         //开启事务处理
         $db = kernel::database();
@@ -1867,14 +1872,13 @@ class b2c_ctl_wap_member extends wap_frontpage{
         $order_cancel_reason = utils::_filter_input($order_cancel_reason);
         $order_cancel_reason['cancel_time'] = time();
         $mdl_order = app::get('b2c')->model('orders');
-        $sdf_order_member_id = $mdl_order->getRow('member_id', array('order_id'=>$order_cancel_reason['order_id']));
-        if($sdf_order_member_id['member_id'] != $arrMember['member_id'])
+        $sdf_order = $mdl_order->getRow('member_id,status,pay_status,ship_status', array('order_id'=>$order_cancel_reason['order_id']));
+        if($sdf_order['member_id'] != $arrMember['member_id'])
         {
             $db->rollback();
             $this->splash('failed',$error_url,"请勿取消别人的订单",true);
             return;
         }
-
         $order_payed = kernel::single('b2c_order_pay')->check_payed($order_cancel_reason['order_id']);
         if($order_payed>0){
             $this->splash('failed',$error_url,"支付过的订单，无法取消订单",true);
@@ -1893,13 +1897,22 @@ class b2c_ctl_wap_member extends wap_frontpage{
             $db->rollback();
             $this->splash('failed',$error_url,$message,true);
         }
-
+        //活动订单，未支付，未发货的可以取消
+        if ($sdf_order['status'] !='active')
+        {
+            $db->rollback();
+            $this->splash('failed',$error_url,'订单状态错误',true);
+        }
+        if ($sdf_order['pay_status'] !='0'  || $sdf_order['ship_status']!='0')
+        {
+            $db->rollback();
+            $this->splash('failed',$error_url,'订单不能取消',true);
+        }
         $sdf['order_id'] = $order_cancel_reason['order_id'];
         $sdf['op_id'] = $arrMember['member_id'];
         $sdf['opname'] = $arrMember['uname'];
         $sdf['account_type'] = 'member';
-
-        $b2c_order_cancel = kernel::single("b2c_order_cancel");
+        $b2c_order_cancel = kernel::single('b2c_order_cancel');
         if ($b2c_order_cancel->generate($sdf, $this, $message))
         {
             if($order_object = kernel::service('b2c_order_rpc_async')){
@@ -1917,6 +1930,8 @@ class b2c_ctl_wap_member extends wap_frontpage{
             $this->splash('failed',$error_url,"订单取消失败",true);
         }
     }
+
+
     function receive($order_id){
         $arrMember = kernel::single('b2c_user_object')->get_current_member();
         $mdl_order = app::get('b2c')->model('orders');
@@ -2904,5 +2919,117 @@ class b2c_ctl_wap_member extends wap_frontpage{
         $this->pagedata['condolences'] = $condolences;
         $this->page('wap/member/condolences.html');
     }
-    
+
+
+    /**
+     * @Author: panbiao <panbiaophp@163.com>
+     * @DateTime: 2019-07-01 20:36
+     * @Desc: 站内信-收件箱
+     */
+    function inbox($nPage=1)
+    {
+        $this->get_msg_num();
+        $oMsg = kernel::single('b2c_message_msg');
+        $row = $oMsg->getList('*',array('to_id' => $this->app->member_id,'has_sent' => 'true','for_comment_id' => 'all','inbox' => 'true','mem_read_status' => 'false'));
+        $this->pagedata['inbox_num'] = count($row)?count($row):0;
+
+        $row = $oMsg->getList('*',array('to_id' => $this->app->member_id,'has_sent' => 'true','for_comment_id' => 'all','inbox' => 'true'));
+        $aData['data'] = $row;
+        $aData['total'] = count($row);
+        $count = count($row);
+        $aPage = $this->get_start($nPage,$count);
+        $params['data'] = $oMsg->getList('*',array('to_id' => $this->app->member_id,'has_sent' => 'true','for_comment_id' => 'all','inbox' =>'true'),$aPage['start'],$this->pagesize);
+        $params['page'] = $aPage['maxPage'];
+        $this->pagedata['message'] = $params['data'];
+        $this->pagedata['total_msg'] = $aData['total'];
+        $this->pagination($nPage,$params['page'],'inbox');
+        $this->page('wap/member/inbox.html');
+    }
+
+    /**
+     * @Author: panbiao <panbiaophp@163.com>
+     * @DateTime: 2019-07-01 20:45
+     * @Desc: 站内信-草稿箱
+     */
+    function outbox($nPage=1) {
+        $this->get_msg_num();
+        $oMsg = kernel::single('b2c_message_msg');
+        $row = $oMsg->getList('*',array('has_sent' => 'false','author_id' => $this->app->member_id));
+        $aData['data'] = $row;
+        $aData['total'] = count($row);
+        $count = count($row);
+        $aPage = $this->get_start($nPage,$count);
+        $params['data'] = $oMsg->getList('*',array('has_sent' => 'false','author_id' => $this->app->member_id),$aPage['start'],$this->pagesize);
+        $params['page'] = $aPage['maxPage'];
+        $this->pagedata['message'] = $params['data'];
+        $this->pagedata['total_msg'] = $aData['total'];
+        $this->pagination($nPage,$params['page'],'outbox');
+        $this->pagedata['controller'] = "inbox";
+        $this->page('wap/member/outbox.html');
+    }
+
+    /**
+     * @Author: panbiao <panbiaophp@163.com>
+     * @DateTime: 2019-07-01 20:45
+     * @Desc: 站内信-已发送
+     */
+    function track($nPage=1)
+    {
+        $this->get_msg_num();
+        $oMsg = kernel::single('b2c_message_msg');
+        $row = $oMsg->getList('*',array('author_id' => $this->app->member_id,'has_sent' => 'true','track' => 'true'));
+        $aData['data'] = $row;
+        $aData['total'] = count($row);
+        $count = count($row);
+        $aPage = $this->get_start($nPage,$count);
+        $params['data'] = $oMsg->getList('*',array('author_id' => $this->app->member_id,'has_sent' => 'true','track' => 'true'),$aPage['start'],$this->pagesize);
+        $params['page'] = $aPage['maxPage'];
+        $this->pagedata['message'] = $params['data'];
+        $this->pagedata['total_msg'] = $aData['total'];
+        $this->pagination($nPage,$params['page'],'track');
+        $this->pagedata['controller'] = "inbox";
+        $this->page('wap/member/track.html');
+    }
+    /**
+     * @Author: panbiao <panbiaophp@163.com>
+     * @DateTime: 2019-07-01 20:50
+     * @Desc: 站内信-已发送
+     */
+    function view_msg()
+    {
+        $nMsgId = $_POST['comment_id'];
+        $objMsg = kernel::single('b2c_message_msg');
+        $aMsg = $objMsg->getList('comment',array('comment_id' => $nMsgId,'for_comment_id' => 'all','to_id'=>$this->app->member_id));
+        if($aMsg[0]&&($aMsg[0]['author_id']!=$this->app->member_id&&$aMsg[0]['to_id']!=$this->app->member_id)){
+            header('Content-Type:text/html; charset=utf-8');
+            echo app::get('b2c')->_('对不起，您没有权限查看这条信息！');exit;
+        }
+        $objMsg->setReaded($nMsgId);
+        $objAjax = kernel::single('b2c_view_ajax');
+        echo $objAjax->get_html(htmlspecialchars_decode($aMsg[0]['comment']),'b2c_ctl_site_member','view_msg');
+        exit;
+
+    }
+
+    /*
+     *获取未读信息数目
+     * */
+    function get_unreadmsg_num()
+    {
+        $oMsg = kernel::single('b2c_message_msg');
+        $num  = $oMsg->count(array('to_id' => $this->app->member_id,'has_sent' => 'true','inbox' => 'true','mem_read_status' => 'false'));
+        $data['inbox_num'] = $num ? $num : 0;
+        $this->pagedata['inbox_num'] = $data['inbox_num'];
+        // echo json_encode($data);
+    }
+    /*
+     *获取收件箱未读信息数量
+     * */
+    function get_msg_num(){
+        $oMsg = kernel::single('b2c_message_msg');
+        $row = $oMsg->getList('*',array('to_id' => $this->app->member_id,'has_sent' => 'true','for_comment_id' => 'all','inbox' => 'true','mem_read_status' => 'false'));
+        $this->pagedata['inbox_num'] = count($row)?count($row):0;
+        $row = $oMsg->getList('*',array('has_sent' => 'false','author_id' => $this->app->member_id));
+        $this->pagedata['outbox_num'] = count($row)?count($row):0;
+    }
 }

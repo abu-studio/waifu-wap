@@ -1,0 +1,135 @@
+<div class="full-screen msg_page">
+    <header class="header_bar common_bar same_bar">
+        <div class="common_bar_left">
+            <a href="javascript:history.back()">返回</a>
+        </div>
+        <div class="a-name header_bar_center">
+            给管理员发消息
+        </div>
+        <div class="common_bar_right"></div>
+    </header>
+    <{script src="jQUi/external/jquery/jquery.js" app="wap"}>
+    <{script src="jQUi/jquery-ui.js" app="wap"}>
+    <{css src="jQUi/jquery-ui.css" app="wap"}>
+    <script type="text/javascript">
+        var JQ = jQuery.noConflict();
+    </script>
+    <div class="hd_bg"></div>
+    <div class="full-padding send_message_wrap">
+        <ul class="mem-order-list">
+         <li class="mem-order-tit"> 
+            <!-- <div class="icon orange">
+            <a href="<{link app=b2c ctl=wap_member act=send}>">发消息</em></a>
+            </div>  -->
+            <div class="icon">
+                <a href="<{link app=b2c ctl=wap_member act=inbox}>"><span>收件箱<{if $inbox_num!=0}>(<{$inbox_num}>)<{/if}></span></a>
+            </div> 
+            <div class="icon">
+                <a href="<{link app=b2c ctl=wap_member act=track}>"><span>发件箱</span></a>
+            </div> 
+            <div class="icon">
+                <a href="<{link app=b2c ctl=wap_member act=outbox}>"><span>草稿箱</span></a>
+            </div> 
+<!--             <div class="icon send_to_admin active">
+                <a href="javascript:void(0);"><span>给管理员发消息</span></a>
+            </div>  -->
+         </li> 
+         <li class="mem-order-item">
+             <div class="gb">
+                <div class="col2">
+                    <div class="col">
+                        <div class="d-line">
+                            <div class="l-k">收件人：</div>
+                            <div class="l-v">
+                               管理员
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col2">
+                    <div class="col">
+                        <div class="d-line">
+                            <div class="l-k">标题：</div>
+                            <div class="l-v">
+                              <input type="text" name="subject" value="" id="for_msg_title" class="x-input" >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col2">
+                
+                    <div class="col">
+                        <div class="d-line">
+                            <div class="l-k">内容：</div>
+                            <div class="l-v">
+                               <textarea name="comment" id="for_msg_content" class="x-input" vtype="required"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col2">
+                
+                    <div class="col clearfix">
+                            <button type="button" class="btn btn-caution" id='action-savetodrafts'>保存到草稿箱
+                            </button>
+                            <button type="button" id='action-sendmsg' class="btn btn-caution" >发送</button>
+                    </div>
+                </div>
+            </div>
+           </li>
+        </ul>
+    </div>
+    <div class="bd_bg"></div>
+</div>      
+<script type="text/javascript">
+$('#action-sendmsg').on('tap',function(ev){
+
+
+    var subject=$.trim($('#for_msg_title').val());
+    var comment=$.trim($('#for_msg_content').val());
+
+    if (subject == '' || comment=='' ) 
+    {
+      alert('提交内容不能为空');  
+      return false;
+    }
+    //  alert(111);return;
+    data = 'subject='+subject+'&comment='+comment;
+    $.post('<{link app=b2c ctl=wap_member act=send_msg}>',data,function(re){
+        var re = $.parseJSON(re);
+         if(re.status=='succ'){
+         //popup(re.msg,2000); 
+         alert(re.msg);   
+         setTimeout(function(){location.reload();},2000);
+        }else{
+          alert(re.msg);
+          //popup(re.msg,2000);  
+        }
+    });
+});
+$('#action-savetodrafts').on('tap',function(ev){
+    //var msg_to=$.trim($('#msg_to').val());
+    var subject=$.trim($('#for_msg_title').val());
+    var comment=$.trim($('#for_msg_content').val());
+    if (subject == '' || comment==''/* || msg_to==''*/) 
+    {
+      alert('提交内容不能为空');  
+      return false;
+    }
+    data = 'has_sent=false&subject='+subject+'&comment='+comment;
+    $.post('<{link app=b2c ctl=wap_member act=send_msg}>',data,function(re){
+        var re = $.parseJSON(re);
+         if(re.status=='succ'){
+         //popup(re.msg,2000); 
+         alert(re.msg);   
+         setTimeout(function(){location.reload();},2000);
+        }else{
+          alert(re.msg);
+          //popup(re.msg,2000);  
+        }
+    });
+});
+</script>
+
+
+
