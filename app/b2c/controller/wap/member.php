@@ -59,73 +59,358 @@ class b2c_ctl_wap_member extends wap_frontpage{
         return $aPage;
     }
 
-    /*
-     *会员中心首页
-     * */
-    public function index() {
-
+    public function index()
+    {
+        //判断商社号是否在列表中
+        $acount_object = app::get('pam')->model('account');
+        $account_data = $acount_object->getRow('company_no',array('account_id'=>$this->member['member_id']));
+        $companys = app::get('site')->getConf('sand.company') ? app::get('site')->getConf('sand.company'): array();
+        if(in_array(strtoupper($account_data['company_no']),$companys))
+        {
+            $this->pagedata['sandstatus'] = true;
+        }else{
+            $this->pagedata['sandstatus'] = false;
+        }
+        //新增福员外订单的菜单
+        $mdl_member_fyw = app::get('b2c')->model('member_fyw');
+        $fywRecord = $mdl_member_fyw->getRow('*',array('member_id'=>$this->member['member_id']));
+        if(empty($fywRecord))
+        {
+            $this->pagedata['hasfyw'] = false;
+        }else{
+            $this->pagedata['hasfyw'] = true;
+        }
+        //进入页面是需要调用订单操作脚本
         //面包屑
         $this->path[] = array('title'=>app::get('b2c')->_('会员中心'),'link'=>$this->gen_url(array('app'=>'b2c', 'ctl'=>'wap_member', 'act'=>'index','full'=>1)));
         $GLOBALS['runtime']['path'] = $this->path;
-
-        #获取会员等级
-        $obj_mem_lv = $this->app->model('member_lv');
-        $levels = $obj_mem_lv->getList('name,lv_logo,disabled',array('member_lv_id'=>$this->member['member_lv']));
-        if($levels[0]['disabled']=='false'){
-            $this->member['levelname'] = $levels[0]['name'];
-            $this->member['lv_logo'] = $levels[0]['lv_logo'];
-        }
+        $oMem = &$this->app->model('members');
+        $oRder = &$this->app->model('orders');
         $oMem_lv = $this->app->model('member_lv');
         $this->pagedata['switch_lv'] = $oMem_lv->get_member_lv_switch($this->member['member_lv']);
+        //获取所有的订单信息
+        $orders = $oRder->getList('*',array('member_id' => $this->member['member_id']));
+        $order_total = count($orders);
+        $aInfo = $oMem->dump($this->member['member_id']);
+        $oGoods = $this->app->model("goods");
+        $count_tmp = $oRder->get_search_order_main_ids($this->member['member_id']);
+        //会员主页接口
+        $MemberInfoArr = SFSC_HttpClient::doMemberMain($this->member['uname']);
 
-        //交易提醒
-#        $msgAlert = $this->msgAlert();
-#        $this->member = array_merge($this->member,$msgAlert);
+        $oMsg = kernel::single('b2c_message_msg');
+        $no_read = $oMsg->getList('*',array('to_id' => $this->member['member_id'],'has_sent' => 'true','for_comment_id' => 'all','inbox' => 'true','mem_read_status' => 'false'));
+        $no_read = count($no_read);
+        $this->pagedata['member_name'] = $MemberInfoArr['RESULT_DATA']['NAME'] ? $MemberInfoArr['RESULT_DATA']['NAME'] : $this->member['uname']; //会员名称
+        //存入session 会员名称
+        if(!empty($MemberInfoArr['RESULT_DATA']['CUSTOMER_EXT_LIST']))
+        {
+            foreach($MemberInfoArr['RESULT_DATA']['CUSTOMER_EXT_LIST'] as $k=>$v)
+            {
+                if($v['BIZ_ID'] == "customer.name")
+                {
+                    $this->pagedata['company_name'] = $v['VALUE'] ? $v['VALUE'] : "";
+                }
+                if($v['BIZ_ID'] == "banner.url")
+                {
+                    $_SESSION['sfsc']['banner_url'] = $v['VALUE'] ? kernel::base_url().'/themes/simple/images/'.$v['VALUE'] : kernel::base_url()."/themes/simple/images/grzx0601.png";
+                }
+                if($v['BIZ_ID'] == "log.url")
+                {
+                    $_SESSION['sfsc']['log_url'] = $v['VALUE'] ? kernel::base_url().'/themes/simple/images/'.$v['VALUE'] : kernel::base_url()."/themes/simple/images/yoofuu_default_logo.png";
+                }
+            }
+        }else{
+            $_SESSION['sfsc']['banner_url'] =  kernel::base_url()."/themes/simple/images/grzx0601.png";
+            $_SESSION['sfsc']['log_url'] = kernel::base_url()."/themes/simple/images/yoofuu_default_logo.png";
+        }
 
-        //订单列表
-#        $oRder = $this->app->model('orders');//--11sql
-#        $aData = $oRder->fetchByMember($this->app->member_id,$nPage=1,array(),5); //--141sql优化点
-#        $this->get_order_details($aData, 'member_latest_orders');//--177sql 优化点
-#        $this->pagedata['orders'] = $aData['data'];
-
-        //收藏列表
-        $obj_member = $this->app->model('member_goods');
-        $aData_fav = $obj_member->get_favorite($this->app->member_id,$this->member['member_lv'],$page=1,$num=4);//201sql
-        $this->pagedata['favorite'] = $aData_fav['data'];
-        #默认图片
-#        $imageDefault = app::get('image')->getConf('image.set');
-#        $this->pagedata['defaultImage'] = $imageDefault['S']['default_image'];
-
-        //输出
+        $this->pagedata['company_name'] = $this->pagedata['company_name'] ? $this->pagedata['company_name'] : $MemberInfoArr['RESULT_DATA']['COMPANY_NAME'];        //公称名称
+        $this->pagedata['top_pic'] = $MemberInfoArr['COMPANY_NAME']['TOP_PITURE_NAME'];
+        $this->pagedata['bottom_pic'] = $MemberInfoArr['RESULT_DATA']['BOTTOM_PITURE_NAME'];
+        $this->pagedata['headerdata']['my_fd'] = $MemberInfoArr['RESULT_DATA']['SUM'] ?$MemberInfoArr['RESULT_DATA']['SUM']:0;   //我的福点
+        $this->pagedata['headerdata']['message'] = $no_read;
+        $this->pagedata['headerdata']['my_jf'] = 0;                   //我的积分
+        $this->pagedata['headerdata']['my_dd'] = $count_tmp ?$count_tmp :0;   //我的定单
+        $this->pagedata['uname_en'] = $_SESSION['sfsc']['NAME_EN'];  //java端获取的en名称
+        //获取频道信息 CHANNEL_LIST
+        //1 商城  2 团购 3 便生活 4卡劵 5 体检 6 理财  8.京东频道
+/*      $channel_list_array = array(
+            array(
+                'channel_id'=>'1',
+                'app'=>'site',
+                'ctl'=>'default',
+                'act'=>'index',
+                'pic'=>'grzx0601_14.png',
+                'describe'=>'购物配送一站式'
+            ),
+            array(
+                'channel_id'=>'2',
+                'app'=>'groupbuy',
+                'ctl'=>'site_grouplist',
+                'act'=>'index',
+                'pic'=>'grzx0601_26.png',
+                'describe'=>'惊爆单品 诚意推荐'
+            ),
+            array(
+                'channel_id'=>'3',
+                'app'=>'b2c',
+                'ctl'=>'site_lifecost',
+                'act'=>'index',
+                'pic'=>'grzx0601_16.png',
+                'describe'=>'生活缴费一站式'
+            ),
+            array(
+                'channel_id'=>'4',
+                'app'=>'cardcoupons',
+                'ctl'=>'site_card_channel',
+                'act'=>'index',
+                'pic'=>'grzx0601_24.png',
+                'describe'=>'节日礼包 商务馈赠'
+            ),
+            array(
+                'channel_id'=>'5',
+                'app'=>'physical',
+                'ctl'=>'site_index',
+                'act'=>'index',
+                'pic'=>'grzx0601_27.png',
+                'describe'=>'关爱您和家人健康'
+            ),
+            array(
+                'channel_id'=>'6',
+                'app'=>'b2c',
+                'ctl'=>'site_member',
+                'act'=>'index',
+                'pic'=>'grzx0601_25.png',
+                'describe'=>'一站式购物'
+            ),
+        array(
+                'channel_id'=>'7',
+                'app'=>'b2c',
+                'ctl'=>'site_product',
+                'act'=>'Japan',
+                'pic'=>'grzx0601_28.png',
+                'describe'=>'日本馆'
+            ),
+        array(
+                'channel_id'=>'8',
+                'app'=>'jdsale',
+                'ctl'=>'site_gallery',
+                'act'=>'index',
+                'pic'=>'grzx0601_28.png',
+                'describe'=>'京东特卖'
+            ),
+        );
+*/
+        $this->pagedata['channellist'] = $MemberInfoArr['RESULT_DATA']['CHANNEL_LIST'];
+        $this->pagedata['channellist_count'] = count($this->pagedata['channellist']);
+        #获取默认的货币
+        $obj_currency = app::get('ectools')->model('currency');
+        $arr_def_cur = $obj_currency->getDefault();
+        $this->pagedata['def_cur_sign'] = $arr_def_cur['cur_sign'];
+        #获取咨询评论回复
+        $obj_mem_msg = kernel::single('b2c_message_disask');
+        $this->member['unreadmsg'] = $obj_mem_msg->calc_unread_disask($this->member['member_id']);
+        //额外的会员的信息 - 冻结积分、将要获得的积分
+        $obj_extend_point = kernel::servicelist('b2c.member_extend_point_info');
+        if ($obj_extend_point)
+        {
+            foreach ($obj_extend_point as $obj)
+            {
+                $this->pagedata['extend_point_html'] = $obj->gen_extend_point($this->member['member_id']);
+            }
+        }
+        //获取java礼包信息----start
+        $card_pass_model = app::get('cardcoupons')->model("cards_pass");
+        $tmp2_libao = SFSC_HttpClient::getJavaLibao($this->member['uname']);
+        if(!empty($tmp2_libao))
+        {
+            foreach($tmp2_libao['RESULT_DATA'] as $libao_k=>$libao_v){
+                if(!empty($libao_v['CARD_NUMBER']))
+                {
+                    $libao_time = $card_pass_model->getlist("from_time,to_time",array("card_no"=>$libao_v['CARD_NUMBER']));
+                    if(!empty($libao_time))
+                    {
+                        $tmp2_libao['RESULT_DATA'][$libao_k]['OVERDUE_TIME1'] = date("Y/m/d",$libao_time[0]['from_time'])."-".date("Y/m/d",$libao_time[0]['to_time']);
+                    }
+                }
+            }
+        }
+        $this->pagedata['member_java_libao'] = $tmp2_libao;
+        //获取java礼包信息----end
+        // 判断是否开启预存款
+        $_mdl_payment_cfgs = app::get('ectools')->model('payment_cfgs');
+        $_payment_info = $_mdl_payment_cfgs->getPaymentInfo('deposit');
+        if($_payment_info['app_staus'] == app::get('ectools')->_('开启'))
+        {
+            $this->pagedata['deposit_status'] = 'true';
+        }
         $this->pagedata['member'] = $this->member;
+        $this->pagedata['total_order'] = $order_total;
+        $this->pagedata['aNum']=$aInfo['advance']['total'];
         $this->set_tmpl('member');
-        //未评价商品咨询开关
-        $this->pagedata['comment_switch_discuss'] = $this->app->getConf('comment.switch.discuss');
-        $this->pagedata['comment_switch_ask'] = $this->app->getConf('comment.switch.ask');
-        
-        $open_aftersales = true;
-        $obj_return_policy = kernel::service("aftersales.return_policy");
-        $arr_settings = array();
-        if (!isset($obj_return_policy) || !is_object($obj_return_policy))
+        $obj_member = &$this->app->model('member_goods');
+        $aData_fav = $obj_member->get_favorite($this->app->member_id,$this->member['member_lv']);
+        $this->pagedata['favorite'] = $aData_fav['data'];
+        $this->pagedata['fav_num'] = count($aData_fav['data']);
+        //默认图片
+        $imageDefault = app::get('image')->getConf('image.set');
+        $this->pagedata['defaultImage'] = $imageDefault['S']['default_image'];
+        $rule = kernel::single('b2c_member_solution');
+        $this->pagedata['wel'] = $rule->get_all_to_array($this->member['member_lv']);
+        $this->pagedata['res_url'] = $this->app->res_url;
+        //优惠券的数量
+        $oCoupon = kernel::single('b2c_coupon_mem');
+        $aCoupon = $oCoupon->get_list_m($this->member['member_id']);
+        $this->pagedata['coupon_num'] = count($aCoupon);
+        //待评价的商品
+        $oRder_items = &$this->app->model('order_items');
+        $omember_comments = &$this->app->model('member_comments');
+        $evaluate_filter['member_id'] = $this->member['member_id'];
+        $evaluate_filter['status'] = 'finish';
+        $evaluate_filter['comments_count'] = 0;
+        $orders = $oRder->getList('order_id,createtime,comments_count',$evaluate_filter);
+        $day_1 = app::get('b2c')->getConf('site.comment_original_time');
+        $day_2 = app::get('b2c')->getConf('site.comment_additional_time');
+        $day_1 = intval($day_1)?intval($day_1):30;
+        $day_2 = intval($day_2)?intval($day_2):90;
+        $order_ids = array();
+        foreach($orders as &$v)
         {
-            $open_aftersales = false;
+            if(intval($v['comments_count']) > 1 || intval($v['createtime']) < strtotime("-{$day_2} day")) continue;
+            if(intval($v['comments_count']) == 0 && intval($v['createtime']) < strtotime("-{$day_1} day")) continue;
+            if(intval($v['comments_count']) == 0 && intval($v['createtime']) >= strtotime("-{$day_1} day")){
+                $order_ids[] = $v['order_id'];
+            }
         }
-        if (!$obj_return_policy->get_conf_data($arr_settings))
+        $goods = array();
+        if(!empty($order_ids))
         {
-            $open_aftersales = false;
+            $goods = $oRder_items->getList('order_id,goods_id,name',array('order_id|in'=>$order_ids));
         }
+        foreach($goods as $k=>&$v)
+        {
+            $orders1 = $oRder->getList('createtime',array('order_id'=>$v['order_id']));
+            $ogoods1 = $oGoods->getList('image_default_id,comments_count',array('goods_id'=>$v['goods_id']));
+            $v['createtime'] = $orders1[0]['createtime'];
+            $v['image_default_id'] = $ogoods1[0]['image_default_id'];
+            $v['comments_count'] = $ogoods1[0]['comments_count'];
+            $is_comment= $omember_comments->getList('comment_id',array('type_id'=>$v['goods_id'],'order_id'=>$v['order_id']));
+            if(count($is_comment)>0){
+                $v['is_comment'] = true;
+            }else{
+                $v['is_comment'] = false;
+            }
+        }
+        $this->pagedata['discuss_num'] = count($order_ids);
+        $this->pagedata['good'] = $goods;
 
-        $this->pagedata['is_wechat_login'] = kernel::single('b2c_user_object')->is_wechat_login();
-        $this->pagedata['open_aftersales'] = $open_aftersales;
+        //已买到的宝贝
+        $buy_filter['member_id'] = $this->member['member_id'];
+        $buy_filter['status|noequal'] = 'dead';
+        $buy_filter['comments_count'] = 0;
+        $buy_orders = $oRder->getList('*',$buy_filter);
+        foreach($buy_orders as &$v)
+        {
+            $buy_order_ids[] = $v['order_id'];
+        }
+        $buy_good = $oRder_items->getList('order_id,goods_id',array('order_id|in'=>$buy_order_ids),0,-1,'item_id desc');
+        foreach($buy_good as $k=>&$v)
+        {
+            $orders2 = $oRder->getList('ship_status,status,confirm,pay_status,comments_count,createtime',array('order_id'=>$v['order_id']));
+            $ogoods2 = $oGoods->getList('image_default_id',array('goods_id'=>$v['goods_id']));
+            $v['ship_status'] = $orders2[0]['ship_status'];
+            $v['status'] = $orders2[0]['status'];
+            $v['pay_status'] = $orders2[0]['pay_status'];
 
-        //判断是否使用积分 显示积分兑换优惠券按钮
+            if(intval($orders2[0]['comments_count']) > 1 || intval($orders2[0]['createtime']) < strtotime("-{$day_2} day")){
+                $v['comments_count'] = -1;
+            }else if(intval($orders2[0]['comments_count']) == 0 && intval($orders2[0]['createtime']) < strtotime("-{$day_1} day")){
+                $v['comments_count'] = -1;
+            }else{
+                $v['comments_count'] = $orders2[0]['comments_count'];
+            }
+            $v['confirm'] = $orders2[0]['confirm'];
+            $v['image_default_id'] = $ogoods2[0]['image_default_id'];
+        }
+        $this->pagedata['buy_good'] = $buy_good;
+        //待确认订单的数目
+        $confirm_filter['member_id'] = $this->member['member_id'];
+        $confirm_filter['confirm'] = 'N';
+        $confirm_filter['pay_status'] = '1';
+        $confirm_filter['ship_status'] = '1';
+        $confirm_filter['status'] = 'active';
+        $confirm_orders = $oRder->getList('order_id',$confirm_filter);
+        $this->pagedata['confirm_num'] = count($confirm_orders);
+        //降价商品的数量
+        $Mgoods = $this->app->model('member_goods');
+        $goods_price = $Mgoods->getList('gnotify_id',array('type'=>'fav','is_change'=>'down','member_id'=>$this->app->member_id));
+        $this->pagedata['goods_price_down_num'] = count($goods_price);
+        //促销商品
+        $pmt_goods = $Mgoods->getList('goods_id',array('type'=>'fav','member_id'=>$this->app->member_id));
+        foreach($pmt_goods as $v)
+        {
+            $p_goods[] = $v['goods_id'];
+        }
+        $pmt_good = $oGoods->getList('goods_id',array('act_type|noequal'=>'normal','goods_id|in'=>$p_goods));
+        $this->pagedata['pmt_good_num'] = count($pmt_good);
+        //判断手机，邮箱，支付密码
+        $is_pass = $oMem->getList('mobile,email',array('member_id'=>$this->member['member_id']));
+        $is_pass_num = 0;
+        if($is_pass[0]['mobile']){
+            $is_pass_num++;
+            $is_mobile = 1;
+        }else{
+            $is_mobile = 0;
+        }
+        if($is_pass[0]['email']){
+            $is_pass_num++;
+            $is_email = 1;
+        }else{
+            $is_email = 0;
+        }
+        //获取提醒信息
+        $mem_msg = $this->app->model('member_comments');
+        $sql = " SELECT * FROM `sdb_b2c_member_comments` WHERE  `to_id`='".$this->member['member_id']."' AND `for_comment_id`='0' AND `object_type`='msg'  AND `has_sent`='true' AND `inbox`='true' AND `mem_read_status`='false' AND `display`='true'";
+        $msg_arr =  $mem_msg->db->select($sql);
+        $remind_info_count = count($msg_arr);
+        $this->pagedata['remind_info_count'] = $remind_info_count;
+
+        $this->pagedata['is_mobile'] = $is_mobile;
+        $this->pagedata['is_email'] = $is_email;
+        $this->pagedata['is_pass_num']= $is_pass_num;
+
         $site_get_policy_method = $this->app->getConf('site.get_policy.method');
-        if ($site_get_policy_method != '1'){
-            $this->pagedata['point_usaged'] = true;
+        $this->pagedata['site_point_usage'] = $site_get_policy_method != '1' ? 'true' : 'false';
+        //获取用户头像信息
+        $member_object = kernel::single("b2c_mdl_members");
+        $this->pagedata['Head_portrait'] = $aInfo['Head_portrait'];
+        $member_data = $member_object->dump(array('member_id'=>$this->member['member_id']),"*");
+        if($this->member['member_lv'] == 1){
+            $this->pagedata['member_lv_pic'] = kernel::base_url().'/themes/simple/images/member_lv01.png';
+        }elseif($this->member['member_lv'] == 2){
+            $this->pagedata['member_lv_pic'] = kernel::base_url().'/themes/simple/images/member_lv02.png';
+        }elseif($this->member['member_lv'] == 3){
+            $this->pagedata['member_lv_pic'] = kernel::base_url().'/themes/simple/images/member_lv03.png';
+        }else{
+            $this->pagedata['member_lv_pic'] = kernel::base_url().'/themes/simple/images/member_lv01.png';
         }
-        
+        $this->pagedata['productcount'] = $MemberInfoArr['RESULT_DATA']['PRODUCT_COUNT'] ? $MemberInfoArr['RESULT_DATA']['PRODUCT_COUNT'] : 0;
+        $this->pagedata['levelname'] = $this->member['levelname'] ? $this->member['levelname'] : '普通会员';
+        if($this->pagedata['levelname']){
+            $system_array = array("普通会员"=>"Regular Member","黄金会员"=>"Gold Member","钻石会员"=>"Diamond Member");
+            foreach($system_array as $k_name=>$v_name){
+                if($k_name == $this->pagedata['levelname']){
+                    $this->pagedata['levelname_en'] = $v_name;
+                }
+            }
+        }
+        $this->pagedata['member_data'] = $member_data['member_avatar'] ? kernel::base_url().'/public/memberavatar/'.$member_data['member_avatar'] : kernel::base_url().'/themes/simple/images/grzx0601_01.png';
+        $this->pagedata['current_url'] =  app::get('business')->res_url;
         $this->page('wap/member/index.html');
     }
+
+
+
 
     /*
      *会员中心首页交易提醒 (未付款订单,到货通知，未读的评论咨询回复)
@@ -2413,6 +2698,44 @@ class b2c_ctl_wap_member extends wap_frontpage{
             $arr_json_data["err_msg"] = "保存失败";
             echo json_encode($arr_json_data);exit;
         }
+    }
+
+    /**
+     * @Author: panbiao <panbiaophp@163.com>
+     * @DateTime: 2019-07-01 14:20
+     * @Desc: java 福利信息
+     */
+    function condolences($status="",$grant_name="")
+    {
+        $this->pagedata['status'] = $status;
+        $this->pagedata['grant_name'] = $grant_name;
+        $tmp = SFSC_HttpClient::getJavaCondolences($this->member['uname'],$status,$grant_name);
+
+        $imageDefault = app::get('image')->getConf('image.set');
+
+        if(!empty($tmp))
+        {
+            $condolences = $tmp['RESULT_DATA'];
+            $db=kernel::database();
+            foreach($condolences as $key=>$val)
+            {
+                $sql="select a.type_id,b.image_default_id,b.name from ".DB_PREFIX ."cardcoupons_cards as a join ".DB_PREFIX ."b2c_goods as b on a.goods_id =b.goods_id where b.goods_id='".$val['PRODUCT_ID']."'";
+                $info=$db->selectRow($sql);
+                $condolences[$key]['type_id'] = $info['type_id'];
+                $condolences[$key]['name'] = $info['name'];
+                $condolences[$key]['image_default_id'] = $info['image_default_id']?$info['image_default_id']:$imageDefault['S']['default_image'];
+                if($val['OVERDUE_TIME'])
+                {
+                    $condolences[$key]['OVERDUE_TIME'] = substr($val['OVERDUE_TIME'], 0,10);
+                }
+            }
+        }else{
+            $condolences = '';
+        }
+        $this->pagedata['res_url'] = $this->app->res_url;
+        $this->pagedata['condolences'] = $condolences;
+
+        $this->page('wap/member/condolences.html');
     }
     
 }

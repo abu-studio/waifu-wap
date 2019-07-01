@@ -7,7 +7,7 @@
 *.swo
 $.idea
 $.swn
-/config
+
 
 /demo
 /h5

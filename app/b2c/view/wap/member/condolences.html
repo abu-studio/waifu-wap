@@ -1,0 +1,27 @@
+
+<div class="full-screen">
+	<header>
+		<div class="a-bar">
+			<a href="<{$member_center_url}>" class="a-back">
+				<i class="arr left"></i>
+				返回
+			</a>
+			<div class="a-name">
+				我的福利
+			</div>
+		</div>
+	</header>
+	<div class="coupons">
+		<{if $condolences }>
+		<{foreach from=$condolences item=item}>
+		<div class="gb">
+
+		</div>
+		<{/foreach}>
+		<{else}>
+		无福利数据
+		<{/if}>
+	</div>
+</div>
+
+

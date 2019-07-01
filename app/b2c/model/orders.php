@@ -1127,4 +1127,85 @@ class b2c_mdl_orders extends dbeav_model{
 
        return $row;
     }
+
+
+    /**
+     * @Author: panbiao <panbiaophp@163.com>
+     * @DateTime: 2019-07-01 13:50
+     * @Desc: 根据时间筛选订单
+     */
+    public function get_search_order_ids($type='',$time='',$member_id)
+    {
+        //解析时间
+        $year = date('Y',time());
+        $sdb = kernel::database()->prefix;
+        $nowTime = time();
+        //三个月内
+        if($time == '3th')
+        {
+            $time_sql = " createtime < '{$nowTime}' AND createtime >".strtotime("-3 month");
+            //半年内
+        }else if($time == '6th')
+        {
+            $time_sql = " createtime < '{$nowTime}' AND createtime >".strtotime("-6 month");
+            //今年
+        }else if($time == $year)
+        {
+            $time_sql = " createtime < '{$nowTime}'  AND createtime >".mktime(0,0,0,1,1,$year);
+            //一年前
+        }else if($time == '1')
+        {
+            $time_sql = " createtime<".mktime(0,0,0,12,31,$year-1);
+        }else
+        {
+            $time_sql = " 1=1 ";
+        }
+        //type
+        if($type == 'nopayed')
+        {
+            $type_sql=" pay_status='0' and status='active' ";//待付款
+        }else if($type == 'ship')
+        {
+            $type_sql=" pay_status='1' and ship_status='0' and status='active' ";//待发货
+        }else if($type == 'shiped')
+        {
+            $type_sql=" pay_status='1' and ship_status='1' and status='active'";//待收货
+        }else if($type == 'comment')
+        {
+            $type_sql="status='finish' and comments_count=0 ";//未评论
+        }else if($type == 'finish')
+        {
+            $type_sql=" status='finish' ";//已完成
+        }else if($type == 'confirm')
+        {
+            $type_sql=" pay_status='1' and ship_status='1' and status='active' and confirm='N' ";//待确认
+        }else if($type == 'dead')
+        {
+            $type_sql=" status='dead' ";//作废
+        }else{
+            $type_sql=' 1=1 ';
+        }
+        $type_sql .= " and order_type <> 'sand' ";
+        $str_sql = "SELECT order_id FROM ".$sdb."b2c_orders WHERE member_id='{$member_id}'";
+        $str_sql.=" AND ". $time_sql.' AND '.$type_sql;
+        return $str_sql;
+    }
+
+
+    /**
+     * @Author: panbiao <panbiaophp@163.com>
+     * @DateTime: 2019-07-01 13:58
+     * @Desc: 获取 待付款  待发货   待收货
+     */
+    public function get_search_order_main_ids($member_id)
+    {
+        $sdb = kernel::database()->prefix;
+        $order = $this->app->model('orders');
+        $type_sql = " ((pay_status='0' and status='active') or (pay_status='1' and ship_status='0') or (pay_status='1' and ship_status='1' and status='active')) ";
+        $str_sql = "SELECT order_id FROM ".$sdb."b2c_orders WHERE member_id='{$member_id}'";
+        $str_sql.=" AND ".$type_sql;
+        $arrayorser = $order->db->select($str_sql);
+        return count($arrayorser);
+    }
+
 }
