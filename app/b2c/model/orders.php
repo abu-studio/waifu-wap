@@ -1242,4 +1242,40 @@ class b2c_mdl_orders extends dbeav_model{
         }
         return $minfo;
     }
+
+    /**
+     * 订单的搜素
+     * @params order_id：订单号,goods_name：商品名称,goods_bn：商品编号
+     * @return array
+     */
+    public function search_order($order_id,$goods_name,$goods_bn,$member_id){
+        //防止SQL注入
+        $order_id = mysql_real_escape_string($order_id);
+        $goods_name = mysql_real_escape_string($goods_name);
+        $goods_bn = mysql_real_escape_string($goods_bn);
+
+        $sdb = kernel::database()->prefix;
+        $strsql="select distinct order_id from ".$sdb."b2c_orders where member_id='".$member_id."' and order_id in ";
+
+        $strsql.="(select item.order_id from ".$sdb."b2c_order_items as item inner join ".$sdb."b2c_goods goods on item.goods_id=goods.goods_id where 1=1 ";
+
+        if($order_id != ''){
+            $strsql.="and item.order_id like '%".$order_id."%'";
+        }
+
+        if($goods_bn != ''){
+            $strsql.="and  goods.bn like '%".$goods_bn."%'";
+        }
+
+        if($goods_name != ''){
+            $strsql.="and goods.name like '%".$goods_name."%' ";
+        }
+
+        $strsql.=")";
+
+        $arr_order_id= $order = &$this->app->model('orders')->db->select($strsql);
+
+        return $arr_order_id;
+    }
+
 }

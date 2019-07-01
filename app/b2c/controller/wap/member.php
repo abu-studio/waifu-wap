@@ -567,7 +567,7 @@ class b2c_ctl_wap_member extends wap_frontpage{
             $type_orders_count[$type]=count($arrayorser);
         }
         //给会员中心订单列表标签增加数量显示end
-        $search_order=$order->search_order($order_id,$goods_name,$goods_bn);
+        $search_order=$order->search_order($order_id,$goods_name,$goods_bn,$this->member['member_id']);
         foreach($arrayorser as $key=>$value){
             foreach($search_order as $k=>$v){
                 if($value['order_id']==$v['order_id']){
