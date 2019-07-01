@@ -32,7 +32,8 @@ class b2c_ctl_wap_gallery extends wap_frontpage{
     }
 
 
-    public function cat($cat_id = 0){
+    public function cat($cat_id = 0)
+    {
         $objCat = app::get('b2c')->model('goods_cat');
         $catlist = $objCat->getList('*', array('parent_id' => $cat_id), $offset=0, $limit=-1, 'p_order ASC');
 
@@ -46,69 +47,21 @@ class b2c_ctl_wap_gallery extends wap_frontpage{
     public function index($cat_id='',$urlFilter=null,$orderBy=0,$page=1,$virtual_cat_id=null,$showtype=null) {
         $this->pagedata['commentListListnum'] = $this->app->getConf('gallery.comment.time');
         $request_params = $this->_request->get_params();
-        $request_params = utils::_filter_input($request_params);
-        $urlFilter = utils::_filter_input($urlFilter);
-        $urlFilter=htmlspecialchars(urldecode($urlFilter));
-        $_GET['scontent'] = htmlspecialchars($_GET['scontent']);
-        if(!empty($urlFilter) && $urlFilter != $_GET['scontent']){
-            $urlFilter .= '_'.$_GET['scontent'];
-        }else{
-            $urlFilter = $_GET['scontent'];
-        }
-
-        if ( empty($cat_id) && empty($urlFilter) ) {
-          $url = $this->gen_url(array('app'=>'wap', 'ctl'=>'default', 'act'=>'index'));
-          $this->_response->set_redirect($url)->send_headers();
-        }
-
-        $oSearch = $this->app->model('search');
-        $tmp_filter = $oSearch->decode($urlFilter);
-
-        if($request_params[5] || $_GET['virtual_cat_id'] ){
-            $virtual_cat_id = $request_params[5] ? $request_params[5] : intval($_GET['virtual_cat_id']);
-        }
-        $params = $this->filter_decode($tmp_filter,$cat_id,$virtual_cat_id);
-		$page = $params['page']?$params['page']:$page;
-        $this->pagedata['filter'] = $params['params'];
-        $goodsData = $this->get_goods($params['filter'],$page,$params['orderby']);
-         //给商品附加预售信息
-        $preparesell_is_actived = app::get('preparesell')->getConf('app_is_actived');
-        if($preparesell_is_actived == 'true'){
-            $prepare=app::get('preparesell')->model('preparesell_goods');
-            if(is_object($prepare))
-            {
-                foreach ($goodsData as $key => $value) {
-                    $prepare_goods = $prepare->getRow('*',array('product_id'=>$value['products']['product_id']));
-                    if(!empty($prepare_goods))
-                    {
-                        $goodsData[$key]['prepare']=$prepare_goods;
-                    }
-                }
+        $request_params = utils::filter_input_XSS($request_params);
+        $urlFilter = utils::filter_input_XSS($urlFilter);
+        //频道页判断，如果是第一级分类并且设置了模板则为频道页。
+        //如果是虚拟分类跳转则不判断是不是频道页。
+        if( empty($cat_type) )
+        {
+            $is_chanel=$this->is_channel($cat_id);
+            if($is_chanel){
+                return;
             }
-        }
-        //echo '<pre>';print_r($goodsData);exit();
-        $screen = $this->screen($cat_id,$params['params']);
-        $this->pagedata['screen'] = $screen['screen'];
-        $this->pagedata['active_filter'] = $screen['active_filter'];
-        $this->pagedata['orderby_sql'] = $params['orderby'];
-        $this->pagedata['showtype'] = $params['showtype'];
-        $this->pagedata['is_store'] = $params['is_store'];
-        $this->pagedata['goodsData'] = $goodsData;
-
-        if($tmp_filter['search_keywords'][0]){
-            $tmp_filter['search_keywords'][0] = str_replace('%xia%','_',$tmp_filter['search_keywords'][0]);
-        }
-        //面包屑
-        $GLOBALS['runtime']['path'] = $this->runtime_path($cat_id,$tmp_filter['search_keywords'][0],$virtual_cat_id);
-
-        //搜索关键字
-        if(isset($tmp_filter['search_keywords'][0])){
-            $keywords = str_replace(' ','%20',$tmp_filter['search_keywords'][0]);
-            $this->set_cookie('S[SEARCH_KEY]',$keywords);
+        }else{
+            //$cat_id='';
         }
 
-        //setSeo
-        $this->_set_seo($screen['seo_info']);
+
 
         if(in_array('gallery-index', $this->weixin_share_page)){
             $this->pagedata['from_weixin'] = $this->from_weixin;
@@ -129,6 +82,69 @@ class b2c_ctl_wap_gallery extends wap_frontpage{
 
         $this->page('wap/gallery/index.html');
     }
+
+
+    /**
+     * @Author: panbiao <panbiaophp@163.com>
+     * @DateTime: 2019-06-30 23:38
+     * @Desc: 频道页
+     * @Parms: $cat_id
+     * @Return:
+     */
+
+    function is_channel($cat_id='') {
+
+        //如果为空则不是频道页
+        if(empty($cat_id)){
+            return false;
+        }
+        $cat_id=explode(',',$cat_id);
+        //如果多ID也不是频道页
+        if(count($cat_id)>1){
+            return false;
+        }
+        $productCat = &$this->app->model('goods_cat');
+        $cat=$productCat->dump($cat_id[0]);
+
+        if(empty($cat)){
+            return false;
+        }
+        //如果不是顶级分类也不是频道页
+        if($cat['parent_id']){
+            return false;
+        }
+        //如果如果不可用则也不是频道页
+        if($cat['disabled']=='true'){
+            return false;
+        }
+        if($cat['gallery_setting']['gallery_template'])
+        {
+            $this->set_tmpl_file($cat['gallery_setting']['gallery_template']);
+        }else{
+            $theme=kernel::single('site_theme_base')->get_default();
+            $obj_themes_tmpl = app::get('site')->model('themes_tmpl');
+            $tmpl_rows = $obj_themes_tmpl->getList('tmpl_path',array('theme'=>$theme,'tmpl_type'=>'gallery','type'=>$cat['cat_id']));
+            if(empty($tmpl_rows)){
+                return false;
+            }
+            $this->set_tmpl_file($tmpl_rows[0]['tmpl_path']);
+        }
+
+        $this->set_tmpl('gallery');
+        $seo=$cat['seo_info'];
+        if(!empty($seo['seo_title'])|| !empty($seo['seo_keywords'])|| !empty($seo['seo_description'])){
+            $this->title = $seo['seo_title'];
+            $this->keywords = $seo['seo_keywords'];
+            $this->description = $seo['seo_description'];
+        }
+        $this->page('wap/gallery/empty.html');
+        return true;
+    }
+
+
+
+
+
 
     /*
      * 面包屑数据设置

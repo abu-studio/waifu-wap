@@ -31,9 +31,9 @@
                 </p>
                 <a href="<{link app=b2c ctl=wap_member act=modify_receiver arg0=$items.addr_id}>">编辑收货地址</a>
                 <{if $items.def_addr}>
-                <a href='<{link app=b2c ctl=wap_member act=set_default arg0=$items.addr_id arg1=1}>'>取消默认</a>
+                <a onclick="setdefault('<{$items.addr_id}>',1);"   >取消默认</a>
                 <{else}>
-                <a href='<{link app=b2c ctl=wap_member act=set_default arg0=$items.addr_id arg1=2}>'>设为默认</a>
+                <a onclick="setdefault('<{$items.addr_id}>',2);"  >设为默认</a>
                 <{/if}>
                 <a addr_id="<{$items.addr_id}>" class="del">删除</a>
                 <i class="arr right"></i>
@@ -44,19 +44,41 @@
     </div>
 </div>
 <script type="text/javascript">
+
+    function setdefault(addrid,disabled)
+    {
+        var data = 'addr_id='+addrid+'&disabled='+disabled;
+        $.post('<{link app=b2c ctl=wap_member act=set_default}>',data,function(re){
+            var o = JSON.parse(re);
+            if(o.status == 'success')
+            {
+                msg = o.msg?o.msg:'设置成功';
+                popup(msg,1000);
+                setTimeout(function(){location.reload(true)},2000);
+            }else{
+                msg = o.msg?o.msg:'设置失败';
+                popup(msg,1000,"sm-pop");
+            }
+        });
+    }
+
 $('.del').bind('click',function(){
     if(confirm('确定删除该地址？')){
     	var data = 'addr_id='+this.getAttribute('addr_id');
         $.post('<{link app=b2c ctl=wap_member act=del_rec}>',data,function(re){
 	        var o = JSON.parse(re);
-	        if(o.success){
-	            new Dialog('#success',{'title':'删除成功'});
+	        if(o.status == 'success'){
+                msg = o.msg?o.msg:'删除成功';
+                popup(msg,1000);
 	            setTimeout(function(){location.reload(true)},2000);
 	        }else{
-	            return alert(o.error);
+                msg = o.msg?o.msg:'删除失败';
+                popup(msg,1000,"sm-pop");
 	        }
 	    });
         return false;
     }
 });
+
+
 </script>

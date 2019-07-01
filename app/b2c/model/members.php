@@ -218,6 +218,28 @@ class b2c_mdl_members extends dbeav_model{
         }
     }
 
+
+    /**
+     * @Author: panbiao <panbiaophp@163.com>
+     * @DateTime: 2019-07-01 09:15
+     * @Desc: 过滤POST来的数据,基于安全考虑,会把POST数组中带HTML标签的字符过滤掉
+     */
+    function checkRecInput($array)
+    {
+        if (is_array($array)){
+            foreach($array as $key=>$v){
+                $array[$key] =     $this->checkRecInput($array[$key]);
+            }
+        }
+        else{
+            $array = strip_tags($array);
+            $array = utils::filter_input($array);//过滤xss攻击
+        }
+        return $array;
+    }
+
+
+
      //插入收货人地址
     function insertRec($aData,$nMemberId,&$message){
         foreach ($aData as $key=>$val){

@@ -890,23 +890,61 @@ class b2c_ctl_wap_member extends wap_frontpage{
     }
 
 
-    /*
-     * 设置和取消默认地址，$disabled 2为设置默认1为取消默认
+    /**
+     * @Author: panbiao <panbiaophp@163.com>
+     * @DateTime: 2019-07-01 10:28
+     * @Desc: 设置和取消默认地址，$disabled 2为设置默认1为取消默认
      */
-    function set_default($addrId=null,$disabled=2){
-        // $addrId = $_POST['addr_id'];
-        if(!$addrId) $this->splash('failed',null, app::get('b2c')->_('参数错误'),true);
-        $url = $this->gen_url(array('app'=>'b2c','ctl'=>'wap_member','act'=>'receiver'));
-        $obj_member = $this->app->model('members');
+    function set_default()
+    {
+        $addrId = $_POST['addr_id'];
+        $disabled = $_POST['disabled'];
+        if(empty($addrId))
+        {
+            echo json_encode(array('status'=>'failed','msg'=>'参数错误'));exit;
+        }
+        $obj_member = &$this->app->model('members');
         $member_id = $this->app->member_id;
-        if($obj_member->check_addr($addrId,$member_id)){
-            if($obj_member->set_to_def($addrId,$member_id,$message,$disabled)){
-                $this->splash('success',$url,$message);
-            }else{
-                $this->splash('failed',$url,$message);
+        if($obj_member->check_addr($addrId,$member_id ))
+        {
+            if($obj_member->set_to_def($addrId,$member_id,$message,$disabled))
+            {
+                echo json_encode(array('status'=>'success','msg'=>$message));exit;
             }
-        }else{
-            $this->splash('failed', 'back', app::get('b2c')->_('参数错误'));
+            else
+            {
+                echo json_encode(array('status'=>'failed','msg'=>$message));exit;
+            }
+        }
+        else
+        {
+            echo json_encode(array('status'=>'failed','msg'=>'参数错误'));exit;
+        }
+    }
+
+    //删除收货地址
+    function del_rec()
+    {
+        $addrId = $_POST['addr_id'];
+        if(empty($addrId))
+        {
+            echo json_encode(array('status'=>'failed','msg'=>'参数错误'));exit;
+        }
+        $obj_member = &$this->app->model('members');
+        if($obj_member->check_addr($addrId,$this->app->member_id))
+        {
+            if($obj_member->del_rec($addrId,$message,$this->app->member_id))
+            {
+                echo json_encode(array('status'=>'success','msg'=>$message));exit;
+            }
+            else
+            {
+                echo json_encode(array('status'=>'failed','msg'=>$message));exit;
+            }
+        }
+        else
+        {
+            echo json_encode(array('status'=>'failed','msg'=>'操作失败'));exit;
         }
     }
 
@@ -933,16 +971,82 @@ class b2c_ctl_wap_member extends wap_frontpage{
         }
     }
 
-    /*
-     *保存收货地址
-     * */
-    function save_rec(){
-        if(!$_POST['def_addr']){
-            $_POST['def_addr'] = 0;
+    /**
+     * @Author: panbiao <panbiaophp@163.com>
+     * @DateTime: 2019-07-01 09:23
+     * @Desc: 新增收货地址
+     */
+    function insertRec($data,&$msg)
+    {
+        $obj_member = &$this->app->model('members');
+        if(!$obj_member->isAllowAddr($this->app->member_id))
+        {
+            $msg = '不能新增收货地址';
+            return false;
         }
-        $save_data = kernel::single('b2c_member_addrs')->purchase_save_addr($_POST,$this->app->member_id,$msg);
-        if(!$save_data){
-            $this->splash('failed',null,$msg,'','',true);
+        $aData = $obj_member->checkRecInput($data);
+        $status = $obj_member->insertRec($aData,$this->app->member_id,$msg);
+        return $status?true:false;
+    }
+
+    /**
+     * @Author: panbiao <panbiaophp@163.com>
+     * @DateTime: 2019-07-01 09:25
+     * @Desc: 修改收货地址
+     */
+    function modifyReceiver($data,&$msg)
+    {
+        if(empty($data['addr_id']))
+        {
+            $msg = "参数错误";
+            return false;
+        }
+        $obj_member = &$this->app->model('members');
+        if($obj_member->check_addr($data['addr_id'],$this->member['member_id']))
+        {
+            $aData = $obj_member->checkRecInput($data);
+            if($obj_member->save_rec($aData,$this->app->member_id,$msg))
+            {
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        else
+        {
+            $msg = "操作失败";
+            return false;
+        }
+    }
+
+
+
+    /**
+     * @Author: panbiao <panbiaophp@163.com>
+     * @DateTime: 2019-07-01 08:39
+     * @Desc: 保存收货地址
+     */
+    function save_rec()
+    {
+        if(!$_POST['default'])
+        {
+            $_POST['default'] = 0;
+        }
+        $_POST['member_id'] = $this->app->member_id;
+        if (empty($_POST['addr_id']))
+        {
+            if(!$this->insertRec($_POST,$msg))
+            {
+                $this->splash('failed',null,$msg,'','',true);
+            }
+        }
+        else
+        {
+            if(!$this->modifyReceiver($_POST,$msg))
+            {
+                $this->splash('failed',null,$msg,'','',true);
+            }
         }
         $this->splash('success',$this->gen_url(array('app'=>'b2c','ctl'=>'wap_member','act'=>'receiver')),app::get('b2c')->_('保存成功'),'','',true);
     }
@@ -956,71 +1060,7 @@ class b2c_ctl_wap_member extends wap_frontpage{
             $this->splash('failed',$this->gen_url(array('app'=>'b2c','ctl'=>'wap_member','act'=>'receiver')),app::get('b2c')->_('最多添加10个收货地址'),'','',true);
         }
     }
-
-
-
-    //删除收货地址
-    function del_rec(){
-        $addrId = $_POST['addr_id'];
-        if(!$addrId){
-            $arr_json_data = array(
-                    "success" => false,
-                    "error" => '参数错误',
-            );
-            echo json_encode($arr_json_data);exit;
-        }
-        $obj_member = $this->app->model('members');
-        if($obj_member->check_addr($addrId,$this->app->member_id))
-        {
-            if($obj_member->del_rec($addrId,$message,$this->app->member_id))
-            {
-                $arr_json_data = array(
-                    "success" => true      
-                );
-                echo json_encode($arr_json_data);exit;
-            }
-            else
-            {
-                $arr_json_data = array(
-                        "success" => false,
-                        "error" => $message,
-                );
-                echo json_encode($arr_json_data);exit;
-            }
-        }
-        else
-        {
-            $arr_json_data = array(
-                    "success" => false,
-                    "error" => '操作失败',
-            );
-            echo json_encode($arr_json_data);exit;
-        }
-    }
-
-
-
-
-    /*
-        过滤POST来的数据,基于安全考虑,会把POST数组中带HTML标签的字符过滤掉
-    */
-    function check_input($data){
-        $aData = $this->arrContentReplace($data);
-        return $aData;
-    }
-
-    function arrContentReplace($array){
-        if (is_array($array)){
-            foreach($array as $key=>$v){
-                $array[$key] =     $this->arrContentReplace($array[$key]);
-            }
-        }
-        else{
-            $array = strip_tags($array);
-        }
-        return $array;
-    }
-
+    
     /*
      * 获取评论咨询的数据
      *

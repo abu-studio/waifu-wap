@@ -151,7 +151,8 @@ class b2c_member_addrs
             $area['id'] = $at[2];
             $address['area'] = $area; unset($area,$at);
             $address['addr'] = $arr_delivery['ship_addr_area'] . $arr_delivery['ship_addr'];
-            if($obj_member_addr->is_exists_addr($address,$arr_post['member_id'])){
+            if($obj_member_addr->is_exists_addr($address,$arr_post['member_id']))
+            {
 			    $msg = app::get('b2c')->_('收货地址重复');
                 return false;
 		    }
