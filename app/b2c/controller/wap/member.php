@@ -489,103 +489,226 @@ class b2c_ctl_wap_member extends wap_frontpage{
         $this->page('wap/member/point_history.html');
     }
 
-    //我的订单
-    public function orders($pay_status='all', $nPage=1)
+
+    /**
+     * @Author: panbiao <panbiaophp@163.com>
+     * @DateTime: 2019-07-01 15:09
+     * @Desc: 订单列表
+     */
+    public function orders($type='',$order_id='',$goods_name='',$goods_bn='',$time='',$pay_status='',$nPage=1)
     {
-         $this->path[] = array('title'=>app::get('b2c')->_('会员中心'),'link'=>$this->gen_url(array('app'=>'b2c', 'ctl'=>'wap_member', 'act'=>'index','full'=>1)));
-         $this->path[] = array('title'=>app::get('b2c')->_('我的订单'),'link'=>'#');
-          $GLOBALS['runtime']['path'] = $this->path;
-        $order = $this->app->model('orders');
-        if ($pay_status == 'all')
-        {
-            $aData = $order->fetchByMember($this->app->member_id,$nPage);
-        }
-        else
-        {
-            $order_status = array();
-            if ($pay_status == 'nopayed')
-            {   $order_status['promotion_type'] = 'normal';
-                $order_status['pay_status'] = 0;
-                $order_status['status'] = 'active';
+        //进入页面是需要调用订单操作脚本
+        $obj_filter = kernel::single('b2c_site_filter');
+        $type = mysql_real_escape_string($obj_filter->check_input($type));
+        $order_id = mysql_real_escape_string($obj_filter->check_input($order_id));
+        $goods_name = mysql_real_escape_string($obj_filter->check_input($goods_name));
+        $goods_bn = mysql_real_escape_string($obj_filter->check_input($goods_bn));
+        $time = mysql_real_escape_string($obj_filter->check_input($time));
+        $pay_status = mysql_real_escape_string($obj_filter->check_input($pay_status));
+        $nPage = mysql_real_escape_string($obj_filter->check_input($nPage));
+
+        $this->path[] = array('title'=>app::get('b2c')->_('会员中心'),'link'=>$this->gen_url(array('app'=>'b2c', 'ctl'=>'site_member', 'act'=>'index','full'=>1)));
+        $this->path[] = array('title'=>app::get('b2c')->_('我的订单'),'link'=>'#');
+        $GLOBALS['runtime']['path'] = $this->path;
+        $order = &$this->app->model('orders');
+        $order_id = trim($order_id);
+        $goods_name = trim($goods_name);
+        $goods_bn = trim($goods_bn);
+        //给会员中心订单列表标签增加数量显示begin此种方法需要与数据库交互5次但是不需要循环
+        /*$types=array('','nopayed','ship','shiped','finish','dead');
+        $type_orders_count=array();
+        foreach($types as $type_key=>$type_value){
+            if($type!=$type_value){
+                $sql = $this->get_search_order_ids($type_value,$time);
+                $arrayorser = $order->db->select($sql);
+                if($type_value==''){
+                    $type_orders_count['all']=count($arrayorser);
+                }else{
+                    $type_orders_count[$type_value]=count($arrayorser);
+                }
+
             }
-            if($pay_status == 'prepare')
+        }*/
+        /**
+         *以下方法只需与数据库交互1次，但是需要循环所有该会员下的订单
+         **/
+        $member_orders_all=$order->db->select("select pay_status,status,ship_status,confirm,comments_count from ".kernel::database()->prefix ."b2c_orders where member_id='{$this->member['member_id']}' and order_type <> 'sand'");
+        $type_orders_count=array ('all' =>0,'shiped' =>0,'dead' =>0,'ship' =>0,'comment' =>0,'finish' =>0,'nopayed'=>0,'confirm'=>0);
+        $type_orders_count['all']=count($member_orders_all);
+        foreach($member_orders_all as $moa_key=>$moa_value)
+        {
+            if($moa_value['pay_status']==0 &&$moa_value['status']=='active')
             {
-                //$order_status['pay_status'] = 1;
-                //$order_status['status'] = 'active';
-                $order_status['promotion_type'] = 'prepare';
+                $type_orders_count['nopayed']=$type_orders_count['nopayed']+1;//待付款
+            }else if($moa_value['pay_status']==1 &&$moa_value['ship_status']==0&&$moa_value['status']=='active')
+            {
+                $type_orders_count['ship']=$type_orders_count['ship']+1;//待发货
+            }else if($moa_value['pay_status']==1 &&$moa_value['ship_status']==1&&$moa_value['status']=='active')
+            {
+                $type_orders_count['shiped']=$type_orders_count['shiped']+1;//待收货
+            }else if($moa_value['status']=='finish')
+            {
+                if($moa_value['comments_count']==0){
+                    $type_orders_count['comment']=$type_orders_count['comment']+1;//未评论
+                }
+                $type_orders_count['finish']=$type_orders_count['finish']+1;//已完成
+            }else if($moa_value['pay_status']==1 &&$moa_value['ship_status']==1&&$moa_value['status']=='active' &&$moa_value['confirm']=='N' )
+            {
+                $type_orders_count['confirm']=$type_orders_count['confirm']+1;//待确认
+            }else if($moa_value['status']=='dead'){
+                $type_orders_count['dead']=$type_orders_count['dead']+1;//作废
             }
-            $aData = $order->fetchByMember($this->app->member_id,$nPage-1,$order_status);
+        }
+        $sql = $order->get_search_order_ids($type,$time,$this->member['member_id']);
+        $arrayorser = $order->db->select($sql);
+        if($type==''){
+            $type_orders_count['all']=count($arrayorser);
+        }else{
+            $type_orders_count[$type]=count($arrayorser);
+        }
+        //给会员中心订单列表标签增加数量显示end
+        $search_order=$order->search_order($order_id,$goods_name,$goods_bn);
+        foreach($arrayorser as $key=>$value){
+            foreach($search_order as $k=>$v){
+                if($value['order_id']==$v['order_id']){
+                    $arr[]=$value;
+                }
+            }
+        }
+        $arrayorser=$arr;
+        if(empty($arrayorser)){
+            $msg='没有找到相应的订单！';
+        }else{
+            $aData = $order->fetchByMember($this->member['member_id'],$nPage-1,'','',$arrayorser);
         }
         $this->get_order_details($aData,'member_orders');
         $oImage = app::get('image')->model('image');
-        $oGoods = app::get('b2c')->model('goods');
         $imageDefault = app::get('image')->getConf('image.set');
-        foreach($aData['data'] as $k => &$v)
+        $applySObj = app::get('spike')->model('spikeapply');
+        $applyGObj = app::get('groupbuy')->model('groupapply');
+        $applyScoreObj = app::get('scorebuy')->model('scoreapply');
+
+        foreach($aData['data'] as $k=>$v)
         {
-            $order_payed = kernel::single('b2c_order_pay')->check_payed($v['order_id']);
-            if($order_payed==$v['total_amount']){
-                $v['is_pay']=1;
+            //获取订单支付时间
+            $obj_payment = app::get('ectools')->model('refunds');
+            $payment_id = $obj_payment->get_payment($v['order_id']);
+            $pay_time = app::get('ectools')->model('payments')->getRow('t_payed',array('payment_id'=>$payment_id['bill_id']));
+            $aData['data'][$k]['pay_time'] = $pay_time['t_payed'];
+            $obj_aftersales = app::get('aftersales')->model('return_product');
+            $ord_id = $obj_aftersales->getRow('return_id',array('order_id'=>$v['order_id'],'status'=>'3','refund_type'=>'2'));
+            if($ord_id){
+                $aData['data'][$k]['need_send'] = 1;
             }else{
-                $v['is_pay']=0;
+                $aData['data'][$k]['need_send'] = 0;
             }
-            foreach($v['goods_items'] as $k2 => &$v2) {
-                $spec_desc_goods = $oGoods->getList('spec_desc',array('goods_id'=>$v2['product']['goods_id']));
-                $select_spec_private_value_id = reset($v2['product']['products']['spec_desc']['spec_private_value_id']);
-                $spec_desc_goods = reset($spec_desc_goods[0]['spec_desc']);
-                if($spec_desc_goods[$select_spec_private_value_id]['spec_goods_images']){
-                    list($default_product_image) = explode(',', $spec_desc_goods[$select_spec_private_value_id]['spec_goods_images']);
-                    $v2['product']['thumbnail_pic'] = $default_product_image;
-                }else{
-                    if( !$v2['product']['thumbnail_pic'] && !$oImage->getList("image_id",array('image_id'=>$v['image_default_id']))){
-                        $v2['product']['thumbnail_pic'] = $imageDefault['S']['default_image'];
-                    }
+            $ord_id = $obj_aftersales->getRow('return_id',array('order_id'=>$v['order_id'],'status'=>'11','refund_type'=>'2'));
+            if($ord_id){
+                $aData['data'][$k]['need_edit'] = 1;
+            }else{
+                $aData['data'][$k]['need_edit'] = 0;
+            }
+            //end
+            foreach($v['goods_items'] as $k2=>$v2)
+            {
+                if( !$v2['product']['thumbnail_pic'] && !$oImage->getList("image_id",array('image_id'=>$v['image_default_id']))){
+                    $aData['data'][$k]['goods_items'][$k2]['product']['thumbnail_pic'] = $imageDefault['S']['default_image'];
                 }
-            }
-        }
-        // echo '<pre>';print_r( $aData['data']);exit();
-         //获取预售信息主要是时间217-225
-        $prepare_order=kernel::service('prepare_order');
-        if($prepare_order)
-        {
-            $pre_order=$prepare_order->get_prepare_info($aData['data']);
-            foreach ($aData['data'] as $key => $value) {
-                if($value['promotion_type']=='prepare')
+                $act_id = '';
+                //秒杀详细页参数
+                switch($v['order_type'])
                 {
-                    $aData['data'][$key]['prepare']=$pre_order[$value['order_id']];
-                    //判断是否在预售期，查看订金金额是否已经支付
-                    $prepare=$aData['data'][$key]['prepare']=$pre_order[$value['order_id']];
-                    $order_payed = kernel::single('b2c_order_pay')->check_payed($value['order_id']);
-                    if($order_payed>0 ){
-                        if(empty($prepare)){
-                            $aData['data'][$key]['is_pay']=0;
-                            continue;
-                        }
-                        if( $prepare['begin_time'] < time() && time() < $prepare['end_time']  ){
-                            if($order_payed==$prepare['preparesell_price'] && $value['pay_status']=='0'){
-                                $aData['data'][$key]['is_pay']=1;
-                            }
-                        }
-                        if(time() > $prepare['begin_time_final'] && $order_payed >= $prepare['promotion_price'] && ($value['pay_status']=='0' ||  $value['pay_status']=='3' )){
-                            $aData['data'][$key]['is_pay']=1;
-                        }
+                    case 'spike':
+                        $act_id = $applySObj->getOnActIdByGoodsId($v2['product']['goods_id']);
+                        break;
+                    case 'group':
+                        $act_id = $applyGObj->getOnActIdByGoodsId($v2['product']['goods_id']);
+                        break;
+                    case 'score':
+                        $act_id = $applyScoreObj->getOnActIdByGoodsId($v2['product']['goods_id']);
+                        break;
+                    case 'normal':
+                        break;
+                }
+                if($act_id)
+                {
+                    $aData['data'][$k]['goods_items'][$k2]['product']['args'] = array($v2['product']['goods_id'],'','',$act_id);
+                }
+            }
+
+            //获取买家/卖家
+            $obj_members = app::get('pam')->model('account');
+            $buy_name = $obj_members->getRow('login_name',array('account'=>$v['member_id']));
+            $aData['data'][$k]['buy_name'] = $buy_name['login_name'];
+
+            $obj_strman = app::get('business')->model('storemanger');
+            $seller_id = $obj_strman->getRow('account_id,store_idcardname',array('store_id'=>$v['store_id']));
+            $seller_name = $obj_members->getRow('login_name',array('account_id'=>$seller_id['account_id']));
+            $aData['data'][$k]['seller_name'] = $seller_name['login_name'];
+            $aData['data'][$k]['seller_real_name'] = $seller_id['store_idcardname'];
+        }
+
+        //添加订单html埋点
+        foreach($aData['data'] as $k=>$v)
+        {
+            foreach(kernel::servicelist('business.member_orders') as $service){
+                if(is_object($service)){
+                    if(method_exists($service,'get_orders_html')){
+                        $aData['data'][$k]['html'] .= $service->get_orders_html($v);
                     }
                 }
-
+            }
+            if($aData['data'][$k]['order_kind']=='b2c_card'&&$aData['data'][$k]['pay_status']=='1'&&$aData['data'][$k]['ship_status']=='1'){
+                //短信重发功能
+                $url = $this->gen_url(array('app' => 'b2c', 'ctl' => 'wap_member', 'act' => 'send_message', 'arg0' => $aData['data'][$k]['order_id']));
+                $aData['data'][$k]['html'] = $aData['data'][$k]['html']."
+                <a href=".$url." class='font-blue operate-btn'>重发</a>";
             }
         }
-        foreach ($aData['data'] as $key => $value) {
-            $aData['data'][$key]['url'] = $this->gen_url(array('app'=>'b2c','ctl'=>"wap_member",'act'=>"receive",'arg0'=>$value['order_id']));;
-        }
+        $this->pagedata['type_orders_count']=$type_orders_count;
+        $this->pagedata['msg']=$msg;
         $this->pagedata['orders'] = $aData['data'];
+        $this->pagedata['orders_nums'] = count($aData['data']);
 
-        $arr_args = array($pay_status);
+        //下拉框数据 --start
+        $this->pagedata['select']['time']['options'] = $this->get_select_date();
+        $this->pagedata['select']['time']['value'] = $time;
+        //下拉框数据 --end
+
+        //获取传过来的参数
+        $this->pagedata['type'] =$type;
+        $this->pagedata['order_id'] = $order_id;
+        $this->pagedata['goods_name'] = $goods_name;
+        $this->pagedata['goods_bn'] = $goods_bn;
+        $this->pagedata['time'] = $time;
+
+        //修改分页链接参数 --start
+
+        $arr_args = array($type,$order_id,$goods_name,$goods_bn,$time,$pay_status);
+
+        //--end
         $this->pagination($nPage,$aData['pager']['total'],'orders',$arr_args);
-        //$mdl_b2c_refund_apply = $this->app->model('refund_apply');
-        //$this->pagedata["field_refunds_reason"] = $mdl_b2c_refund_apply->get_field_refunds_reason(); //退款申请理由列表
         $this->pagedata['res_url'] = $this->app->res_url;
-        $this->pagedata['is_orders'] = "true";
 
         $this->page('wap/member/orders.html');
+    }
+
+    /**
+     * 动态获取选择的时间
+     * @return array
+     */
+    private function get_select_date(){
+
+        $year = date('Y',time());
+        $options = array();
+
+        $options['all'] = "全部时间";
+        $options['3th'] = "三个月内";
+        $options['6th'] = "半年内";
+        $options[$year] = "今年内";
+        $options['1'] = "1年以前";
+
+        return $options;
     }
 
     /**
@@ -892,13 +1015,18 @@ class b2c_ctl_wap_member extends wap_frontpage{
         }
     }
 
+
     /**
-     * Generate the order detail
-     * @params string order_id
-     * @return null
+     * @Author: panbiao <panbiaophp@163.com>
+     * @DateTime: 2019-07-01 15:17
+     * @Desc: 订单详情
+     * @Parms:string order_id
+     * @Return:array
      */
     public function orderdetail($order_id=0)
     {
+        //过滤xss 和 sql注入
+        $order_id = kernel::single('b2c_site_filter')->check_input($order_id);
         if (!isset($order_id) || !$order_id)
         {
             $this->begin(array('app' => 'b2c','ctl' => 'wap_member', 'act'=>'index'));
@@ -982,7 +1110,6 @@ class b2c_ctl_wap_member extends wap_frontpage{
         $gift_items = array();
         $this->get_order_detail_item($sdf_order,'member_order_detail');
         $this->pagedata['order'] = $sdf_order;
-// echo "<pre>";print_r($this->pagedata['order']);exit;
         /** 将商品促销单独剥离出来 **/
         if ($this->pagedata['order']['order_pmt'])
         {
@@ -1051,6 +1178,48 @@ class b2c_ctl_wap_member extends wap_frontpage{
             }
         }
         $this->pagedata['controller'] = "orders";
+
+        //添加体检频道html嵌入页面
+        $physical_flag = false;
+        if($this->pagedata['order']['order_kind'] == 'card' || $this->pagedata['order']['order_kind'] == 'b2c_card')
+        {
+            $physical_orders_object = kernel::single("physical_mdl_orders");
+            $physical_orders_data = $physical_orders_object->dump(array("order_id"=>$this->pagedata['order']['order_id']),"*");
+            if(!empty($physical_orders_data)){
+                $physical_flag = true;
+                $physical_store_object = kernel::single("physical_mdl_store");
+                $physical_store_data = $physical_store_object->dump(array('store_id'=>$physical_orders_data['store_id']),"*");
+                $physical_package_object = kernel::single("physical_mdl_package");
+                $physical_package_data = $physical_package_object->dump(array('package_id'=>$physical_orders_data['package_id']),"*");
+                if($physical_orders_data['c_type'] == '1'){
+                    $physical_orders_data['c_type'] = "身份证";
+                }elseif($physical_orders_data['c_type'] == '2'){
+                    $physical_orders_data['c_type'] = "军官证";
+                }elseif($physical_orders_data['c_type'] == '3'){
+                    $physical_orders_data['c_type'] = "团员证";
+                }else{
+                    $physical_orders_data['c_type'] = "身份证";
+                }
+                if($physical_orders_data['marry'] == "1"){
+                    $physical_orders_data['marry'] = '是';
+                }elseif($physical_orders_data['marry'] == "2"){
+                    $physical_orders_data['marry'] = '否';
+                }else{
+                    $physical_orders_data['marry'] = '否';
+                }
+                if($physical_orders_data['sex'] == "1"){
+                    $physical_orders_data['sex'] = '男';
+                }elseif($physical_orders_data['sex'] == "2"){
+                    $physical_orders_data['sex'] = '女';
+                }else{
+                    $physical_orders_data['sex'] = '男';
+                }
+                $physical_orders_data['package_info'] = $physical_package_data;
+                $physical_orders_data['store_info'] = $physical_store_data;
+                $this->pagedata['physical_data'] = $physical_orders_data;
+                $this->pagedata['physical_flag'] = $physical_flag;
+            }
+        }
         // 预售订单信息
         $prepare_order=kernel::service('prepare_order');
         if($prepare_order)
@@ -1062,10 +1231,9 @@ class b2c_ctl_wap_member extends wap_frontpage{
                 $this->pagedata['prepare']=$pre_order;
             }
         }
-
-        //echo '<pre>';print_r($prepare_order);exit();
         $this->page('wap/member/orderdetail.html');
     }
+
 
     //物流信息查询
     function logistic($deliveryid){
@@ -2734,7 +2902,6 @@ class b2c_ctl_wap_member extends wap_frontpage{
         }
         $this->pagedata['res_url'] = $this->app->res_url;
         $this->pagedata['condolences'] = $condolences;
-
         $this->page('wap/member/condolences.html');
     }
     

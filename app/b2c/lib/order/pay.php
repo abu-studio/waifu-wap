@@ -1038,4 +1038,24 @@ class b2c_order_pay extends b2c_api_rpc_request
             $objGoods->db->exec($sql);
         }
     }
+
+    public function check_payed($order_id){
+        $obj_order_bills = app::get('ectools')->model('order_bills');
+        $payed=0;
+        $order_bills  =  $obj_order_bills->getList('*',array('rel_id'=>$order_id,'bill_type'=>'payments','pay_object'=>'order'));
+        if(!empty($order_bills)){
+            $bills_id =array();
+            foreach($order_bills as $val){
+                $bills_id[]=$val['bill_id'];
+            }
+            $obj_payments = app::get('ectools')->model('payments');
+            $payments = $obj_payments->getList('*',array('payment_id'=>$bills_id,'status'=>'succ'));
+            if(!empty($payments)){
+                foreach($payments as $val ){
+                    $payed+=$val['cur_money'];
+                }
+            }
+        }
+        return $payed;
+    }
 }

@@ -1208,4 +1208,38 @@ class b2c_mdl_orders extends dbeav_model{
         return count($arrayorser);
     }
 
+    public function minfo($orderData){
+        $minfo=array();
+        $objGoods_type = $this->app->model('goods_type');
+        foreach($orderData['order_objects'] as $order){
+            foreach ($order['order_items'] as $itmes){
+                if(!empty($itmes['minfo'])){
+                    $arrGoods_type = $objGoods_type->dump($itmes['type_id'], '*');
+                    $product_minfo=unserialize($itmes['minfo']);
+                    $product_minfo_info=array();
+                    if(!is_array($arrGoods_type) || !is_array($arrGoods_type['minfo']) || !is_array($product_minfo)){
+                        continue;
+                    }
+                    foreach($arrGoods_type['minfo'] as $val){
+                        foreach($product_minfo as $key=>$v){
+                            if($key==$val['name']){
+                                $product_minfo_info[$key]['label']=$val['label'];
+                                $product_minfo_info[$key]['value']=$v['value'];
+                            }
+                        }
+                    }
+                    if(empty($product_minfo_info)){
+                        continue;
+                    }
+                    $product_id = $itmes['products']['product_id'];
+                    $minfo[$product_id]['product_id'] = $product_id;
+                    $minfo[$product_id]['name'] = $itmes['name'];
+                    $minfo[$product_id]['quantity'] = $itmes['quantity'];
+                    $minfo[$product_id]['minfo'] = $product_minfo_info;
+                    $minfo[$product_id]['type_id'] = $itmes['type_id'];
+                }
+            }
+        }
+        return $minfo;
+    }
 }
