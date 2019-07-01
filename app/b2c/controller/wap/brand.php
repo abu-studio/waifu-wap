@@ -62,6 +62,7 @@ class b2c_ctl_wap_brand extends wap_frontpage{
         $this->pagedata['filter'] = $params['params'];
         $pagedata=true;
         $goodsData = kernel::single('b2c_ctl_wap_gallery')->get_goods($params['filter'],$page,$params['orderby'],$pagedata);
+
         $screen = $this->brand_screen($brand_id);
         $this->pagedata['screen'] = $screen['screen'];
         $this->pagedata['showtype'] = $params['showtype'];

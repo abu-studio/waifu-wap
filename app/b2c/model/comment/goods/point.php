@@ -159,5 +159,38 @@ class b2c_mdl_comment_goods_point extends dbeav_model{
         }
         return $i;
     }
-    
+
+    /*
+批量商品单一类型评分
+return array
+params array gids
+*/
+    function get_single_point_arr($gids=null){
+        if(!is_array($gids)){
+            $_singlepoint = $this->get_single_point($gids);
+            return $_singlepoint;
+        }
+        $type_id = $this->totalType();
+
+        //$data = $this->getList('goods_id,sum(goods_point) as count_point ,count(*) as count_num',array('goods_id' => $gids,'type_id' => $type_id,'display'=>'true'));
+        $str_gids = implode(',',$gids);
+        $sql = 'select goods_id,sum(goods_point) as count_point ,count(*) as count_num from sdb_b2c_comment_goods_point where display="true" and type_id='.$type_id.' and goods_id in ('.$str_gids.') group by goods_id';
+        $data = $this->db->select($sql);
+        foreach($data as $row){
+            $gid = $row['goods_id'];
+            if($row['count_point'] == 0 || $row['count_num'] ==0){
+                $_singlepoint['avg'] = 0;
+            }else{
+                $_singlepoint['avg'] =  number_format((float)$row['count_point']/$row['count_num'],1);
+                $sdf[$gid]['total'] = $row['count_point'];
+            }
+
+            $sdf[$gid]['avg_num'] = $_singlepoint['avg'];
+            if($sdf[$gid]['avg_num']){
+                $sdf[$gid]['avg'] = $this->star_class($_singlepoint['avg']);
+            }
+            $sdf[$gid]['comments_count'] =  $row['count_num'];
+        }
+        return $sdf;
+    }
 }

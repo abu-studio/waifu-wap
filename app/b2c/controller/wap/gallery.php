@@ -60,9 +60,6 @@ class b2c_ctl_wap_gallery extends wap_frontpage{
         }else{
             //$cat_id='';
         }
-
-
-
         if(in_array('gallery-index', $this->weixin_share_page)){
             $this->pagedata['from_weixin'] = $this->from_weixin;
             $this->pagedata['weixin']['appid'] = $this->weixin_a_appid;
@@ -796,7 +793,8 @@ class b2c_ctl_wap_gallery extends wap_frontpage{
      * @params array $goodsData 搜索到的商品数据
      * @return array
      * */
-    private function get_goods_point($gids,$goodsData){
+    private function get_goods_point($gids,$goodsData)
+    {
         $pointModel = $this->app->model('comment_goods_point');
         $goods_point_status = app::get('b2c')->getConf('goods.point.status');
         $this->pagedata['point_status'] = $goods_point_status ? $goods_point_status: 'on';
