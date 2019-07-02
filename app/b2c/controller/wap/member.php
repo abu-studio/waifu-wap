@@ -651,9 +651,14 @@ class b2c_ctl_wap_member extends wap_frontpage{
         //添加订单html埋点
         foreach($aData['data'] as $k=>$v)
         {
-            foreach(kernel::servicelist('business.member_orders') as $service){
-                if(is_object($service)){
-                    if(method_exists($service,'get_orders_html')){
+            foreach(kernel::servicelist('business.member_orders') as $service)
+            {
+                //查询个订单的权限
+                //京东订单的售后要单独处理
+                if(is_object($service))
+                {
+                    if(method_exists($service,'get_orders_html'))
+                    {
                         $aData['data'][$k]['html'] .= $service->get_orders_html($v);
                     }
                 }
@@ -681,17 +686,201 @@ class b2c_ctl_wap_member extends wap_frontpage{
         $this->pagedata['goods_name'] = $goods_name;
         $this->pagedata['goods_bn'] = $goods_bn;
         $this->pagedata['time'] = $time;
+        //申请售后时间对比
+        $this->pagedata['nowtime'] = time();
+        //允许售后的时间
+        $this->pagedata['limittime'] = (app::get('b2c')->getConf('member.to_refund'))*86400;
+        //允许维权的时间
+        $this->pagedata['safeguardtime'] = (app::get('b2c')->getConf('member.to_buyer_slr'))*86400;
 
         //修改分页链接参数 --start
-
         $arr_args = array($type,$order_id,$goods_name,$goods_bn,$time,$pay_status);
-
         //--end
         $this->pagination($nPage,$aData['pager']['total'],'orders',$arr_args);
         $this->pagedata['res_url'] = $this->app->res_url;
 
         $this->page('wap/member/orders.html');
     }
+
+
+
+    //查询个订单的权限
+    //京东订单的售后要单独处理
+    public function get_orders_html($v)
+    {
+        $html = '';
+        $pay_status=$v['pay_status'];
+        $pay_app_id=$v['payinfo']['pay_app_id'];
+        $ship_status=$v['ship_status'];
+        $order_id=$v['order_id'];
+        $confirm_time=$v['confirm_time'];
+        $pay_time=$v['pay_time'];
+        $need_send=$v['need_send'];
+        $refund_status=$v['refund_status'];
+        $is_extend=$v['is_extend'];
+        $status=$v['status'];
+        $need_edit=$v['need_edit'];
+        $order_kind=$v['order_kind'];
+        $gen_url_arr = array('app' => 'b2c', 'ctl' => 'wap_member', 'act' => 'dofinish', 'arg0' => $order_id, 'arg1' => 'buyer');
+        if($order_kind == "b2c_card" || $order_kind == "card")
+        {
+            if($status == 'active' && ( $pay_status == '0') && $pay_app_id != '-1' && $ship_status == '0'){
+
+                $url = $this->gen_url(array('app' => 'business', 'ctl' => 'site_order', 'act' => 'docancel', 'arg0' => $order_id , 'arg1' => 'buyer'));
+                $html = $html.
+                    "<a href='javascript:cancel(".$order_id.")' class='font-blue operate-btn'>关闭交易</a>";
+            }
+            if(($ship_status == '1' || $ship_status == '3') && ($pay_status == '1' || $pay_status == '4') && $status == 'active' && ($refund_status == '0' || $refund_status == '2' || $refund_status == '4' || $refund_status == '10')){
+                //$url = $this->gen_url(array('app' => 'b2c', 'ctl' => 'site_member', 'act' => 'dofinish', 'arg0' => $order_id , 'arg1' => 'buyer'));
+                $url = $this->gen_url($gen_url_arr);
+                $html = $html."
+                <a href=".$url." class='paymoney_btn operate-btn'>确认收货</a>";
+
+            }
+            if($pay_status != '0' && $pay_status != '5' && $status == 'active' && $ship_status == '0'  && ($refund_status == '0' || $refund_status == '2' || $refund_status == '4' || $refund_status == '10') && $order_kind == 'virtual'){
+                //$url = $this->gen_url(array('app' => 'b2c', 'ctl' => 'site_member', 'act' => 'gorefund', 'arg0' => $order_id , 'arg1' => 'buyer'));
+                $gen_url_arr['act']='gorefund';
+                $url = $this->gen_url($gen_url_arr);
+                $paytime = $pay_time + (app::get('b2c')->getConf('member.to_refund'))*86400;
+            }
+
+        }
+        else if($order_kind == "jdorder" || $order_kind == "jdbook") //如果是京东订单
+        {
+            if($status == 'active' && ( $pay_status == '0') && $pay_app_id != '-1' && $ship_status == '0')
+            {
+                $url = $this->gen_url(array('app' => 'business', 'ctl' => 'site_order', 'act' => 'docancel', 'arg0' => $order_id , 'arg1' => 'buyer'));
+                $html = $html.
+                    "<a href='javascript:cancel(".$order_id.")' class='font-blue operate-btn'>关闭交易</a>";
+            }
+            if(($ship_status == '1' || $ship_status == '3') && ($pay_status == '1' || $pay_status == '4') && $status == 'active' && ($refund_status == '0' || $refund_status == '2' || $refund_status == '4' || $refund_status == '10')){
+                $url = $this->gen_url(array('app' => 'b2c', 'ctl' => 'site_member', 'act' => 'dofinish', 'arg0' => $order_id , 'arg1' => 'buyer'));
+                $html = $html."
+                    <a href=".$url." class='paymoney_btn operate-btn'>确认收货</a>";
+            }
+            if($ship_status == '1' && ($pay_status != '0') && ($status == 'active' || $status == 'finish')){
+                $url = $this->gen_url(array('app' => 'jdsale', 'ctl' => 'site_aftersales', 'act' => 'index', 'arg0' => $order_id ));
+                $html = $html."<a href=".$url." class='font-blue operate-btn'>京东售后</a>";
+            }
+            if($pay_status != '0' && $pay_status != '5' && $status == 'active' && $ship_status == '0'  && ($refund_status == '0' || $refund_status == '2' || $refund_status == '4' || $refund_status == '10')){
+                //$url = $this->gen_url(array('app' => 'aftersales', 'ctl' => 'site_member', 'act' => 'gorefund', 'arg0' => $order_id , 'arg1' => 'buyer'));
+
+                //$time = $confirm_time - (app::get('b2c')->getConf('member.to_finish'))*86400 + 86400;
+                $paytime = $pay_time + (app::get('b2c')->getConf('member.to_refund'))*86400;
+
+                if(time() > $paytime){
+                    $html = $html."<a href='javascript:jd_refund(".$order_id.")' class='font-blue operate-btn'>申请退款</a>";
+                }
+            }
+            return $html;
+        }else{
+            if($status == 'active' && ( $pay_status == '0') && $pay_app_id != '-1' && $ship_status == '0'){
+
+                $url = $this->gen_url(array('app' => 'business', 'ctl' => 'site_order', 'act' => 'docancel', 'arg0' => $order_id , 'arg1' => 'buyer'));
+                $html = $html.
+                    "<a href='javascript:cancel(".$order_id.")' class='font-blue operate-btn'>关闭交易</a>";
+            }
+            if(($ship_status == '1' || $ship_status == '3') && ($pay_status == '1' || $pay_status == '4') && $status == 'active' && ($refund_status == '0' || $refund_status == '2' || $refund_status == '4' || $refund_status == '10')){
+                $url = $this->gen_url(array('app' => 'b2c', 'ctl' => 'site_member', 'act' => 'dofinish', 'arg0' => $order_id , 'arg1' => 'buyer'));
+                $url1 = $this->gen_url(array('app' => 'b2c', 'ctl' => 'site_member', 'act' => 'extend_finish_apl', 'arg0' => $order_id , 'arg1' => 'buyer'));
+                /*$mdl_return_product = app::get('aftersales')->model('return_product');
+                $return_id = $mdl_return_product->getList('return_id',array('order_id'=>$order_id,'status'=>'1','refund_type'=>'2'));
+                $return_ids = $mdl_return_product->getList('return_id',array('order_id'=>$order_id,'status'=>'1','refund_type'=>'3'));
+                if(!isset($return_id[0]) && !isset($return_ids[0])){*/
+                $html = $html."
+                    <a href=".$url." class='paymoney_btn operate-btn'>确认收货</a>";
+                //}
+            }
+            if(($ship_status == '1' || $ship_status == '3') && ($pay_status == '1' || $pay_status == '4') && $status == 'active' && ($refund_status == '0' || $refund_status == '2' || $refund_status == '4' || $refund_status == '10') && $is_extend == '0'){
+                $url = $this->gen_url(array('app' => 'b2c', 'ctl' => 'site_member', 'act' => 'extend_finish_apl', 'arg0' => $order_id , 'arg1' => 'buyer'));
+                /*$mdl_return_product = app::get('aftersales')->model('return_product');
+                $return_id = $mdl_return_product->getList('return_id',array('order_id'=>$order_id,'status'=>'1','refund_type'=>'2'));
+                $return_ids = $mdl_return_product->getList('return_id',array('order_id'=>$order_id,'status'=>'1','refund_type'=>'3'));
+                if(!isset($return_id[0]) && !isset($return_ids[0])){*/
+                $html = $html."
+                    <a href=".$url." class='font-blue operate-btn'>延长收货申请</a>";
+                //}
+            }
+            if($pay_status != '0' && $pay_status != '5' && $status == 'active' && $ship_status == '0'  && ($refund_status == '0' || $refund_status == '2' || $refund_status == '4' || $refund_status == '10') && $order_kind == 'virtual'){
+                $url = $this->gen_url(array('app' => 'aftersales', 'ctl' => 'site_member', 'act' => 'gorefund', 'arg0' => $order_id , 'arg1' => 'buyer'));
+                //$time = $confirm_time - (app::get('b2c')->getConf('member.to_finish'))*86400 + 86400;
+                $paytime = $pay_time + (app::get('b2c')->getConf('member.to_refund'))*86400;
+
+                if(time() > $paytime){
+                    $html = $html."
+                    <a href=".$url." class='font-blue operate-btn'>申请退款</a>";
+                }
+                if($pay_status == '1'){
+                    $html = $html."<a href='javascript:remind(".$order_id.")' class='font-blue operate-btn'>提醒卖家发货</a>";
+                }
+
+
+            }
+            if($status == 'active' && ($ship_status == '1' || $ship_status == '3') && ($refund_status == '0' || $refund_status == '2' || $refund_status == '4' || $refund_status == '10') && $pay_status != '0' && $pay_status != '5' && $order_kind == 'virtual'){
+                //$url = $this->gen_url(array('app' => 'aftersales', 'ctl' => 'site_member', 'act' => 'return_add_before', 'arg0' => $order_id , 'arg1' => 'buyer'));
+                $url = $this->gen_url(array('app' => 'aftersales', 'ctl' => 'site_member', 'act' => 'gorefund_select', 'arg0' => $order_id , 'arg1' => 'buyer'));
+                $html = $html."
+                <a href=".$url." class='font-blue operate-btn'>退货/退款</a>";
+            }
+
+            if($status == 'finish' && ($ship_status == '1' || $ship_status == '3') && ($refund_status == '0' || $refund_status == '2' || $refund_status == '4' || $refund_status == '10') && $pay_status != '0' && $pay_status != '5' && $order_kind == 'virtual'){
+                $url = $this->gen_url(array('app' => 'aftersales', 'ctl' => 'site_member', 'act' => 'safeguard', 'arg0' => $order_id , 'arg1' => 'buyer'));
+                $time = $confirm_time + (app::get('b2c')->getConf('member.to_buyer_slr'))*86400;
+                if($time > time()){
+                    $html = $html."
+                    <a href=".$url." class='font-blue operate-btn'>申请维权</a>";
+                }
+            }
+            if($need_send == '1' && $refund_status == '3'){
+                $url = $this->gen_url(array('app' => 'aftersales', 'ctl' => 'site_member', 'act' => 'refund_add_buyer', 'arg0' => $order_id));
+                $html = $html."
+                <a href=".$url." class='font-blue operate-btn'>填写退货信息</a>";
+            }
+
+            if($refund_status == '7'){
+                $url = $this->gen_url(array('app' => 'aftersales', 'ctl' => 'site_member', 'act' => 'edit_refund_app', 'arg0' => $order_id));
+                $html = $html."
+                <a href=".$url." class='font-blue operate-btn'>修改退货申请</a>";
+            }
+
+            if($refund_status == '6' && ($need_edit == '1' || $status == 'finish')){
+                $url = $this->gen_url(array('app' => 'aftersales', 'ctl' => 'site_member', 'act' => 'edit_refund_2', 'arg0' => $order_id));
+                $html = $html."
+                <a href=".$url." class='font-blue operate-btn'>修改退货申请</a>";
+            }
+
+            if($refund_status == '6' && $need_send == '0' && $need_edit == '0' && $status == 'active'){
+                $url = $this->gen_url(array('app' => 'aftersales', 'ctl' => 'site_member', 'act' => 'edit_refund', 'arg0' => $order_id));
+                $html = $html."
+                <a href=".$url." class='font-blue operate-btn'>修改退货申请</a>";
+            }
+
+            if($status == 'finish'){
+                $objOrders = app::get('b2c')->model('orders');
+                $order_info = $objOrders->getList('order_id,createtime,comments_count',array('order_id'=>$order_id,'status'=>'finish'));
+                foreach($order_info as $rows){
+                    $day_1 = app::get('b2c')->getConf('site.comment_original_time');
+                    $day_2 = app::get('b2c')->getConf('site.comment_additional_time');
+                    $day_1 = intval($day_1)?intval($day_1):30;
+                    $day_2 = intval($day_2)?intval($day_2):90;
+                    if(intval($rows['comments_count']) > 1 || intval($rows['createtime']) < strtotime("-{$day_2} day")) continue;
+                    if(intval($rows['comments_count']) == 0 && intval($rows['createtime']) < strtotime("-{$day_1} day")) continue;
+                    if(intval($rows['comments_count']) == 0 && intval($rows['createtime']) >= strtotime("-{$day_1} day")){
+                        $url = $this->gen_url(array('app' => 'business', 'ctl' => 'site_comment', 'act' => 'discuss', 'arg0' => $order_id));
+                        $html .= "<a href=".$url." class='font-blue operate-btn'>订单评论</a>";
+                    }else{
+                        $url = $this->gen_url(array('app' => 'business', 'ctl' => 'site_comment', 'act' => 'addition', 'arg0' => $order_id));
+                        $html .= "<a href=".$url." class='font-blue operate-btn'>追加评论</a>";
+                    }
+                }
+            }
+        }
+        return $html;
+    }
+
+
+
+
 
     /**
      * 动态获取选择的时间
@@ -3032,4 +3221,147 @@ class b2c_ctl_wap_member extends wap_frontpage{
         $row = $oMsg->getList('*',array('has_sent' => 'false','author_id' => $this->app->member_id));
         $this->pagedata['outbox_num'] = count($row)?count($row):0;
     }
+
+    /**
+     * @Author: panbiao <panbiaophp@163.com>
+     * @DateTime: 2019-07-02 18:03
+     * @Desc: 延长
+     */
+    public function extend_finish_apl()
+    {
+        $order_id = trim($_POST['order_id']);
+        $obj_orders=app::get('b2c')->model('orders');
+        $obj_members=app::get('b2c')->model('members');
+        $obj_storemanger=app::get('business')->model('storemanger');
+        $order_info = $obj_orders->getRow('store_id,member_id',array('order_id'=>$order_id,'member_id'=>$this->member['member_id']));
+        if (empty($order_info))
+        {
+            echo json_encode(array('status'=>'failed','msg'=>'订单号参数错误'));exit;
+        }
+        $menber_id = $obj_storemanger->getRow('account_id',array('store_id'=>$order_info['store_id']));
+        $uname = $obj_members->getRow('name',array('member_id'=>$order_info['member_id']));
+        if($uname['name']){
+            $data['uname'] = $uname['name'];
+        }else{
+            $obj_pam = &app::get('pam')->model('account');
+            $pam_account=$obj_pam->dump( array('account_id'=>$order_info['account_id']),'login_name');
+            $data['uname'] =$pam_account['login_name'];
+        }
+        $data['order_id'] = $order_id;
+        $id = $menber_id['account_id'];
+        $obj_orders->fireEvent('extend',$data,$id);
+        $rs = $obj_orders->update(array('is_extend'=>'1'),array('order_id'=>$order_id));
+        if($this->app->getConf('webcall.ordernotice.enabled') == 'true')
+        {
+            $webcall_service = kernel::service('api.b2c.webcall');
+            if($webcall_service && method_exists($webcall_service, 'orderNotice'))
+            {
+                $result = $webcall_service->orderNotice($order_id,2);
+            }
+        }
+        echo json_encode(array('status'=>'success','msg'=>'申请成功，请等待卖家操作！'));exit;
+    }
+
+    /**
+     * @Author: panbiao <panbiaophp@163.com>
+     * @DateTime: 2019-07-02 18:13
+     * @Desc:京东申请退款
+     */
+    public function apply_refund()
+    {
+        $order_id = $_POST['order_id'];
+        //查询jdorder_id
+        $mdl_jdorder = app::get('jdsale')->model('jdorders');
+        if (empty($mdl_jdorder))
+        {
+            $msg = app::get('b2c')->_('不支持京东订单应用！');
+            echo json_encode(array('status'=>'failed','msg'=>$msg));exit;
+        }
+        //是否可以申请退款
+        $jdorder = $mdl_jdorder ->getRow('*',array('order_id' => $order_id));
+        if (empty($jdorder)){
+            $msg =  app::get('b2c')->_('不存在该京东订单！');
+            echo json_encode(array('status'=>'failed','msg'=>$msg));exit;
+        }
+        if ($jdorder['jdstatus'] == 'ypaid'){
+            $msg =  app::get('b2c')->_('京东已经审核通过该订单，不可以申请退款！');
+            echo json_encode(array('status'=>'failed','msg'=>$msg));exit;
+        }else{
+
+            //如果可退款,取消订单订单
+            $params = array('jdOrderId'=>$jdorder['jdorders_id']);
+            if('jdbook' == strtolower($jdorder['order_kind'])){
+                $cancel_result = kernel::single('jdsale_api_orders')->getCancelOrder($params , 'book');
+            }else{
+                $cancel_result = kernel::single('jdsale_api_orders')->getCancelOrder($params);
+            }
+            if(!$cancel_result['success']){
+
+                $msg = $cancel_result['resultMessage'];
+                echo json_encode(array('status'=>'failed','msg'=>$msg));exit;
+            }
+            $msg = app::get('b2c')->_('该京东订单取消成功！');
+
+            $mdl_jdorder->update(array('jdstatus'=>'close','order_state'=>'8'),array('order_id' => $order_id));
+
+            $return_id = -1;
+            //提交退款订单和商品
+            if ($this->jd_apply_refund($order_id,$return_id)){
+                //$msg = $msg.app::get('b2c')->_('提交退款申请成功！');
+                //同意退款
+                $msg = $msg.$this->jd_agree_refund($return_id);
+            }else{
+                $msg = $msg.app::get('b2c')->_('提交退款申请失败！');
+            }
+        }
+        echo json_encode(array('status'=>'success','msg'=>$msg));exit;
+    }
+
+    public function ship_remind()
+    {
+        if($_POST['order_id'])
+        {
+            $order_id=$_POST['order_id'];
+            $obj_orders = &app::get('b2c')->model('orders');
+            $obj_members = &app::get('b2c')->model('members');
+            $obj_storemanger = &app::get('business')->model('storemanger');
+            $order_info = $obj_orders->getRow('store_id,member_id', array('order_id' => $order_id));
+            $menber_id = $obj_storemanger->getRow('account_id,shop_name', array('store_id' => $order_info['store_id']));
+            $uname = $obj_members->getRow('name', array('member_id' => $order_info['member_id']));
+            if($uname['name']){
+                $data['uname'] = $uname['name'];
+            }else{
+                $obj_pam = &app::get('pam')->model('account');
+                $pam_account=$obj_pam->dump( array('account_id'=> $order_info['member_id']),'login_name');
+                $data['uname'] =$pam_account['login_name'];
+
+            }
+            $data['order_id'] = $order_id;
+            $id = $menber_id['account_id'];
+            $obj_orders->fireEvent('ship', $data, $id);
+            $omember_comments = app::get('b2c')->model('member_comments');
+            $ocData = array(
+                'to_id'     => $menber_id['account_id'],
+                'to_uname'  =>$menber_id['shop_name'],
+                'title'     => '请尽快发货',
+                'comment'   => '买家：'.$data['uname'].'，   订单号：'.$order_id." 请尽快发货",
+                'order_id'  => $order_id,
+                'ip'        =>$_SERVER["REMOTE_ADDR"],
+                'author'    => $data['uname'],
+                'author_id' =>$order_info['member_id'],
+                'time'      => time(),
+
+            );
+            $result = $omember_comments->save($ocData);
+            if (!$result)
+            {
+                echo json_encode(array('status'=>'failed','msg'=>"提醒失败！"));exit;
+            }
+            echo json_encode(array('status'=>'success','msg'=>"提醒成功！"));exit;
+        }else{
+            echo json_encode(array('status'=>'failed','msg'=>"提醒失败！"));exit;
+        }
+    }
+
+
 }

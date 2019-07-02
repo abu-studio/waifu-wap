@@ -1,0 +1,254 @@
+<div id="member-main" class="member-main">
+    <table cellspacing="0" cellpadding="0"  width="100%">
+        <tr>
+            <td>
+                <h1 class="title title2"><{t}>京东售后-申请服务单(本订单号：<{/t}><{$apply.order_id}>)</h1>
+            </td>
+            <td>
+
+                <{button id="return_back" type="button"  label=$___jdsale="返回"|t:'jdsale'}>
+            </td>
+        </tr>
+    </table>
+    <form action="<{link app=jdsale ctl=site_aftersales act=order_skus arg0=$apply.order_id}>"  method="post" name="x-return-back-form" id="x-return-back-form">
+    </form>
+<br/>
+     <table cellspacing="0" cellpadding="0" class="gridlist" width="100%">
+        <thead>
+            <th width="30" align="center"><{t}>商品编号<{/t}></th>
+            <th width="60" align="center"><{t}>商品名称<{/t}></th>
+            <th width="10" align="center"><{t}>数量<{/t}></th>
+        </thead>
+        <tbody>
+                <tr >
+                    <td align="center">
+                        <{$apply.sku_id}>
+                    </td>
+                    <td align="center" >
+                        <{$apply.sku_name}>
+                    </td>
+                    <td align="center" >
+                        <{$apply.nums}>
+                    </td>
+                </tr>
+            </form>
+        </tbody>
+        </table>
+    </div>
+<div id="member-main2" class="member-main">
+    <form action="<{link app=jdsale ctl=site_aftersales act=save_apply }>"  method="post" name="return_save" id='x-return-form'>
+        <input type="hidden" id="order_id" name="order_id" value="<{$apply.order_id}>">
+        <input type="hidden" id="jdOrderId" name="jdOrderId" value="<{$apply.jdOrderId}>">
+        <input type="hidden" id="jd_suborder_id" name="jd_suborder_id" value="<{$apply.jd_suborder_id}>">
+        <input type="hidden" id="sku_id" name="sku_id" value="<{$apply.sku_id}>">
+        <input type="hidden" id="sku_name" name="sku_name" value="<{$apply.sku_name}>">
+        <input type="hidden" id="nums" name="nums" value="<{$apply.nums}>">
+        <input type="hidden" id="member_id" name="member_id" value="<{$apply.member_id}>">
+        <input type="hidden" id="member_name" name="member_name" value="<{$apply.member_name}>">
+        <table cellspacing="0" cellpadding="0" class="gridlist" width="100%">
+            <thead>
+                <th  colspan="2"><{t}>填写申请明细<{/t}></th>
+
+            </thead>
+            <tbody>
+            <tr><td align="right">
+                服务类型:&nbsp;&nbsp;
+            </td><td>
+                <{input id="customerExpect" type="select" name='customerExpect'
+                rows=$apply.customerExpect valueColumn="code" labelColumn="name"   value="10" onchange="choose_expect(this);"}>
+            </td></tr>
+            <tr><td align="right">
+                申请数量:&nbsp;&nbsp;
+            </td><td>
+                    <input type="text" min="0" numtype="int" name="apply_num" size="5" value="<{$apply.nums}>" onchange="checkMaxNum(this,this.value);"/>
+                &nbsp;本订单商品可以申请服务的最大数量是<{$apply.nums}>个
+            </td></tr>
+            <tr><td align="right">
+                问题描述:&nbsp;&nbsp;
+            </td><td>
+                <{input type="textarea" id="questionDesc" name="questionDesc" class='x-inputs x-input' cols="80" rows="5" style="width:98%"}>
+            </td></tr>
+            <tr><td align="right">
+                是否有包装:&nbsp;&nbsp;
+            </td><td>
+                <{input type="checkbox" id="isHasPackage[]" name="isHasPackage[]"  value="isHasPackage" }>
+            </td></tr>
+            <tr><td align="right">
+                包装描述:&nbsp;&nbsp;
+            </td><td>
+                <{input type="textarea" id="packageDesc" name="packageDesc" class='x-inputs x-input' cols="80" rows="5" style="width:98%"}>
+            </td></tr>
+            <tr><td align="right">
+                联系人姓名:&nbsp;&nbsp;
+            </td><td>
+                <{input type="text" id="customerContactName" name="customerContactName" value=$apply.customerContactName }>
+            </td></tr>
+            <tr><td align="right">
+                联系人联系电话:&nbsp;&nbsp;
+            </td><td>
+                <{input type="text" id="customerTel" name="customerTel" value=$apply.customerTel}>
+            </td></tr>
+            <tr><td align="right">
+                联系人手机号码:&nbsp;&nbsp;
+            </td><td>
+                <{input type="text" id="customerMobilePhone" name="customerMobilePhone" value=$apply.customerMobilePhone onchange="mobileCheck(this.value);"}>
+            </td></tr>
+            <tr><td align="right">
+                联系人邮箱:&nbsp;&nbsp;
+            </td><td>
+                <{input type="text" id="customerEmail" name="customerEmail" value=$apply.customerEmail placeholder="yourname@xx.com" onchange="emailCheck(this.value);"}>
+            </td></tr>
+            <tr><td align="right">
+                邮编:&nbsp;&nbsp;
+            </td><td>
+                <{input type="text" id="customerPostcode" name="customerPostcode" value=$apply.customerPostcode}>
+            </td></tr>
+
+            <tr><td align="right">
+                取件方式:&nbsp;&nbsp;
+            </td><td>
+                <{input id="pickWareType" type="select" name='pickWareType' 
+                rows=$apply.pickWareType valueColumn="code" labelColumn="name"  value="4"}>
+            </td></tr>
+            <tr id="pickAddrArea"><td align="right">
+                取件地区:&nbsp;&nbsp;
+            </td><td>
+                <{input type="region" id="pickArea" name="pickArea" vtype="area" app="ectools" value=$apply.pickArea  class="areainput"}>
+            </td></tr>
+            <tr id="pickAddr"><td align="right">
+                取件地址:&nbsp;&nbsp;
+            </td><td>
+                <{input type="text" id="pickAddr" name="pickAddr"  value=$apply.pickAddr }>
+            </td></tr>
+            <tr id="returnAddrArea"><td align="right">
+                返件地区:&nbsp;&nbsp;
+            </td><td>
+                <{input type="region" id="returnArea" name="returnArea" vtype="area" app="ectools" value=$apply.returnArea  class="areainput"}>
+            </td></tr>
+            <tr id="returnAddr"><td align="right">
+                返件地址:&nbsp;&nbsp;
+            </td><td>
+                <{input type="text" id="returnAddr" name="returnAddr"  value=$apply.returnAddr }>
+            </td></tr>
+            </tbody>
+        </table>
+        <div class="table-action" style="margin-top:10px;">
+		<{button id="x-submit" type="submit"  label=$___jdsale="保存申请"|t:'jdsale'}>
+
+	</div>
+	</form>
+
+
+</div>
+
+<script>
+window.onload = function(){
+
+    $('returnAddrArea').hide();
+    $('returnAddr').hide();
+   // $('pickAddrArea').hide();
+    //$('pickAddr').hide();
+};
+
+function choose_expect(){
+    var typeval = $('customerExpect').get('value');
+    if(typeval == '10'){
+        $('returnAddrArea').hide();
+        $('returnAddr').hide();
+    }else{
+        $('returnAddrArea').show();
+        $('returnAddr').show();
+    }
+}
+
+function choose_pickWareType(){
+    var typeval = $('pickWareType').get('value');
+    if(typeval != '4'){
+        $('pickAddrArea').hide();
+        $('pickAddr').hide();
+    }else{
+        $('pickAddrArea').show();
+        $('pickAddr').show();
+    }
+}
+
+function checkMaxNum(numInput,num){
+    if(!numInput) return;
+    num = num || numInput.value;
+    if (!num || isNaN(num)){
+        numInput.value = 1;
+    }else{
+        num = num.toInt();
+
+        if (num > $('nums').getValue()){
+            numInput.value = $('nums').getValue();
+        }
+        if (num <1){
+            numInput.value = 1;
+        }
+    }
+}
+
+$('x-return-form').getElement('button[type=submit]').addEvent('click',function(e){
+    var customerExpect = $('customerExpect').value;
+    if(customerExpect == ''){
+        Message.error('请选择售后服务类型！');
+
+        return false;
+    }
+    var customerContactName = $('customerContactName').value;
+    if(customerContactName == ''){
+        Message.error('联系人不可以为空！');
+
+        return false;
+    }
+    var customerTel = $('customerTel').value;
+    if(customerTel == ''){
+        Message.error('联系人电话不可以为空！');
+
+        return false;
+    }
+    var customerMobilePhone = $('customerMobilePhone').value;
+    if(customerMobilePhone == ''){
+        Message.error('联系人手机号不可以为空！');
+
+        return false;
+    }
+    var customerEmail = $('customerEmail').value;
+    if(customerEmail == ''){
+        Message.error('联系人邮箱不可以为空！');
+
+        return false;
+    }
+    var pickWareType = $('pickWareType').value;
+    if(pickWareType == ''){
+        Message.error('必须要选择取件方式！');
+
+        return false;
+    }
+
+});
+
+
+function emailCheck(regName){
+    var r = "^\\w+((-\\w+)|(\\.\\w+))*\\@[A-Za-z0-9]+((\\.|-)[A-Za-z0-9]+)*\\.[A-Za-z0-9]+$";
+
+    if(!new RegExp(r).test(regName)){
+        Message.error('请输入有效的邮箱地址！');
+        return false;
+    }
+}
+
+function mobileCheck(regName){
+    var r = "^0?(13|15|18|14|17)[0-9]{9}$";
+    if(!new RegExp(r).test(regName)){
+        Message.error('请输入有效的手机号！');
+        return false;
+    }
+}
+
+$("return_back").addEvent('click',function(e){
+    $('x-return-back-form').submit();
+});
+
+</script>

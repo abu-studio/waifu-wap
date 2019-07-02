@@ -58,9 +58,9 @@ class business_member_orders extends site_controller
 
     //查询个订单的权限
     //京东订单的售后要单独处理
-    public function get_orders_html($v){
+    public function get_orders_html($v)
+    {
         $html = '';
-
         $pay_status=$v['pay_status'];
         $pay_app_id=$v['payinfo']['pay_app_id'];
         $ship_status=$v['ship_status'];
@@ -74,7 +74,8 @@ class business_member_orders extends site_controller
         $need_edit=$v['need_edit'];
         $order_kind=$v['order_kind'];
 
-        if($order_kind == "b2c_card" || $order_kind == "card"){
+        if($order_kind == "b2c_card" || $order_kind == "card")
+        {
             if($status == 'active' && ( $pay_status == '0') && $pay_app_id != '-1' && $ship_status == '0'){
 
                 $url = $this->gen_url(array('app' => 'business', 'ctl' => 'site_order', 'act' => 'docancel', 'arg0' => $order_id , 'arg1' => 'buyer'));
@@ -208,7 +209,6 @@ class business_member_orders extends site_controller
                 $html = $html."
                 <a href=".$url." class='font-blue operate-btn'>修改退货申请</a>";
             }
-
 
             if($status == 'finish'){
                 $objOrders = app::get('b2c')->model('orders');

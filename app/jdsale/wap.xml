@@ -1,0 +1,22 @@
+<site>
+	<module id='jdsale' controller='wap_gallery'>
+        <name>jdgallery</name>
+        <title>京东商品列表</title>
+        <disable>false</disable>
+    </module>
+	<module id='jdsale' controller='wap_product'>
+        <name>jdproduct</name>
+        <title>京东商品详情</title>
+        <disable>false</disable>
+    </module>
+	<module id='jdsale' controller='wap_regions'>
+        <name>jdregions</name>
+        <title>京东地址</title>
+        <disable>false</disable>
+    </module>
+  <module id='jdsale' controller='wap_aftersales'>
+        <name>jdaftersales</name>
+        <title>京东售后</title>
+        <disable>false</disable>
+  </module>
+</site>

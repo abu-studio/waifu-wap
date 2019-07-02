@@ -49,7 +49,9 @@ class base_component_compiler{
         $this->view_helper[$method] = $helper_path;
     }
 
-    function compile_file($file_path){
+    function compile_file($file_path)
+    {
+
         if(file_exists($file_path)){
             return $this->compile(file_get_contents($file_path));
         }else{

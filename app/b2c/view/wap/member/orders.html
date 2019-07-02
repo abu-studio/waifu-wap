@@ -12,55 +12,97 @@
     </header>
     <div class="full-padding">
         <ul class="mem-order-list">
-            <{foreach from=$orders item="order" name=orders key="key"}>
+            <{foreach from=$orders item=order name=orders key="key"}>
             <li class="mem-order-item">
             <div class="icon orange">
-                <{switch from=$order.status}>
-                <{case value='finish'}><{t}>已完成<{/t}>
-                <{case value='dead'}><{t}>已作废<{/t}>
-                <{case}>
-                <{switch from=$order.pay_status}>
-                <{case value='1'}><{t}>已付款<{/t}>
-                <{switch from=$order.ship_status}>
-                <{case value='1'}><{t}>[已发货]<{/t}>
-                <{case value='2'}><{t}>[部分发货]<{/t}>
-                <{case value='3'}><{t}>[部分退货]<{/t}>
-                <{case value='4'}><{t}>[已退货]<{/t}>
-                <{case}><{t}>[正在备货]<{/t}>
-                <{/switch}>
-                <{case value='2'}><{t}>已付款至担保方<{/t}>
-                <{case value='3'}><{t}>等待补款<{/t}>
-                <{switch from=$order.ship_status}>
-                <{case value='1'}><{t}>[已发货]<{/t}>
-                <{case value='2'}><{t}>[部分发货]<{/t}>
-                <{case value='3'}><{t}>[部分退货]<{/t}>
-                <{case value='4'}><{t}>[已退货]<{/t}>
-                <{/switch}>
-                <{case value='4'}><{t}>部分退款<{/t}>
-                <{switch from=$order.ship_status}>
-                <{case value='0'}><{t}>[未发货]<{/t}>
-                <{case value='1'}><{t}>[已发货]<{/t}>
-                <{case value='2'}><{t}>[部分发货]<{/t}>
-                <{case value='3'}><{t}>[部分退货]<{/t}>
-                <{case value='4'}><{t}>[已退货]<{/t}>
-                <{/switch}>
-                <{case value='5'}><{t}>已退款<{/t}>
-                <{switch from=$order.ship_status}>
-                <{case value='0'}><{t}>[未发货]<{/t}>
-                <{case value='1'}><{t}>[已发货]<{/t}>
-                <{case value='2'}><{t}>[部分发货]<{/t}>
-                <{case value='3'}><{t}>[部分退货]<{/t}>
-                <{case value='4'}><{t}>[已退货]<{/t}>
-                <{/switch}>
-                <{case}><{t}>等待付款<{/t}>
-                <{switch from=$order.ship_status}>
-                <{case value='1'}><{t}>[已发货]<{/t}>
-                <{case value='2'}><{t}>[部分发货]<{/t}>
-                <{case value='3'}><{t}>[部分退货]<{/t}>
-                <{case value='4'}><{t}>[已退货]<{/t}>
-                <{/switch}>
-                <{/switch}>
-                <{/switch}>
+                <{if $order.refund_status ==0 || $order.refund_status ==2 || $order.refund_status ==4 || $order.refund_status ==10}>
+                <{if $order.status == 'finish'}><p><{t}>已完成<{/t}></p>
+                <{elseif $order.status == 'dead'}><p><{t}>交易关闭<{/t}></p>
+                <{else}>
+                <{if $order.pay_status==1}><{t}>已付款<{/t}>
+                [<{if $order.ship_status==1}>
+                <{t}> 已发货<{/t}>
+                <{elseif $order.ship_status==2}>
+                <{t}>部分发货<{/t}>
+                <{elseif $order.ship_status==3}>
+                <{t}>部分退货<{/t}>
+                <{elseif $order.ship_status==4}>
+                <{t}>已退货<{/t}>
+                <{else}>
+                <{t}>正在备货...<{/t}>
+                <{/if}>]
+                <{elseif $order.pay_status==2}>
+                <{t}>已付款至担保方<{/t}>
+                <{elseif $order.pay_status==3}>
+                <{t}>待补款<{/t}>
+                <{if $order.ship_status==1}>
+                <{t}>[已发货]<{/t}>
+                <{elseif $order.ship_status==2}>
+                <{t}> [部分发货]<{/t}>
+                <{elseif $order.ship_status==3}>
+                <{t}>[部分退货]<{/t}>
+                <{elseif $order.ship_status==4}>
+                <{t}>[已退货]<{/t}>
+                <{/if}>
+                <{elseif $order.pay_status==4}>
+                <{t}> 部分退款<{/t}>
+                [<{if $order.ship_status==1}>
+                <{t}>已发货<{/t}>
+                <{elseif $order.ship_status==2}>
+                <{t}>部分发货<{/t}>
+                <{elseif $order.ship_status==3}>
+                <{t}>部分退货<{/t}>
+                <{elseif $order.ship_status==4}>
+                <{t}>已退货<{/t}>
+                <{elseif $order.ship_status==0}>
+                <{t}>未发货<{/t}>
+                <{/if}>]
+                <{elseif $order.pay_status==5}>
+                <{t}>已退款<{/t}>
+                [<{if $order.ship_status==1}>
+                <{t}>已发货<{/t}>
+                <{elseif $order.ship_status==2}>
+                <{t}>部分发货<{/t}>
+                <{elseif $order.ship_status==3}>
+                <{t}>部分退货<{/t}>
+                <{elseif $order.ship_status==4}>
+                <{t}> 已退货<{/t}>
+                <{elseif $order.ship_status==0}>
+                <{t}>未发货<{/t}>
+                <{/if}>]
+                <{else}>
+                <{t}>待付款<{/t}></a> <{if $order.ship_status==1}>
+                <{t}>[已发货]<{/t}>
+                <{elseif $order.ship_status==2}>
+                <{t}>[部分发货]<{/t}>
+                <{elseif $order.ship_status==3}>
+                <{t}>[部分退货]<{/t}>
+                <{elseif $order.ship_status==4}>
+                <{t}>[已退货]<{/t}>
+                <{/if}>
+                <{/if}>
+                <{/if}>
+                <{else}>
+                <{if $order.refund_status ==1}>
+                <{t}>退款申请中,等待卖家审核<{/t}>
+                <{elseif $order.refund_status ==3}>
+                <{t}>卖家同意退款,等待买家退货<{/t}>
+                <{elseif $order.refund_status ==5}>
+                <{t}>买家已退货,等待卖家确认收货<{/t}>
+                <{elseif $order.refund_status ==6}>
+                <{t}>卖家不同意协议,等待买家修改<{/t}>
+                <{elseif $order.refund_status ==7}>
+                <{t}>买家已退货,卖家不同意协议,等待买家修改<{/t}>
+                <{elseif $order.refund_status ==8}>
+                <{t}>平台介入,等待卖家举证<{/t}>
+                <{elseif $order.refund_status ==9}>
+                <{t}>平台介入,等待平台处理<{/t}>
+                <{elseif $order.refund_status ==11}>
+                <{t}>卖家同意退款,等待卖家打款至平台<{/t}>
+                <{elseif $order.refund_status ==12}>
+                <{t}>卖家已退款,等待系统结算<{/t}>
+                <{/if}>
+                <{/if}>
             </div>
             <div class="gb">
                 <div class="col2">
@@ -105,60 +147,124 @@
                             <{/if}>
                             <{/if}>
                         </div>
-                        <{if $order.status != 'dead' && $order.ship_status =="1" && $order.received_status =='0'}>
+                        <div class="t-r">
+                            <a href="<{link app=b2c ctl=wap_member act=orderdetail arg0=$order.order_id}>">
+                            查看订单
+                            <i class="arr right"></i>
+                            </a>
+                        </div>
+                        <{if $order.status == 'active' && $order.pay_status == '0' && $order.ship_status == '0'  &&  $order.payinfo.pay_app_id != '-1'}>
+                        <div class="t-r">
+                            <a href="<{link app=b2c ctl=wap_member act=cancel arg0=$order.order_id}>">
+                                关闭交易
+                                <i class="arr right"></i>
+                            </a>
+                        </div>
+                        <{/if}>
+                        <{if ($order.ship_status == '1' || $order.ship_status == '3') && ($order.pay_status == '1' || $order.pay_status == '4')  && $order.status == 'active' && ($order.refund_status == '0' || $order.refund_status == '2' || $order.refund_status == '4' || $order.refund_status == '10')}>
                         <div class="t-r">
                             <a href="javascript:void(0);" onclick="return receive('<{$order.url}>')">
-                               确认收货
+                                确认收货
                                 <i class="arr right"></i>
                             </a>
                         </div>
                         <{/if}>
-                        <{if $order.status != 'dead' && $order.ship_status =="2" && $order.received_status =='0'}>
-                        <div class="t-r">
-                            <a style="color:#999;cursor:default;" href="javascript:void(0);">
-                               确认收货
-                                <i class="arr right"></i>
-                            </a>
-                        </div>
-                        <{/if}>
-                        <div class="t-r">
-                            <a href="<{link app=b2c ctl="wap_member" act="orderdetail" arg0=$order.order_id}>">
-                                查看订单
-                                <i class="arr right"></i>
-                            </a>
-                        </div>
-                        <{if $order.pay_status == '1' && $order.ship_status == '0' && $order.cur_amount > 0}>
-                        <div class="t-r">
-                            <a href="javascript:void(0);" class="action-refund-popup" order_id="<{$order.order_id}>">
-                                申请退款
-                                <i class="arr right"></i>
-                            </a>
-                        </div>
-                        <div id="member_refund_popup_<{$order.order_id}>" style="display:none;" class="point-dis">
-				                <p><{t}>订单号<{/t}>: <{$order.order_id}></p>
-				                <p><{t}>退款原因<{/t}>: 
-				                        <select id="refund_apply_reason_<{$order.order_id}>">
-				                        <option value="">请选择退款理由</option>
-				                        <{foreach from=$field_refunds_reason item=refunds_reason_text key=refunds_reason_value}>
-				                        <option value="<{$refunds_reason_value}>"><{$refunds_reason_text}></option>
-				                        <{/foreach}>
-				                        </select>&nbsp;*
-				                </p>
-				                <p><{t}>友情提示<{/t}>: 订单全额退款后自动取消将无法恢复，您是否确认要申请退款？</p>
-				                <div>
-				                    <div style="width:80px;margin:0px auto">
-				                        <button class="btn submit_refund_button" style="font-size:14px" order_id="<{$order.order_id}>"><span><{t}>确认申请<{/t}></span></button>
-				                    </div>
-				                </div>
-                         </div>
-                        <{/if}>
-                        <{if $order.status == 'active' && $order.pay_status == '0' && $order.ship_status == '0' &&  $order.is_pay==0 }>
-                        <div class="t-r">
-                            <a href="<{link app=b2c ctl="wap_member" act="cancel" arg0=$order.order_id}>">
-                               取消订单
-                                <i class="arr right"></i>
-                            </a>
-                        </div>
+
+                        <{if $order.order_kind == 'jdorder' ||  $order.order_kind =='jdbook' }>
+                            <{if ($order.ship_status == '1' || $order.ship_status == '3') && ($order.pay_status == '1' || $order.pay_status == '4') && $order.status == 'active' && ($order.refund_status == '0' || $order.refund_status == '2' || $order.refund_status == '4' || $order.refund_status == '10')}>
+                            <div class="t-r">
+                                <a href="<{link app=jdsale ctl=wap_aftersales act=index arg0=$order.order_id}>" >
+                                    京东售后
+                                    <i class="arr right"></i>
+                                </a>
+                            </div>
+                            <{/if}>
+                            <{if $order.pay_status != '0' && $order.pay_status != '5' && $order.status == 'active' && $order.ship_status  == '0' &&  ($order.refund_status == '0' || $order.refund_status == '2' || $order.refund_status == '4' || $order.refund_status == '10')}>
+                            <div class="t-r">
+                                <a href="javascript:void(0);" onclick="return jd_refund('<{$order.order_id}>')" >
+                                    申请退款
+                                    <i class="arr right"></i>
+                                </a>
+                            </div>
+                            <{/if}>
+                        <{else}>
+                            <{if ($order.ship_status == '1' || $order.ship_status == '3') && ($order.pay_status == '1' || $order.pay_status == '4')  && $order.status == 'active' && ($order.refund_status == '0' || $order.refund_status == '2' || $order.refund_status == '4' || $order.refund_status == '10') && $order.is_extend == '0'}>
+                            <div class="t-r">
+                                <a href="javascript:void(0);" onclick="extend_finish_apl('<{$order.order_id}>')" >
+                                    延长收货申请
+                                    <i class="arr right"></i>
+                                </a>
+                            </div>
+                            <{/if}>
+                            <{if  $order.pay_status != '0' && $order.pay_status != '5' && $order.status == 'active' && $order.ship_status  == '0' &&  ($order.refund_status == '0' || $order.refund_status == '2' || $order.refund_status == '4' || $order.refund_status == '10') && $order.order_kind == 'virtual'}>
+                                <{if ($order.pay_time + $limittime) < $nowtime }>
+                                <div class="t-r">
+                                    <a href="javascript:void(0);" onclick="extend_finish_apl('<{$order.order_id}>')" >
+                                        申请退款
+                                        <i class="arr right"></i>
+                                    </a>
+                                </div>
+                                <{/if}>
+                                <{if $order.pay_status == '1'}>
+                                    <div class="t-r">
+                                        <a href="javascript:void(0);" onclick="ship_remind('<{$order.order_id}>')" >
+                                            提醒卖家发货
+                                            <i class="arr right"></i>
+                                        </a>
+                                    </div>
+                                <{/if}>
+                            <{/if}>
+                            <{if $order.status == 'active' && ($order.ship_status == '1' || $order.ship_status == '3') && ($order.refund_status == '0' || $order.refund_status == '2' || $order.refund_status == '4' || $order.refund_status == '10') && $order.pay_status != '0' && $order.pay_status != '5' && $order.order_kind == 'virtual' }>
+                            <div class="t-r">
+                                <a href="<{link app=aftersales ctl=wap_member act=gorefund_select arg0=$order.order_id arg1='buyer'}>"  >
+                                    退货/退款
+                                    <i class="arr right"></i>
+                                </a>
+                            </div>
+                            <{/if}>
+                            <{if $order.status == 'finish' && ($order.ship_status == '1' || $order.ship_status == '3') && ($order.refund_status == '0' || $order.refund_status == '2' || $order.refund_status == '4' || $order.refund_status == '10') && $order.pay_status != '0' && $order.pay_status != '5' && $order.order_kind == 'virtual' }>
+                                <{if ($order.confirm_time + $safeguardtime) > $nowtime }>
+                                <div class="t-r">
+                                    <a href="<{link app=aftersales ctl=wap_member act=safeguard arg0=$order.order_id arg1='buyer'}>"  >
+                                        申请维权
+                                        <i class="arr right"></i>
+                                    </a>
+                                </div>
+                                <{/if}>
+                            <{/if}>
+
+                            <{if $order.need_send == '1' && $order.refund_status == '3'}>
+                            <div class="t-r">
+                                <a href="<{link app=aftersales ctl=wap_member act=refund_add_buyer arg0=$order.order_id arg1='buyer'}>"  >
+                                    填写退货信息
+                                    <i class="arr right"></i>
+                                </a>
+                            </div>
+                            <{/if}>
+                           <{if $order.refund_status == '7'}>
+                            <div class="t-r">
+                                <a href="<{link app=aftersales ctl=wap_member act=edit_refund_app arg0=$order.order_id arg1='buyer'}>"  >
+                                    修改退货申请
+                                    <i class="arr right"></i>
+                                </a>
+                            </div>
+                            <{/if}>
+                            <{if $order.refund_status == '6' && ($order.need_edit == '1' || $order.status == 'finish')}>
+                            <div class="t-r">
+                                <a href="<{link app=aftersales ctl=wap_member act=edit_refund_2 arg0=$order.order_id arg1='buyer'}>"  >
+                                    修改退货申请
+                                    <i class="arr right"></i>
+                                </a>
+                            </div>
+                            <{/if}>
+                            <{if $order.refund_status == '6' $order.need_send == '0' && $order.need_edit == '0' && $order.status == 'active'}>
+                            <div class="t-r">
+                                <a href="<{link app=aftersales ctl=wap_member act=edit_refund arg0=$order.order_id arg1='buyer'}>"  >
+                                    修改退货申请
+                                    <i class="arr right"></i>
+                                </a>
+                            </div>
+                            <{/if}>
                         <{/if}>
                     </div>
                 </div>
@@ -230,6 +336,72 @@
 </div>
 <{wap_pagers data=$pager}>
 <script>
+
+
+function extend_finish_apl(orderid)
+{
+    if(confirm('确定要申请退款并取消订单吗？')) {
+        var data = 'order_id=' + orderid;
+        $.post('<{link app=b2c ctl=wap_member act=extend_finish_apl}>', data, function (re) {
+            var o = JSON.parse(re);
+            if (o.status == 'success') {
+                msg = o.msg ? o.msg : '申请成功';
+                popup(msg, 1000);
+                setTimeout(function () {
+                    location.reload(true)
+                }, 2000);
+            } else {
+                msg = o.msg ? o.msg : '申请失败';
+                popup(msg, 1000, "sm-pop");
+            }
+        });
+    }
+}
+
+
+
+function ship_remind(orderid)
+{
+    if(confirm('卖家将会收到发货提醒，确定发送提醒吗？？'))
+    {
+        var data = 'order_id=' + orderid;
+        $.post('<{link app=b2c ctl=wap_member act=ship_remind}>', data, function (re) {
+            var o = JSON.parse(re);
+            if (o.status == 'success') {
+                msg = o.msg ? o.msg : '提醒成功';
+                popup(msg, 1000);
+                setTimeout(function () {
+                    location.reload(true)
+                }, 2000);
+            } else {
+                msg = o.msg ? o.msg : '提醒失败';
+                popup(msg, 1000, "sm-pop");
+            }
+        });
+    }
+}
+
+function jd_refund(orderid)
+{
+    if(confirm('确定要申请退款并取消订单吗？'))
+    {
+        var data = 'order_id=' + orderid;
+        $.post('<{link app=b2c ctl=wap_member act=apply_refund}>', data, function (re) {
+            var o = JSON.parse(re);
+            if (o.status == 'success') {
+                msg = o.msg ? o.msg : '申请成功';
+                popup(msg, 1000);
+                setTimeout(function () {
+                    location.reload(true)
+                }, 2000);
+            } else {
+                msg = o.msg ? o.msg : '申请失败';
+                popup(msg, 1000, "sm-pop");
+            }
+        });
+    }
+}
+
 function receive(url){
     var xmlHttp;
     try{

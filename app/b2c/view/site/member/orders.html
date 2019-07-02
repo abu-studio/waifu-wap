@@ -56,8 +56,7 @@
             </tr>
             <tbody>
                 <{foreach from=$orders item="order" name=orders key="key"}>
-                <tr
-                    <{if ($key+1)%2 == 0}>class="order-list-tr"<{/if}>>
+                <tr <{if ($key+1)%2 == 0}>class="order-list-tr"<{/if}> >
                     <td class="vt no_bk" >
                     <{if $order.status == 'active' && ($order.pay_status=='0' || $order.pay_status=='3') && $order.payinfo.pay_app_id != '-1'}>
                     <input class="selector" type="checkbox" value="<{$order.order_id}>" name="order[]"  style="display: none;">
@@ -284,17 +283,17 @@
                           <{t}>卖家同意退款,等待买家退货<{/t}>
                         <{elseif $order.refund_status ==5}>
                           <{t}>买家已退货,等待卖家确认收货<{/t}>
-                                        <{elseif $order.refund_status ==6}>
+                        <{elseif $order.refund_status ==6}>
                           <{t}>卖家不同意协议,等待买家修改<{/t}>
-                                        <{elseif $order.refund_status ==7}>
+                        <{elseif $order.refund_status ==7}>
                           <{t}>买家已退货,卖家不同意协议,等待买家修改<{/t}>
-                          <{elseif $order.refund_status ==8}>
+                        <{elseif $order.refund_status ==8}>
                           <{t}>平台介入,等待卖家举证<{/t}>
-                          <{elseif $order.refund_status ==9}>
+                        <{elseif $order.refund_status ==9}>
                           <{t}>平台介入,等待平台处理<{/t}>
-                          <{elseif $order.refund_status ==11}>
+                        <{elseif $order.refund_status ==11}>
                           <{t}>卖家同意退款,等待卖家打款至平台<{/t}>
-                          <{elseif $order.refund_status ==12}>
+                        <{elseif $order.refund_status ==12}>
                           <{t}>卖家已退款,等待系统结算<{/t}>
                         <{/if}>
                       <{/if}>
