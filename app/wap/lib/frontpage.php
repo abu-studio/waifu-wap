@@ -109,23 +109,32 @@ class wap_frontpage extends wap_controller{
 
     function verify_member(){
         kernel::single('base_session')->start();
-        $userObject = kernel::single('b2c_user_object');
-        if( app::get('b2c')->member_id = $userObject->get_member_id() ){
-            $data = $userObject->get_members_data(array('members'=>'member_id'));
-            if($data){
-                //登录受限检测
-                $res = $this->loginlimit(app::get('b2c')->member_id,$redirect);
-                if($res){
-                    $this->redirect($redirect);
-                }else{
-                    return true;
+        if($this->app->member_id = $_SESSION['account'][pam_account::get_account_type($this->app->app_id)]){
+            $userObject = kernel::single('b2c_user_object');
+            if( app::get('b2c')->member_id = $userObject->get_member_id() )
+            {
+                $data = $userObject->get_members_data(array('members'=>'member_id'));
+                if($data)
+                {
+                    //登录受限检测
+                    $res = $this->loginlimit(app::get('b2c')->member_id,$redirect);
+                    if($res)
+                    {
+                        $this->redirect($redirect);
+                    }else{
+                        return true;
+                    }
                 }
-            }else{
-                $this->redirect(array('app'=>'b2c', 'ctl'=>'wap_passport', 'act'=>'error'));
-            }
+                else
+                {
+                    $this->redirect(array('app'=>'b2c', 'ctl'=>'wap_passport', 'act'=>'index'));
+                }
         }else{
-            $this->redirect(array('app'=>'b2c', 'ctl'=>'wap_passport', 'act'=>'error'));
+            $this->redirect(array('app'=>'b2c', 'ctl'=>'wap_passport', 'act'=>'index'));
         }
+      }else{
+        $this->redirect(array('app'=>'b2c', 'ctl'=>'wap_passport', 'act'=>'index'));
+      }
     }
     /**
     * loginlimit-登录受限检测
