@@ -9,7 +9,7 @@ class b2c_site_goods_list_viewer{
         $this->db = kernel::database();
     }
 
-    function get_view($cat_id,$view,$type_id=null,$vircat){
+    function get_view($cat_id,$view,$type_id=null,$vircat,$viewType='site'){
         
     
             if(!is_array($cat_id)){
@@ -107,15 +107,15 @@ class b2c_site_goods_list_viewer{
                 $row['setting']['list_tpl'] = $dftList;
             }
             if($view=='index') $view = current($row['setting']['list_tpl']);
+
             //如果视图存在则调用。不存在则取
             if(in_array($view,$dftList)){
-                    $row['tpl'] = '/site/gallery/type/'.$view.'.html';
+                    $row['tpl'] = "/{$viewType}/gallery/type/{$view}.html";
             }else{
                 $row['tpl'] = realpath(SCHEMA_DIR.$row['schema_id'].'/view/'.$view.'.html');
             }
             $row['dftView'] = $view;
             $row['setting']['list_tpl'][key($row['setting']['list_tpl'])] = 'index';
-
             return $row;
     }
 }

@@ -1,7 +1,7 @@
 <div class="gallery-grid">
   <input type="hidden" class="action-pagedata" value="{total:<{$total}>, pagecurrent:<{$page}>, pagetotal:<{$pagetotal}>}">
   <ul class="clearfix">
-    <{foreach from=$goodsData key=key item=goods_row}>
+    <{foreach from=$products key=key item=goods_row}>
     <li class="goods-item">
       <{assign var='imageset' value=$env.conf.image.image.set}>
       <div class="goods-pic" style="<{if $imageset.S.width}>width:<{$imageset.S.width}>px;<{/if}><{if $imageset.S.height}>height:<{$imageset.S.height}>px;line-height:<{$imageset.S.height-2}>px;<{/if}>">
@@ -94,4 +94,4 @@
     <{/foreach}>
   </ul>
 </div>
-<{include file='wap/gallery/type/page/page.html'}>
+<{pagers data=$pager}>

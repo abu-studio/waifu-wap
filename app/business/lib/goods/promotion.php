@@ -7,7 +7,8 @@ class business_goods_promotion
        $this->mdl_promotion=$this->app->model('goods_promotion_price');
     }
     function gen_site_url($goods_id,$promotion_id=0,$p_type='normal'){
-        if($p_type=='normal'){
+        if($p_type=='normal')
+        {
             return app::get('site')->router()->gen_url(array('app' => 'b2c','ctl' => 'site_product', 'act'=>'index','arg0'=>$goods_id));
         }
         foreach(kernel::servicelist('gallery_list.goods_promotion') as $object) {
