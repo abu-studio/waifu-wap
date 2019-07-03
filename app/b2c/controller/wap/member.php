@@ -2029,6 +2029,139 @@ class b2c_ctl_wap_member extends wap_frontpage{
         }
     }
 
+    function doCancelOrder()
+    {
+
+        $orderId = trim($_POST['order_id']);
+        if (empty($orderId))
+        {
+            echo json_encode(array('status'=>'failed','msg'=>"参数错误"));exit;
+        }
+        $mdl_order = app::get('b2c')->model('orders');
+        $sdf_order = $mdl_order->getRow('member_id,status,pay_status,ship_status', array('order_id'=>$orderId));
+        if (empty($sdf_order))
+        {
+            echo json_encode(array('status'=>'failed','msg'=>"参数错误"));exit;
+        }
+        if($sdf_order['member_id'] != $this->app->member_id)
+        {
+            echo json_encode(array('status'=>'failed','msg'=>"请勿取消别人的订单"));exit;
+        }
+        $obj_checkorder = kernel::service('b2c_order_apps', array('content_path'=>'b2c_order_checkorder'));
+        if (!$obj_checkorder->check_order_cancel($orderId,'',$message))
+        {
+            echo json_encode(array('status'=>'failed','msg'=>$message));exit;
+        }
+        $db = kernel::database();
+        $transaction_status = $db->beginTransaction();
+        $sdf['order_id'] = $orderId;
+        $sdf['op_id'] = $this->app->member_id;
+        //获取用户名
+        $obj_account = app::get('pam')->model('account');
+        $login_name = $obj_account->dump($this->app->member_id,'login_name');
+        $sdf['opname'] = $login_name['login_name'];
+        $b2c_order_cancel = kernel::single("b2c_order_cancel");
+        if ($b2c_order_cancel->generate($sdf, $this, $message))
+        {
+            //ajx crm
+            $obj_apiv = kernel::single('b2c_apiv_exchanges_request');
+            $req_arr['order_id']=$_POST['order_id'];
+            $obj_apiv->rpc_caller_request($req_arr, 'orderupdatecrm');
+
+            $order_id = $_POST['order_id'];
+            $orderObj = app::get('b2c')->model('orders');
+            $orderItemObj = app::get('b2c')->model('order_items');
+            $order_info = $orderObj->dump(array('order_id'=>$order_id),'act_id,order_type,itemnum');
+            switch($order_info['order_type']){
+                case 'group':
+                    $buyMod = app::get('groupbuy')->model('memberbuy');
+                    $applyObj = app::get('groupbuy')->model('groupapply');
+                    $apply = $applyObj->dump(array('id'=>$order_info['act_id']),'aid,gid,remainnums,nums');
+                    if($apply){
+                        $buyMod->update(array('effective'=>'false'),array('order_id'=>$order_id));
+                    }
+                    break;
+                case 'spike':
+                    $buyMod = app::get('spike')->model('memberbuy');
+                    $applyObj = app::get('spike')->model('spikeapply');
+                    $apply = $applyObj->dump(array('id'=>$order_info['act_id']),'aid,gid,remainnums,nums');
+                    if($apply){
+                        $buyMod->update(array('effective'=>'false'),array('order_id'=>$order_id));
+                    }
+                    break;
+                case 'score':
+                    $buyMod = app::get('scorebuy')->model('memberbuy');
+                    $applyObj = app::get('scorebuy')->model('scoreapply');
+                    $apply = $applyObj->dump(array('id'=>$order_info['act_id']),'aid,gid,remainnums,nums');
+                    if($apply){
+                        $buyMod->update(array('effective'=>'false'),array('order_id'=>$order_id));
+                    }
+                    break;
+                case 'timedbuy':
+                    $buyMod = app::get('timedbuy')->model('memberbuy');
+                    $businessMod = app::get('timedbuy')->model('businessactivity');
+                    $buys = $buyMod->getList('*',array('order_id'=>$order_id));
+                    if($buys){
+                        $business = $businessMod->getList('*',array('gid'=>$buys[0]['gid'],'aid'=>$buys[0]['aid']));
+                        $buyMod->update(array('disable'=>'true'),array('order_id'=>$order_id));
+                        if($business[0]['nums']){
+                            $arr['remainnums'] = intval($business[0]['remainnums'])+intval($buys[0]['nums']);
+                            $businessMod->update($arr,array('id'=>$business[0]['id']));
+                        }
+                    }
+                    break;
+            }
+            //组合支付调用
+            $subsdf = array('order_objects'=>array('*',array('order_items'=>array('*',array(':products'=>'*')))));
+            $order_saved = $orderObj->dump($order_id, '*', $subsdf);
+            if(strpos($order_saved['payinfo']['pay_app_id'],'sfscpay')!==false){
+                $objPay = kernel::single('ectools_pay');
+                $check = $objPay->get_payment_by_order($order_id,'sfscpay','sfsc_freeze');
+                //组合支付订单取消回调接口-hy
+                $arr_callback = array(
+                    'order_id' => $order_id,
+                    'store_id' => $order_saved['store_id'],
+                    'payment' => $order_saved['payinfo']['pay_app_id'],
+                    'cur_money' => $check['cur_money'],
+                    'pay_status' => $order_saved['pay_status'],
+                );
+                //调用JAVA端
+                $obj_mem = app::get('b2c')->model('members');
+                $tmp = $obj_mem->get_current_member();
+                $arr_callback['RELATION_ID'] = $tmp['uname'];
+                $arr_callback['METHOD'] = "singlePayCallBack";
+                if(!$tmp['uname'])
+                {
+                    echo json_encode(array('status'=>'failed','msg'=>"帐号不存在，请重新登陆"));exit;
+                }
+                $inputParam = json_encode($arr_callback);
+                $post_data = array('serviceNo'=>'SubAccountService',"inputParam"=>$inputParam);
+                if(! empty($arr_callback['cur_money'])){
+                    $arr = SFSC_HttpClient::doPost(DO_SERVER_URL,$post_data);
+                    $arr = SFSC_HttpClient::objectToArray($arr);
+                    if($arr['RESULT_CODE'] != 10000)
+                    {
+                        $db->rollback();
+                        echo json_encode(array('status'=>'failed','msg'=>"订单福点退回失败"));exit;
+                    }
+                }
+
+                if(isset($check['payment_id'])){
+                    kernel::single('ectools_mdl_payments')->update(array('status'=>'cancel'),array('payment_id'=>$check['payment_id']));
+                }
+            }
+            //end
+            $db->commit($transaction_status);
+            echo json_encode(array('status'=>'success','msg'=>"订单取消成功"));exit;
+        }
+        else
+        {
+            $db->rollback();
+            echo json_encode(array('status'=>'failed','msg'=>"订单取消失败"));exit;
+        }
+    }
+
+
     function cancel($order_id)
     {
         $this->pagedata['cancel_order_id'] = $order_id;

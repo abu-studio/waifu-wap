@@ -71,7 +71,8 @@
                 <{t}>未发货<{/t}>
                 <{/if}>]
                 <{else}>
-                <{t}>待付款<{/t}></a> <{if $order.ship_status==1}>
+                <{t}>待付款<{/t}>
+                <{if $order.ship_status==1}>
                 <{t}>[已发货]<{/t}>
                 <{elseif $order.ship_status==2}>
                 <{t}>[部分发货]<{/t}>
@@ -155,7 +156,7 @@
                         </div>
                         <{if $order.status == 'active' && $order.pay_status == '0' && $order.ship_status == '0'  &&  $order.payinfo.pay_app_id != '-1'}>
                         <div class="t-r">
-                            <a href="<{link app=b2c ctl=wap_member act=cancel arg0=$order.order_id}>">
+                            <a href="javascript:void(0);" onclick="doCancelOrder('<{$order.order_id}>')">
                                 关闭交易
                                 <i class="arr right"></i>
                             </a>
@@ -257,7 +258,7 @@
                                 </a>
                             </div>
                             <{/if}>
-                            <{if $order.refund_status == '6' $order.need_send == '0' && $order.need_edit == '0' && $order.status == 'active'}>
+                            <{if $order.refund_status == '6'  && $order.need_send == '0' && $order.need_edit == '0' && $order.status == 'active'}>
                             <div class="t-r">
                                 <a href="<{link app=aftersales ctl=wap_member act=edit_refund arg0=$order.order_id arg1='buyer'}>"  >
                                     修改退货申请
@@ -322,12 +323,6 @@
                     <{/foreach}>
                 <{/if}>
 
-                <!-- extends -->
-                <{if $order.extends_items}>
-                    <{foreach from=$order.extends_items item=item_extends name=item_extends}>
-                        <{$item_extends}>
-                    <{/foreach}>
-                <{/if}>
             </ul>
             </li>
             <{/foreach}>
@@ -336,7 +331,26 @@
 </div>
 <{wap_pagers data=$pager}>
 <script>
-
+    function doCancelOrder(orderid)
+    {
+        if(confirm('确定要消订单吗？'))
+        {
+            var data = 'order_id=' + orderid;
+            $.post('<{link app=b2c ctl=wap_member act=doCancelOrder}>', data, function (re) {
+                var o = JSON.parse(re);
+                if (o.status == 'success') {
+                    msg = o.msg ? o.msg : '取消成功';
+                    popup(msg, 1000);
+                    setTimeout(function () {
+                        location.reload(true)
+                    }, 2000);
+                } else {
+                    msg = o.msg ? o.msg : '取消失败';
+                    popup(msg, 1000, "sm-pop");
+                }
+            });
+        }
+    }
 
 function extend_finish_apl(orderid)
 {
@@ -405,7 +419,7 @@ function jd_refund(orderid)
 function receive(url){
     var xmlHttp;
     try{
-        xmlHttp=new XMLHttpRequest();        
+        xmlHttp=new XMLHttpRequest();
     }catch(e){
         try{
             xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
@@ -428,12 +442,12 @@ function receive(url){
 }
 
 (function(){
-	
+
 	$('.action-refund-popup').bind('click',function(e){
 		var order_id = this.getAttribute("order_id");
 	    new Dialog('#member_refund_popup_'+order_id,{title: '退款申请'});
 	});
-	
+
 	$('.submit_refund_button').bind('click',function(e){
 		var order_id = this.getAttribute("order_id");
         var refund_apply_reason = $('#refund_apply_reason_'+order_id+' option:selected').val();
@@ -451,7 +465,7 @@ function receive(url){
         });
         return false;
     });
-	
+
 })();
 
 </script>
