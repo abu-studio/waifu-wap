@@ -507,7 +507,7 @@ class b2c_ctl_wap_member extends wap_frontpage{
         $pay_status = mysql_real_escape_string($obj_filter->check_input($pay_status));
         $nPage = mysql_real_escape_string($obj_filter->check_input($nPage));
 
-        $this->path[] = array('title'=>app::get('b2c')->_('会员中心'),'link'=>$this->gen_url(array('app'=>'b2c', 'ctl'=>'site_member', 'act'=>'index','full'=>1)));
+        $this->path[] = array('title'=>app::get('b2c')->_('会员中心'),'link'=>$this->gen_url(array('app'=>'b2c', 'ctl'=>'wap_member', 'act'=>'index','full'=>1)));
         $this->path[] = array('title'=>app::get('b2c')->_('我的订单'),'link'=>'#');
         $GLOBALS['runtime']['path'] = $this->path;
         $order = &$this->app->model('orders');

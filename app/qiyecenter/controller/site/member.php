@@ -7469,6 +7469,7 @@ class qiyecenter_ctl_site_member extends b2c_ctl_site_member{
         $area_tmp = explode(":",$addrs_data[0]['area']);
         $data = array(
             'member_id'=>$this->qiyemember_id,
+            'invoice_id'=>$invoice_id,
             'order_id' => $order_id,
             'invoice_type' => $invoice_data[0]['invoice_type'],
             'invoice_title' => $invoice_data[0]['invoice_title'],

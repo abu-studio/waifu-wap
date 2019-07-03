@@ -69,9 +69,11 @@ class b2c_ctl_site_cart extends b2c_frontpage
 
         //检查买家是否是店家
         $checkSeller = kernel::service('business_check_goods_isMy');
-        if ($checkSeller) {
-            if (!$checkSeller->check_isSeller($msg)) {
-                $this->splash('failed', 'back', app::get('b2c')->_('店家不能购买商品，请更换账号！'));
+        if ($checkSeller)
+        {
+            if (!$checkSeller->check_isSeller($msg))
+            {
+                $this->splash('failed', 'back', $msg);
             }
         }
 

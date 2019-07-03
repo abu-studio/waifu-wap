@@ -38,7 +38,26 @@ class b2c_ctl_wap_cart extends wap_frontpage{
         //kernel::single('base_session')->start();
         $this->obj_session = kernel::single('base_session');
         $this->obj_session->start();
+        if (!empty($_SESSION['sfsc']['vcat'])) {
+            $this->set_tmpl('hfcart');
+        } else {
+            $this->set_tmpl('cart');
+        }
+        $this->obj_session->start();
         $this->member_status = $this->check_login();
+        //在cookie和session中存储的member_id不一致的时候，当前的sess_id的用户做退出处理,此能保证其他用户和当前用户sess_id重复的情况下，退出重新登录，保护串号用户的信息-----weifeng 2013-8-24 13:24
+        if ($this->member_status)
+        {
+            if ($_COOKIE['S']['MEMBER'] != $_SESSION['account'][pam_account::get_account_type($this->app->app_id)]) {
+                $_sess_key = 's';
+                if (defined('SESS_NAME') && constant('SESS_NAME')) {
+                    $_sess_key = constant('SESS_NAME');
+                }
+                $cookie_path = kernel::base_url();
+                $cookie_path = $cookie_path ? $cookie_path : "/";
+                header(sprintf('Set-Cookie: %s=%s; path=%s; httpOnly;', $_sess_key, '', $cookie_path), true);
+            }
+        }
         if(!$this->member_status){
             $this->pagedata['login'] = 'nologin';
         }
@@ -49,7 +68,63 @@ class b2c_ctl_wap_cart extends wap_frontpage{
         $this->mCart->unset_data();
     }
 
-    public function index(){
+
+    public function index()
+    {
+        if ($_SESSION['cart_select_data']) {
+            unset($_SESSION['cart_select_data']);
+        }
+        $GLOBALS['runtime']['path'][] = array('link' => $this->gen_url(array('app' => 'b2c', 'ctl' => 'wap_cart', 'act' => 'index')), 'title' => '购物车');
+        if (!isset($this->guest_enabled))
+        {
+            $this->guest_enabled = $this->app->getConf('security.guest.enabled');
+        }
+        $this->pagedata['guest_enabled'] = $this->guest_enabled;
+        //检查买家是否是店家
+        $checkSeller = kernel::service('business_check_goods_isMy');
+        if ($checkSeller)
+        {
+            if (!$checkSeller->check_isSeller($msg))
+            {
+                $this->splash('failed', 'back',$msg);
+            }
+        }
+        $this->_common(1);
+        $this->_response->set_header('Cache-Control', 'no-store');
+        $current_url = $this->gen_url(array('app' => 'b2c', 'ctl' => 'wap_cart', 'act' => 'index'));
+        $this->pagedata['go_back_link'] = ($_SERVER['HTTP_REFERER'] != $current_url) ? $_SERVER['HTTP_REFERER'] : 'javascript:window.history.go(-1);';
+        if (defined('IS_DOMAIN'))
+        {
+            setcookie('cart[go_back_link]', $this->pagedata['go_back_link'], 0, kernel::base_url() . '/', COOKIE_DOMAIN, 1);
+        } else {
+            setcookie('cart[go_back_link]', $this->pagedata['go_back_link'], 0, kernel::base_url() . '/');
+        }
+        $this->pagedata['aCart']['subtotal_prefilter'] = $this->objMath->number_minus(array($this->pagedata['aCart']['subtotal'], $this->pagedata['aCart']['discount_amount_prefilter']));
+        $this->pagedata['aCart']['promotion_subtotal'] = $this->objMath->number_minus(array($this->pagedata['aCart']['subtotal'], $this->pagedata['aCart']['subtotal_discount']));
+        $this->pagedata['checkout_link'] = $this->gen_url(array('app' => 'b2c', 'act' => 'checkout', 'ctl' => 'site_cart'));
+        $cart_json = kernel::single('b2c_cart_json');
+        $currency = app::get('ectools')->model('currency');
+        $Default_currency = $currency->getDefault();
+        $this->pagedata['currency'] = $Default_currency['cur_sign'];
+        $cur = app::get('ectools')->model('currency');
+        $this->pagedata['cart_promotion_display'] = $this->app->getConf('cart.show_order_sales.type');
+        //货币格式输出
+        $ret = $cur->getFormat();
+        $ret = array(
+            'decimals' => $this->app->getConf('system.money.decimals'),
+            'dec_point' => $this->app->getConf('system.money.dec_point'),
+            'thousands_sep' => $this->app->getConf('system.money.thousands_sep'),
+            'fonttend_decimal_type' => $this->app->getConf('system.money.operation.carryset'),
+            'fonttend_decimal_remain' => $this->app->getConf('system.money.decimals'),
+            'sign' => $ret['sign']
+        );
+        $this->pagedata['money_format'] = json_encode($ret);
+        $this->pagedata['json'] = $cart_json->get_json($this->pagedata);
+        $this->page('wap/cart/index.html');
+    }
+
+
+    public function indexOld(){
         $GLOBALS['runtime']['path'][] = array('link'=>$this->gen_url(array('app'=>'b2c','ctl'=>'wap_cart','act'=>'index')),'title'=>'购物车');
         $this->_common(1);
         $this->_response->set_header('Cache-Control','no-store');
@@ -129,26 +204,6 @@ class b2c_ctl_wap_cart extends wap_frontpage{
         /**
          * 处理校验各自的数据是否可以加入购物车
          */
-         //预售商品进入购物车的判断
-        $prepare=kernel::service('prepare_goods');
-        if($prepare)
-        {
-            $pre=$prepare->get_product_type($data);
-            foreach ($pre as $key => $value) {
-                $prep[] = $value['promotion_type'];
-            }
-            if (!empty($pre))
-            {
-                $msg = app::get('b2c')->_('预售商品不能加入购物车！');
-                if($post['mini_cart']&&in_array('prepare', $prep)){
-                    $this->pagedata['errormsg'] = $msg;
-                    $this->page('site/cart/mini_cart_error.html', true);
-                    return;
-                } else {
-                    $this->splash('error',$url,$msg,$errorRequest);
-                }
-            }
-        }
         if (!$arr_objects[$type])
         {
             $msg = app::get('b2c')->_('商品类型错误！');
@@ -176,8 +231,6 @@ class b2c_ctl_wap_cart extends wap_frontpage{
         // 进行各自的特殊校验
         if (method_exists($arr_objects[$type], 'check_object'))
         {
-
-
             if (!$arr_objects[$type]->check_object($aData,$msg))
             {
                 if($_POST['mini_cart']){
@@ -199,18 +252,110 @@ class b2c_ctl_wap_cart extends wap_frontpage{
             }
         }
         /** end **/
+        /** begin  获取商品是否是限时抢购的商品  限时抢购的商品不能加入购物车**/
+        $checkTimedbuy = kernel::service('timedbuy_check_goods_isTimedbuy');
+        if ($checkTimedbuy) {
+            if (!$checkTimedbuy->check_isTimedbuy($aData, $msg))
+            {
+                if($_POST['mini_cart']){
+                    $this->splash('error',null,$msg);
+                } else {
+                    $fail_url = $arr_objects[$type]->get_fail_url($data);
+                    $this->splash('error',$fail_url,$msg,'','',true);
+                }
+            }
+        }
+        /** end**/
+        /** 检查卖家是否是店家**/
+        $checkSeller = kernel::service('business_check_goods_isMy');
+        if ($checkSeller) {
+            if (!$checkSeller->check_isSeller($msg))
+            {
+                if($_POST['mini_cart']){
+                    $this->splash('error',null,$msg);
+                } else {
+                    $fail_url = $arr_objects[$type]->get_fail_url($data);
+                    $this->splash('error',$fail_url,$msg,'','',true);
+                }
+            }
+        }
+        /** end**/
+        /**验证是否是自己的商品*/
+        $sign = true;
+        $check_objects = kernel::servicelist('business_check_goods_isMy');
+        if ($check_objects) {
+            foreach ($check_objects as $check_object) {
+                $check_object->check_goods_isMy($aData['goods']['goods_id'], $msg, $sign);
+            }
+            if (!$sign)
+            {
+                if($_POST['mini_cart']){
+                    $this->splash('error',null,$msg);
+                } else {
+                    $fail_url = $arr_objects[$type]->get_fail_url($data);
+                    $this->splash('error',$fail_url,$msg,'','',true);
+                }
+            }
+        }
+        /** end**/
+        /**购物车中是否有虚拟物品**/
+        $now_object = $this->mCart->get_objects();
+        if (isset($now_object['object']['goods']['0']) && $type == 'goods') {
+            $goods_id = $now_object['object']['goods']['0']['obj_items']['products']['0']['goods_id'];
+            $sign = true;
+            $check_objects = kernel::servicelist('business_check_goods_isMy');
+            if ($check_objects) {
+                foreach ($check_objects as $check_object) {
+                    $check_object->check_goods_entity($aData['goods']['goods_id'], $goods_id, $msg, $sign);
+                }
+                if (!$sign) {
+                    if($_POST['mini_cart'])
+                    {
+                        $this->splash('error',null,$msg);
+                    } else {
+                        $fail_url = $arr_objects[$type]->get_fail_url($data);
+                        $this->splash('error',$fail_url,$msg,'','',true);
+                    }
+                }
+            }
+        }
+        /** end**/
+
+        /**购物车中是否有卡券商品(实体券还是电子码)*/
+        if (isset($now_object['object']['goods']['0']['params']['card']) && isset($aData['goods']['cards_pass_type']))
+        {
+            $card = $now_object['object']['goods']['0']['params']['card'];
+            $cards_pass_type = $aData['goods']['cards_pass_type'];
+            if ($cards_pass_type == 'entity' && $card['virtual'] > 0)
+            {
+                $msg = '购物车中包含卡券商品是电子码，不能添加实体卡进入购物车，请先结算！';
+                $rs = false;
+            } elseif ($cards_pass_type == 'virtual' && $card['entity'] > 0) {
+                $msg = '购物车中包含卡券商品是实体卡，不能添加电子码进入购物车，请先结算！';
+                $rs = false;
+            } else {
+                $rs = true;
+            }
+            if (!$rs)
+            {
+                if($_POST['mini_cart'])
+                {
+                    $this->splash('error',null,$msg);
+                } else {
+                    $fail_url = $arr_objects[$type]->get_fail_url($data);
+                    $this->splash('error',$fail_url,$msg,'','',true);
+                }
+            }
+        }
+        /** end **/
+
         //快速购买
         if(isset($aData[1]) && $aData[1] == 'quick' && empty($this->member_status)){
             $this->splash('success',$this->gen_url(array('app'=>'b2c','ctl'=>'wap_cart','act'=>'checkout')));
         }
-
-        if($aData['btype'] == 'is_fastbuy'){
-            $obj_ident = $obj_cart_object->add_object($arr_objects[$type], $aData, $msg,true);
-        }else{
-            $obj_ident = $obj_cart_object->add_object($arr_objects[$type], $aData, $msg);
-        }
-
-        if(!$obj_ident){
+        $obj_ident = $obj_cart_object->add_object($arr_objects[$type], $aData, $msg);
+        if(!$obj_ident)
+        {
             if($_POST['mini_cart']){
                 $this->pagedata['errormsg'] = $msg;
                 $this->page('site/cart/mini_cart_error.html', true);
@@ -218,9 +363,17 @@ class b2c_ctl_wap_cart extends wap_frontpage{
             } else {
                 $this->splash('error',$url,$msg,'','',$data['response_type']);
             }
-        } else {
-            if(isset($aData['btype']) && $aData['btype'] == 'is_fastbuy') {
-                $this->_check_checkout('true');
+        }
+        else
+        {
+            if(isset($aData[1]) && $aData[1] == 'quick')
+            {
+                if (!$this->member_status && !$_COOKIE['ST_ShopEx-Anonymity-Buy'])
+                {
+                    $this->page('site/cart/loginbuy_fast.html', true);
+                    return;
+                }
+                $this->checkout();
             }else{
                 if($_POST['mini_cart']){
                     $arr = $this->app->model("cart")->get_objects();
@@ -515,13 +668,6 @@ class b2c_ctl_wap_cart extends wap_frontpage{
         $this->splash('success',$this->gen_url(array('app'=>'b2c','ctl'=>'wap_cart','act'=>'checkout','arg0'=>$isfastbuy)),'去结算...','','',true);
     }
 
-    /**
-     * checkout
-     * 切记和admin/order:create保持功能上的同步
-     *
-     * @access public
-     * @return void
-     */
     public function checkout($isfastbuy=0)
     {
         /**
@@ -530,43 +676,102 @@ class b2c_ctl_wap_cart extends wap_frontpage{
         $arr_args = func_get_args();
         $arr_args = array(
             'get' => $arr_args,
-            'post' => array('modify_quantity'=>$_POST['modify_quantity']),
+            'post' => $_POST,
         );
-		$arr_args = utils::_RemoveXSS($arr_args);
+        $obj_filter = kernel::single('b2c_site_filter');
+        $arr_args = $obj_filter->check_input($arr_args);
         $this->pagedata['json_args'] = json_encode($arr_args);
-        if($isfastbuy){
-            $this->pagedata['is_fastbuy'] = $isfastbuy;
-        }else{
-            $this->pagedata['is_fastbuy'] = false;
+        //此处增减埋点，检测用户是否勾选了购物车中的商品
+        $_SESSION['cart_select_data']['cart_check'] = 1;
+        $_SESSION['cart_select_data']['select_products'] = $obj_filter->check_input($_POST['select_products']);
+        //判断购物车有没有自己的商品
+        /*
+        foreach($_POST['modify_quantity'] as $k=>$v){
+            $cart_obj_ident = explode('_',$k);
+            $check_objects = kernel::servicelist('business_check_goods_isMy');
+            $sign = true;
+            if($check_objects){
+                foreach($check_objects as $check_object){
+                    $check_object->check_goods_isMy($cart_obj_ident[1],$msg,$sign);
+                }
+                if(!$sign){
+                    $this->splash('failed', 'back', app::get('b2c')->_('购物车中有自己的商品'));
+                }
+            }
+        }
+        */
+        $this->begin(array('app'=>'b2c','ctl'=>'wap_cart','act'=>'index'));
+        //检查买家是否是店家
+        $checkSeller = kernel::service('business_check_goods_isMy');
+        if ($checkSeller)
+        {
+            if (!$checkSeller->check_isSeller($msg))
+            {
+                $this->end(false,$msg);
+            }
         }
 
-        if (!$this->member_status){
-          if($isfastbuy){
-            $url = $this->gen_url(array('app'=>'b2c','ctl'=>'wap_cart','act'=>'loginBuy','arg0'=>'true'));
-            $this->splash('success',$url,app::get('b2c')->_('还未登录，请先登录'));
-          }else{
-           // $url = $this->gen_url(array('app'=>'b2c','ctl'=>'wap_cart','act'=>'loginBuy'));
-           // $this->splash('success',$url,'','',0);
-            $this->redirect(array('app'=>'b2c','ctl'=>'wap_cart','act'=>'loginBuy'));
-          }
+        // 判断顾客登录方式.
+        $login_type = app::get('b2c')->getConf('site.login_type');
+        $is_member_buy = app::get('b2c')->getConf('security.guest.enabled');
+        $arrMember = $this->get_current_member();
+        //团购不需要判断登陆
+        if ($arr_args['get'][0] != 'group')
+        {
+            //todo暂时修改为不管是跳转登录还是弹出框登录都统一为跳转到登陆页@lujy
+            if (!$arrMember['member_id'] && (($_COOKIE['S']['ST_ShopEx-Anonymity-Buy'] != 'true') || $is_member_buy != 'true'))
+                //if (!$arrMember['member_id'] && (($login_type == 'href' && $_COOKIE['S']['ST_ShopEx-Anonymity-Buy'] != 'true') || $is_member_buy != 'true'))
+                $this->redirect(array('app' => 'b2c', 'ctl' => 'wap_cart', 'act' => 'loginBuy', 'arg0' => '1'));
         }
         // 初始化购物车数据
-        $this->_common(false,$isfastbuy);
-        $this->begin(array('app'=>'b2c','ctl'=>'wap_cart','act'=>'index'));
+        $this->_common();
+        foreach ($this->pagedata['aCart']['object']['goods'] as $k => $v)
+        {
+            $jdshopId = app::get('site')->getConf('jdsale.shopId') ? app::get('site')->getConf('jdsale.shopId') : '';
+            $jdbookshopId = app::get('site')->getConf('jdbook.shopId') ? app::get('site')->getConf('jdbook.shopId') : '';
+            if ($v['store_id'] > 0 && ($v['store_id'] == $jdshopId || $v['store_id'] == $jdbookshopId))
+            {
+                foreach ($v['obj_items']['products'] as $productRow)
+                {
+                    $agreedPrice = $productRow['price']['agreed_price'];
+                    $salePrice = $productRow['price']['price'];
+                    if ($agreedPrice > $salePrice)
+                    {
+                        $this->end(false,$productRow['name'] . '"<br />' . app::get('b2c')->_('该商品京东价格有调整,暂不能购买'), $this->gen_url(array('app' => 'b2c', 'act' => 'index', 'ctl' => 'wap_cart')));
+                    }
+                }
+            }
 
+            $check_objects = kernel::servicelist('business_check_goods_isMy');
+            $sign = true;
+            if ($check_objects) {
+                foreach ($check_objects as $check_object)
+                {
+                    $check_object->check_goods_isMy($v['params']['goods_id'], $msg, $sign);
+                }
+                if (!$sign)
+                {
+                    //$this->end(false,'商品数据异常');
+                    $this->end(false, '购物车中有自己的商品', $this->gen_url(array('app' => 'b2c', 'act' => 'index', 'ctl' => 'wap_cart')));
+                }
+            }
+        }
+        if (count($_SESSION['cart_select_data']['select_products']) == 0)
+        {
+            $this->end(false, app::get('b2c')->_('请选择商品！'), $this->gen_url(array('app' => 'b2c', 'act' => 'index', 'ctl' => 'wap_cart')));
+        }
         // 购物车是否为空
         if ($this->pagedata['is_empty'])
         {
             $this->end(false, app::get('b2c')->_('购物车为空！'));
         }
-
         // 购物是否满足起订量和起订金额
         if ((isset($this->pagedata['aCart']['cart_status']) && $this->pagedata['aCart']['cart_status'] == 'false') && (isset($this->pagedata['aCart']['cart_error_html']) && $this->pagedata['aCart']['cart_error_html'] != ""))
         {
             $this->end(false, $this->pagedata['aCart']['cart_error_html']);
         }
-
-        $this->checkout_result($isfastbuy);
+        $this->pagedata['cart_promotion_display'] = app::get('b2c')->getConf('cart.show_order_sales.type');
+        $this->checkout_result();
     }
 
     /**
@@ -574,158 +779,307 @@ class b2c_ctl_wap_cart extends wap_frontpage{
      * @params int
      * @return null
      */
-    public function checkout_result($isfastbuy=0){
-        //预售商品下单结算的判断
-        if(!$isfastbuy)
+    public function checkout_result($isfastbuy = 0)
+    {
+        $this->pagedata['checkout'] = 1;
+        $this->pagedata['md5_cart_info'] = kernel::single("b2c_cart_objects")->md5_cart_objects();
+
+        $obj_filter = kernel::single('b2c_site_filter');
+
+        $arrMember = $this->get_current_member();
+        /** 判断请求的参数是否是group **/
+        $arr_request_params = $obj_filter->check_input($this->_request->get_params());
+        if ($arr_request_params[0] == 'group')
         {
-            $prepare=kernel::service('prepare_goods');
-            if($prepare)
+            $this->pagedata['is_group_orders'] = 'true';
+        } else {
+            $this->pagedata['is_group_orders'] = 'false';
+        }
+        /**
+         * 额外设置的地址checkbox是否显示
+         */
+        $is_recsave_display = 'true';
+        $is_rec_addr_edit = 'true';
+        $app_id = 'b2c';
+        $obj_recsave_checkbox = kernel::servicelist('b2c.checkout_recsave_checkbox');
+        $arr_extends_checkout = array();
+        if ($obj_recsave_checkbox) {
+            foreach ($obj_recsave_checkbox as $object)
             {
-                $pre=$prepare->get_product_buy($this->pagedata['aCart']['object']['goods']);
-                foreach ($pre as $key => $value) {
-                    $prep[] = $value['promotion_type'];
+                if (!is_object($object)) continue;
+
+                if (method_exists($object, 'get_order'))
+                    $index = $object->get_order();
+                else $index = 10;
+
+                while (true) {
+                    if (!isset($arr_extends_checkout[$index])) break;
+                    $index++;
                 }
-                if (!empty($prep))
+                $arr_extends_checkout[$index] = $object;
+            }
+            ksort($arr_extends_checkout);
+        }
+        if ($arr_extends_checkout)
+        {
+            foreach ($arr_extends_checkout as $obj) {
+                if (method_exists($obj, 'check_display'))
+                    $obj->check_display($is_recsave_display);
+                if (method_exists($obj, 'check_edit'))
+                    $obj->check_edit($is_rec_addr_edit);
+                if (method_exists($obj, 'check_app_id'))
+                    $obj->check_app_id($app_id);
+            }
+        }
+        $this->pagedata['is_recsave_display'] = $is_recsave_display;
+        $this->pagedata['is_rec_addr_edit'] = $is_rec_addr_edit;
+        $this->pagedata['app_id'] = $app_id;
+
+        // 如果会员已登录，查询会员的信息
+        $obj_member_addrs = app::get('b2c')->model('member_addrs');
+        $obj_dltype = app::get('b2c')->model('dlytype');
+        $addr = array();
+        $member_point = 0;
+        $shipping_method = '';
+        $shipping_id = 0;
+        $arr_shipping_method = array();
+        $payment_method = 0;
+        $def_addr = 0;
+        $arr_def_addr = array();
+        $str_def_currency = $arrMember['member_cur'] ? $arrMember['member_cur'] : "";
+        if ($arrMember['member_id']) {
+            // 得到当前会员的积分
+            $obj_members = app::get('b2c')->model('members');
+            $arr_member = $obj_members->dump($arrMember['member_id'], 'point,addon');
+            $member_point = $arr_member['point'];
+            if (isset($arr_member['addon']) && $arr_member['addon'])
+            {
+                $arr_addon = unserialize(stripslashes($arr_member['addon']));
+                if ($arr_addon)
                 {
-                    $msg = app::get('b2c')->_('下单结算的商品里面不能含有预售商品！');
-                    $url = $this->gen_url(array('app'=>'b2c','ctl'=>'wap_cart','act'=>'index','arg0'=>'true'));
-                    if(in_array('prepare', $prep)){
-                        $this->end('false',$msg);
+                    if ($arr_addon['def_addr']['usable'])
+                    {
+                        if (!isset($_COOKIE['purchase']['addr']['usable']))
+                        {
+                            $arr_addon['def_addr']['usable'] = '';
+                            $str_addon = serialize($arr_addon);
+                            $obj_members->update(array('addon' => $str_addon), array('member_id' => $arrMember['member_id']));
+                        } elseif ($_COOKIE['purchase']['addr']['usable'] != md5($this->obj_session->sess_id() . $arrMember['member_id'])) {
+                            $arr_addon['def_addr']['usable'] = '';
+                            $str_addon = serialize($arr_addon);
+                            $obj_members->update(array('addon' => $str_addon), array('member_id' => $arrMember['member_id']));
+                        }
+                    }
+                    $tmp_cnt = $obj_member_addrs->count(array('member_id' => $arrMember['member_id'], 'def_addr' => '1'));
+                    if ($arr_addon['def_addr'] && ((isset($arr_addon['def_addr']['usable']) && $arr_addon['def_addr']['usable'] == md5($this->obj_session->sess_id() . $arrMember['member_id'])) || $tmp_cnt == 0)) {
+                        $def_addr = $arr_addon['def_addr']['addr_id'] ? $arr_addon['def_addr']['addr_id'] : 0;
+                        $arr_area = explode(':', $arr_addon['def_addr']['area']);
+                        $def_area = $arr_area[2];
+                        $arr_def_addr = $arr_addon['def_addr'];
+                        $arr_def_addr['addr_id'] = $arr_addon['def_addr']['addr_id'];
+                        $arr_def_addr['def_addr'] = $arr_addon['def_addr']['def_addr'];
+                        $arr_def_addr['addr_region'] = $arr_addon['def_addr']['area'];
+                        $arr_def_addr['addr'] = $arr_addon['def_addr']['addr'];
+                        $arr_def_addr['zip'] = $arr_addon['def_addr']['zip'];
+                        $arr_def_addr['name'] = $arr_addon['def_addr']['name'];
+                        $arr_def_addr['mobile'] = $arr_addon['def_addr']['mobile'];
+                        $arr_def_addr['tel'] = $arr_addon['def_addr']['tel'] ? $arr_addon['def_addr']['tel'] : '';
+                        $arr_def_addr['day'] = $arr_addon['def_addr']['day'] ? $arr_addon['def_addr']['day'] : '';
+                        $arr_def_addr['specal_day'] = $arr_addon['def_addr']['specal_day'] ? $arr_addon['def_addr']['specal_day'] : '';
+                        $arr_def_addr['time'] = $arr_addon['def_addr']['time'] ? $arr_addon['def_addr']['time'] : '';
+                        if ($arr_def_addr['day'] == app::get('b2c')->_('任意日期') && $arr_def_addr['time'] == app::get('b2c')->_('任意时间段')) {
+                            unset($arr_def_addr['day']);
+                            unset($arr_def_addr['time']);
+                        }
+                    }
+                }
+            }
+
+            $addrMember = array(
+                'member_id' => $arrMember['member_id'],
+            );
+            $addrlist = $obj_member_addrs->getList('*', array('member_id' => $arrMember['member_id']));
+            $is_checked = false;
+            $is_def = false;
+            foreach ($addrlist as $key => $rows) {
+                if (empty($rows['tel'])) {
+                    $str_tel = app::get('b2c')->_('手机：') . $rows['mobile'];
+                } else {
+                    $str_tel = app::get('b2c')->_('电话：') . $rows['tel'];
+                }
+                if ((isset($arr_def_addr['addr_id']) && $rows['addr_id'] == $arr_def_addr['addr_id']) || (!$arr_def_addr && $rows['def_addr'])) {
+                    $is_def = true;
+                    $is_checked = true;
+                }
+                $addr[] = array('addr_id' => $rows['addr_id'], 'def_addr' => $is_def ? 1 : 0, 'addr_region' => $rows['area'],
+                    'addr_label' => $rows['addr'] . app::get('b2c')->_(' (收货人：') . $rows['name'] . ' ' . $str_tel . app::get('b2c')->_(' 邮编：') . $rows['zip'] . ')');
+                if ($rows['def_addr']) {
+                    $def_addr = $rows['addr_id'];
+                    $arr_area = explode(':', $rows['area']);
+                    $def_area = $arr_area[2];
+                    $arr_def_addr_member = array(
+                        'addr_id' => $rows['addr_id'],
+                        'def_addr' => $rows['def_addr'],
+                        'addr_region' => $rows['area'],
+                        'addr' => $rows['addr'],
+                        'zip' => $rows['zip'],
+                        'name' => $rows['name'],
+                        'mobile' => $rows['mobile'],
+                        'tel' => $rows['tel'],
+                    );
+                } else {
+                    if ($key == 0 && !$def_area) {
+                        $arr_area = explode(':', $rows['area']);
+                        $def_area = $arr_area[2];
+                    }
+                }
+            }
+            if ($arr_def_addr && !$is_checked)
+                $this->pagedata['other_addr_checked'] = 'true';
+            if ($addrlist && !$arr_def_addr && !$is_checked) {
+                $def_addr = $addrlist[0]['addr_id'];
+                $arr_area = explode(':', $addrlist[0]['area']);
+                $def_area = $arr_area[2];
+                $arr_def_addr_member = $addrlist[0];
+                $arr_def_addr_member['addr_id'] = $addrlist[0]['addr_id'];
+                $arr_def_addr_member['def_addr'] = 1;
+                $arr_def_addr_member['addr_region'] = $addrlist[0]['area'];
+                $arr_def_addr_member['addr'] = $addrlist[0]['addr'];
+                $arr_def_addr_member['zip'] = $addrlist[0]['zip'];
+                $arr_def_addr_member['name'] = $addrlist[0]['name'];
+                $arr_def_addr_member['mobile'] = $addrlist[0]['mobile'];
+                $arr_def_addr_member['tel'] = $addrlist[0]['tel'];
+                $addr[0]['def_addr'] = 1;
+            }
+        }
+
+        // shipping, payment and default address
+        if ((!$def_addr || !$str_def_currency) && !$arrMember['member_id']) {
+            if ($_COOKIE['purchase']['addon']) {
+                $arr_addon = unserialize(stripslashes($_COOKIE['purchase']['addon']));
+                if (!$def_addr) {
+                    if (isset($arr_addon['member']['ship_area']) && $arr_addon['member']['ship_area']) {
+                        $def_addr = 0;
+                        $arr_area = explode(':', $arr_addon['member']['ship_area']);
+                        $def_area = $arr_area[2];
+                        $arr_def_addr = $arr_addon['member'];
+                        $arr_def_addr['addr_region'] = $arr_addon['member']['ship_area'];
+                        $arr_def_addr['addr'] = $arr_addon['member']['ship_addr'];
+                        $arr_def_addr['zip'] = $arr_addon['member']['ship_zip'] ? $arr_addon['member']['ship_zip'] : '';
+                        $arr_def_addr['name'] = $arr_addon['member']['ship_name'];
+                        $arr_def_addr['email'] = $arr_addon['member']['ship_email'];
+                        $arr_def_addr['mobile'] = $arr_addon['member']['ship_mobile'];
+                        $arr_def_addr['tel'] = $arr_addon['member']['ship_tel'] ? $arr_addon['member']['ship_tel'] : '';
+                        $arr_def_addr['day'] = $arr_addon['member']['day'] ? $arr_addon['member']['day'] : '';
+                        $arr_def_addr['specal_day'] = $arr_addon['member']['specal_day'] ? $arr_addon['member']['specal_day'] : '';
+                        $arr_def_addr['time'] = $arr_addon['member']['time'] ? $arr_addon['member']['time'] : '';
+                        if ($arr_def_addr['day'] == app::get('b2c')->_('任意日期') && $arr_def_addr['time'] == app::get('b2c')->_('任意时间段')) {
+                            unset($arr_def_addr['day']);
+                            unset($arr_def_addr['time']);
+                        }
+                        $this->pagedata['addr'] = array(
+                            'area' => $arr_addon['member']['ship_area'],
+                            'addr' => $arr_addon['member']['ship_addr'],
+                            'zipcode' => $arr_addon['member']['ship_zip'] ? $arr_addon['member']['ship_zip'] : '',
+                            'name' => $arr_addon['member']['ship_name'],
+                            'email' => $arr_addon['member']['ship_email'],
+                            'phone' => array(
+                                'mobile' => $arr_addon['member']['ship_mobile'],
+                                'telephone' => $arr_addon['member']['ship_tel'] ? $arr_addon['member']['ship_tel'] : ''
+                            ),
+                        );
                     }
                 }
             }
         }
-        $this->pagedata['checkout'] = 1;
-        $this->pagedata['md5_cart_info'] = kernel::single("b2c_cart_objects")->md5_cart_objects($isfastbuy);
-        //会员信息
-        $arrMember = $this->get_current_member();
-        $this->pagedata['member_id'] = $arrMember['member_id'];
-        /** 判断请求的参数是否是group **/
-        $arr_request_params = $this->_request->get_params();
-        //是否是团购订单
-        $arr_request_params[0] == 'group' ? $this->pagedata['is_group_orders'] = 'true' : $this->pagedata['is_group_orders'] = 'false';
-        $this->pagedata['app_id'] = $app_id;
-         //获取预售信息
-        if(app::get('preparesell')->is_actived()){
-            $preparesell_goods = app::get('preparesell')->model('preparesell_goods');
-            $product_id=$this->pagedata['aCart']['object']['goods'][0]['params']['product_id'];
-            $arrproducts = $preparesell_goods->getRow('promotion_type',array('product_id'=>$product_id));
+
+        $obj_dlytype = app::get('b2c')->model('dlytype');
+        $arr_shipping_info = $obj_dlytype->get_shiping_info($shipping_id, $this->pagedata['aCart']["subtotal"]);
+        $this->pagedata['def_addr'] = $def_addr ? $def_addr : 0;
+        $this->pagedata['def_area'] = $def_area ? $def_area : 0;
+        foreach ($addrlist as $k => $v) {
+            $area = array();
+            $area = explode(':', $v['area']);
+            $addrlist[$k]['_area'] = $area[2];
+            $area = explode('/', $area[1]);
+
+            if (in_array($area[0], array('北京', '天津', '上海', '重庆'))) {
+                $area[0] = '';
+            }
+            $addrlist[$k]['area_arr'] = $area;
+            if ($v['def_addr'] == 1) {
+                $addr_default_addr = $addrlist[$k];
+                //unset($addrlist[$k]);
+            }
         }
-
-        // 如果会员已登录，查询会员的信息
-        $obj_member_addrs = $this->app->model('member_addrs');
-        $obj_dltype = $this->app->model('dlytype'); //配送方式model
-        $member_point = 0; //会员积分
-        $str_def_currency = $arrMember['member_cur'] ? $arrMember['member_cur'] : ""; //会员设置的默认货币
-
-        /*获取收货地址 start*/
-        $def_addr = kernel::single('b2c_member_addrs')->get_default_addr($arrMember['member_id']);
-        $this->pagedata['def_addr'] = $def_addr;
-        $member_addr_list = $obj_member_addrs->getList('*',array('member_id'=>$arrMember['member_id']));
-        $this->pagedata['member_addr_list'] = $member_addr_list;
-        //邮编是否开启
+        if ($addrlist) {
+            if (!$addr_default_addr) {
+                $addrlist[0]['def_addr'] = 1;
+                $addr_default_addr = $addrlist[0];
+                //unset($addrlist[0]);
+            }
+        }
+        $this->pagedata['default_addr'] = $addr_default_addr;
+        $defaule_area_id = explode(':', $addr_default_addr['area']);
+        $this->pagedata['area_id'] = $defaule_area_id[2];
+        $this->pagedata['addrlist'] = $addrlist;
+        $this->pagedata['address']['member_id'] = $arrMember['member_id'];
+        $this->pagedata['def_arr_addr'] = $arr_def_addr ? $arr_def_addr : $arr_def_addr_member;
+        $this->pagedata['def_arr_addr_member'] = $arr_def_addr_member;
+        $this->pagedata['def_arr_addr_other'] = $arr_def_addr;
         $this->pagedata['site_checkout_zipcode_required_open'] = $this->app->getConf('site.checkout.zipcode.required.open');
-        /* 是否开启配送时间的限制 */
+        /** 是否开启配送时间的限制 */
         $this->pagedata['site_checkout_receivermore_open'] = $this->app->getConf('site.checkout.receivermore.open');
-        /*收货地址 end*/
+        // 是否有默认的当前的配送方式和支付方式
+        $this->pagedata['shipping_method'] = (isset($_COOKIE['purchase']['shipping']) && $_COOKIE['purchase']['shipping']) ? unserialize($_COOKIE['purchase']['shipping']) : '';
+        $this->pagedata['arr_def_payment'] = (isset($_COOKIE['purchase']['payment']) && $_COOKIE['purchase']['payment']) ? unserialize($_COOKIE['purchase']['payment']) : '';
 
-        if($def_addr){
-            //是否有默认的当前的配送方式
-            $area = explode(':',$def_addr['area']);
-            $this->pagedata['dlytype_html'] = kernel::single('b2c_order_dlytype')->select_delivery_method($this,$area[2],$this->pagedata['aCart']);
-            $this->pagedata['shipping_method'] = (isset($_COOKIE['purchase']['shipping']) && $_COOKIE['purchase']['shipping']) ? unserialize($_COOKIE['purchase']['shipping']) : '';
-            //预售信息的判断，排除线下支付
-            if($arrproducts['promotion_type']!='prepare')
-            {
-                $this->pagedata['has_cod'] = (isset($this->pagedata['shipping_method']['has_code']) && $this->pagedata['shipping_method']['has_cod']) ? $this->pagedata['shipping_method']['has_cod'] : 'false';
-            }
-            //预售信息的判断，排除货到付款
-            if($arrproducts['promotion_type']=='prepare')
-            {
-               $this->pagedata['has_cod'] = 'false';
-            }
-        }
-
-        $currency = app::get('ectools')->model('currency');
-        if($this->pagedata['shipping_method']){
-            // 是否有默认的支付方式
-            $this->pagedata['arr_def_payment'] = (isset($_COOKIE['purchase']['payment']) && $_COOKIE['purchase']['payment']) ? unserialize($_COOKIE['purchase']['payment']) : '';
-            /*支付方式列表*/
-            $currency = app::get('ectools')->model('currency');
-            $this->pagedata['currencys'] = $currency->getList('cur_id,cur_code,cur_name');
-            if (!$str_def_currency){
-                $arrDefCurrency = $currency->getDefault();
-                $str_def_currency = $arrDefCurrency['cur_code'];
-            }else{
-                $arrDefCurrency = $currency->getcur($str_def_currency);
-            }
-            $aCur = $currency->getcur($str_def_currency);
-            $this->pagedata['current_currency'] = $str_def_currency;
-            $obj_payments = kernel::single('ectools_payment_select');
-            //预售信息的判断，排除线下支付
-            if($arrproducts['promotion_type']=='prepare')
-            {
-                $arrDefCurrency['no_offline']='true';
-            }
-            $this->pagedata['payment_html'] = $obj_payments->select_pay_method($this, $arrDefCurrency, $arrMember['member_id']);
-            /*end*/
-
-            $ret = $currency->getFormat();
-            $ret =array(
-                'decimals'=>$this->app->getConf('system.money.decimals'),
-                'dec_point'=>$this->app->getConf('system.money.dec_point'),
-                'thousands_sep'=>$this->app->getConf('system.money.thousands_sep'),
-                'fonttend_decimal_type'=>$this->app->getConf('system.money.operation.carryset'),
-                'fonttend_decimal_remain'=>$this->app->getConf('system.money.decimals'),
-                'sign' => $ret['sign']
-            );
-            $this->pagedata['money_format'] = json_encode($ret);
-        }
-
-        //是否开启发票
-        $trigger_tax = $this->app->getConf('site.trigger_tax');
-        if($trigger_tax == 'true'){
-            $personal_tax_ratio = $this->app->getConf('site.personal_tax_ratio'); //个人发票税率
-            $company_tax_ratio = $this->app->getConf('site.company_tax_ratio'); //公司发票税率
-            $tax_content = $this->app->getConf('site.tax_content'); //发票内容选项
-            if($tax_content){
-                $arr_tax_content = explode(',',$tax_content);
-                foreach($arr_tax_content as $tax_content_value){
-                    $select_tax_content[$tax_content_value] = $tax_content_value;
-                }
-            }
-            $tax_setting = array(
-                'trigger_tax' => $trigger_tax,
-                'personal_tax_ratio' => $personal_tax_ratio,
-                'company_tax_ratio' => $company_tax_ratio,
-                'tax_content' =>$select_tax_content ? $select_tax_content : 0,
-            );
-            $this->pagedata['tax_setting'] = $tax_setting;
-        }//end 发票
 
         /**
          * 取到优惠券的信息
          */
-        $oCoupon = kernel::single('b2c_coupon_mem');
-        $aData = $oCoupon->get_list_m($arrMember['member_id']);
-        if( is_array($aData) ) {
-            $curTime = time();
-            foreach( $aData as $_key => $_val ) {
-                // 验证优惠券是否开始使用、是否过期、是否使用、是否禁用，注销不符合条件的优惠券
-                if ($curTime<$_val['time']['from_time'] || $curTime>=$_val['time']['to_time'] || $_val['memc_used_times'] || !$_val['coupons_info']['cpns_status']) {
-                    unset($aData[$_key]);
-                }
-            }
-        }
-        $this->pagedata['coupon_lists'] = $aData;
-        /*end*/
+        /*   if ($arrMember['member_id'])
+           {
+               $oCoupon = kernel::single('b2c_coupon_mem');
+               $aData = $oCoupon->get_list_m($arrMember['member_id']);
+               if( is_array($aData) ) {
+                   foreach( $aData as $_key => $_val ) {
+                       if( $_val['memc_used_times'] ) unset($aData[$_key]);
+                   }
+               }
+               $this->pagedata['coupon_lists'] = $aData;
+           }*/
 
+        $currency = app::get('ectools')->model('currency');
+        $this->pagedata['currencys'] = $currency->getList('cur_id,cur_code,cur_name');
+
+        if (!$str_def_currency) {
+            $arrDefCurrency = $currency->getDefault();
+            $str_def_currency = $arrDefCurrency['cur_code'];
+        } else {
+            $arrDefCurrency = $currency->getcur($str_def_currency);
+        }
+
+        $aCur = $currency->getcur($str_def_currency);
+        $this->pagedata['current_currency'] = $str_def_currency;
+
+        $obj_payments = kernel::single('ectools_payment_select');
+        /** 判断是否有货到付款的支付方式 **/
+        $shipping_has_cod = $obj_dlytype->shipping_has_cod();
+        $this->pagedata['shipping_has_cod'] = $shipping_has_cod;
+        $this->pagedata['payment_html'] = $obj_payments->select_pay_method($this, $arrDefCurrency, $arrMember['member_id']);
+
+        // 得到税金的信息
+        $this->pagedata['trigger_tax'] = app::get('b2c')->getConf("site.trigger_tax");
+        $this->pagedata['tax_ratio'] = app::get('b2c')->getConf("site.tax_ratio");
+
+        $demical = app::get('b2c')->getConf('system.money.operation.decimals');
 
         $total_item = $this->objMath->number_minus(array($this->pagedata['aCart']["subtotal"], $this->pagedata['aCart']['discount_amount_prefilter']));
+        //$total_item = $this->pagedata['aCart']["subtotal"];
         // 取到商店积分规则
-        $policy_method = $this->app->getConf("site.get_policy.method");
-        switch ($policy_method)
-        {
+        $policy_method = app::get('b2c')->getConf("site.get_policy.method");
+        switch ($policy_method) {
             case '1':
                 $subtotal_consume_score = 0;
                 $subtotal_gain_score = 0;
@@ -733,7 +1087,7 @@ class b2c_ctl_wap_cart extends wap_frontpage{
                 break;
             case '2':
                 $subtotal_consume_score = round($this->pagedata['aCart']['subtotal_consume_score']);
-                $policy_rate = $this->app->getConf('site.get_rate.method');
+                $policy_rate = app::get('b2c')->getConf('site.get_rate.method');
                 $subtotal_gain_score = round($this->objMath->number_plus(array(0, $this->pagedata['aCart']['subtotal_gain_score'])));
                 $totalScore = round($this->objMath->number_minus(array($subtotal_gain_score, $subtotal_consume_score)));
                 break;
@@ -750,16 +1104,38 @@ class b2c_ctl_wap_cart extends wap_frontpage{
         }
 
         $total_amount = $this->objMath->number_minus(array($this->pagedata['aCart']["subtotal"], $this->pagedata['aCart']['discount_amount']));
-        if ($total_amount < 0) $total_amount = 0;
-
+        //订单分单
+        $split_order = kernel::single('b2c_cart_object_split')->split_order($this, $this->pagedata['area_id'], $this->pagedata['aCart']);
+        foreach ($split_order as $store_id => $sgoods)
+        {
+            foreach ($sgoods['slips'] as $order_sp => $order)
+            {
+                foreach ($order['shipping'] as $dkey => $ship)
+                {
+                    if ($ship['default_type'] == 'true') {
+                        //由于前台显示已经减去了抵扣。所以此处仍然要加上运费。
+                        $this->pagedata['aCart']['subtotal_store_good_price'][$store_id] += $ship['money'];
+                        $total_amount += $ship['money'];
+                        if ($this->pagedata['aCart']['is_free_shipping'][$store_id] == 1) {//优惠券免运费
+                            $this->pagedata['discount'][$store_id] += $ship['money'];
+                            $total_amount -= $ship['money'];
+                        }
+                        if ($total_amount <= 0) {
+                            $total_amount = 0;
+                        }
+                    }
+                }
+            }
+        }
+        if ($total_amount < 0)
+            $total_amount = 0;
         // 是否可以用积分抵扣
         $obj_point_dis = kernel::service('b2c_cart_point_discount');
-        if ($obj_point_dis){
+        if ($obj_point_dis) {
             $obj_point_dis->set_order_total($total_amount);
-            $this->pagedata['point_dis_html'] = $obj_point_dis->get_html($arrMember['member_id'], 'wap/cart/point_dis.html');
+            $this->pagedata['point_dis_html'] = $obj_point_dis->get_html($arrMember['member_id']);
             $this->pagedata['point_dis_js'] = $obj_point_dis->get_javascript($arrMember['member_id']);
         }
-
         // 得到cart total支付的信息
         $this->pagedata['order_detail'] = array(
             'cost_item' => $total_item,
@@ -776,8 +1152,13 @@ class b2c_ctl_wap_cart extends wap_frontpage{
             'final_amount' => $currency->changer($total_amount, $this->app->getConf("site.currency.defalt_currency"), true),
         );
 
-        //会员积分
-       $this->pagedata['order_detail']['totalScore'] = $member_point;
+        if ($arrMember['member_id']) {
+            $this->pagedata['order_detail']['totalScore'] = $member_point;
+        } else {
+            $this->pagedata['order_detail']['totalScore'] = 0;
+            $this->pagedata['order_detail']['totalGainScore'] = 0;    //如果是非会员购买获得积分为0，@lujy
+        }
+
         $odr_decimals = $this->app->getConf('system.money.decimals');
         $total_amount = $this->objMath->get($this->pagedata['order_detail']['total_amount'], $odr_decimals);
         $this->pagedata['order_detail']['discount'] = $this->objMath->number_minus(array($this->pagedata['order_detail']['total_amount'], $total_amount));
@@ -786,41 +1167,42 @@ class b2c_ctl_wap_cart extends wap_frontpage{
 
         // 获得商品的赠品信息
         $arrM_info = array();
-        foreach ($this->pagedata['aCart']['object']['goods'] as $arrGoodsInfo){
-            if (isset($arrGoodsInfo['gifts']) && $arrGoodsInfo['gifts']){
+        foreach ((array)$this->pagedata['aCart']['object']['goods'] as $arrGoodsInfo)
+        {
+            if (isset($arrGoodsInfo['gifts']) && $arrGoodsInfo['gifts'])
+            {
                 $this->pagedata['order_detail']['gift_p'][] = array(
                     'storage' => $arrGoodsInfo['gifts']['storage'],
                     'name' => $arrGoodsInfo['gifts']['name'],
                     'nums' => $arrGoodsInfo['gifts']['nums'],
                 );
             }
-
             // 得到商品购物信息的必填项目
             $goods_id = $arrGoodsInfo['obj_items']['products'][0]['goods_id'];
             $product_id = $arrGoodsInfo['obj_items']['products'][0]['product_id'];
             // 得到商品goods表的信息
             $objGoods = $this->app->model('goods');
             $arrGoods = $objGoods->dump($goods_id, 'type_id');
-            if (isset($arrGoods) && $arrGoods && $arrGoods['type']['type_id']){
+            if (isset($arrGoods) && $arrGoods && $arrGoods['type']['type_id']) {
                 $objGoods_type = $this->app->model('goods_type');
                 $arrGoods_type = $objGoods_type->dump($arrGoods['type']['type_id'], '*');
 
-                if ($_COOKIE['checkout_b2c_goods_buy_info']){
+                if ($_COOKIE['checkout_b2c_goods_buy_info']) {
+                    //$this->pagedata['has_goods_minfo'] = true;
                     $goods_need_info = json_decode($_COOKIE['checkout_b2c_goods_buy_info'], 1);
 
                 }
-                if ($arrGoods_type['minfo']){
-                    if ($arrGoodsInfo['obj_items']['products'][0]['spec_info']){
+                if ($arrGoods_type['minfo']) {
+                    if ($arrGoodsInfo['obj_items']['products'][0]['spec_info'])
                         $arrM_info[$product_id]['name'] = $arrGoodsInfo['obj_items']['products'][0]['name'] . '(' . $arrGoodsInfo['obj_items']['products'][0]['spec_info'] . ')';
-                    }else{
+                    else
                         $arrM_info[$product_id]['name'] = $arrGoodsInfo['obj_items']['products'][0]['name'];
-                    }
-                    $arrM_info[$product_id]['nums'] = $this->objMath->number_multiple(array($arrGoodsInfo['obj_items']['products'][0]['quantity'],$arrGoodsInfo['quantity']));
+                    $arrM_info[$product_id]['nums'] = $this->objMath->number_multiple(array($arrGoodsInfo['obj_items']['products'][0]['quantity'], $arrGoodsInfo['quantity']));
 
-                    foreach ($arrGoods_type['minfo'] as $key=>$arr_minfo){
-                        if (isset($goods_need_info[$product_id][$key]) && $arr_minfo['label'] == $goods_need_info[$product_id][$key]['name']){
+                    foreach ($arrGoods_type['minfo'] as $key => $arr_minfo) {
+                        if (isset($goods_need_info[$product_id][$key]) && $arr_minfo['label'] == $goods_need_info[$product_id][$key]['name']) {
                             $arr_minfo['value'] = $goods_need_info[$product_id][$key]['val'][0];
-                        }else{
+                        } else {
                             $no_value = true;
                         }
                         $arrM_info[$product_id]['minfo'][] = $arr_minfo;
@@ -829,36 +1211,31 @@ class b2c_ctl_wap_cart extends wap_frontpage{
             }
         }
 
-        if($no_value){
+        if ($no_value) {
             $this->pagedata['has_goods_minfo'] = false;
-        }else{
+        } else {
             $this->pagedata['has_goods_minfo'] = true;
         }
         $this->pagedata['minfo'] = $arrM_info;
-        $this->pagedata['base_url'] = kernel::base_url().'/';
+        $this->pagedata['is_checkout'] = 1;
+        $this->pagedata['base_url'] = kernel::base_url() . '/';
         // checkout result 页面添加项目埋点
-        foreach( kernel::servicelist('b2c.checkout_add_item') as $services ) {
-            if ( is_object($services) ) {
-                if ( method_exists($services, 'addItem') ) {
+        foreach (kernel::servicelist('b2c.checkout_add_item') as $services)
+        {
+            if (is_object($services))
+            {
+                if (method_exists($services, 'addItem'))
+                {
                     $services->addItem($this);
                 }
             }
         }
-        //获取预售信息
-       /* $objproducts = $this->app->model('products');
-        $product_id=$this->pagedata['aCart']['object']['goods'][0]['params']['product_id'];
-        $arrproducts = $objproducts->dump($product_id, 'promotion_type');*/
-        $prepare=kernel::service('prepare_prepare');
-        if($prepare)
-        {
-            $pre=$prepare->getSpecialProduct($product_id);
-            $this->pagedata['prepare']=$pre;
-            $this->pagedata['promotion_type']=$pre['promotion_type'];
-        }
-        $this->pagedata['promotion_type']=$arrproducts['promotion_type'];
-            //echo '<pre>';print_r($prepare);exit();
-        $this->page('wap/cart/checkout/index.html',false,$app_id);
+
+        $this->page('wap/cart/checkout.html', false, $app_id);
     }
+
+
+
 
     //送货地址编辑
     function shipping_edit($isfastbuy=false){
@@ -1130,7 +1507,7 @@ class b2c_ctl_wap_cart extends wap_frontpage{
         $obj_currency = app::get('ectools')->model('currency');
         $this->pagedata['ajax_html'] = $this->ajax_html;
 
-        $this->_common(1,$aParams['is_fastbuy']);
+        $this->_common(1);
 
         if( !$this->pagedata['is_empty'] ) {
             foreach($this->pagedata['aCart']['object']['gift']['order']  as $gift_key=>$gift_obj){
@@ -1233,14 +1610,211 @@ class b2c_ctl_wap_cart extends wap_frontpage{
                 ),
             );
        }
-
         $md5_cart_info = kernel::single('b2c_cart_objects')->md5_cart_objects();
         $arr_json_data['md5_cart_info'] = $md5_cart_info;
         $this->pagedata = $arr_json_data;
         $this->page($view);
     }
 
-    public function _common($flag=0,$is_fastbuy=false) {
+
+
+    public function _common($flag=0)
+    {
+        // 购物车数据信息
+        $aCart = $this->mCart->get_objects();
+        $this->_item_to_disabled($aCart, $flag); //处理购物扯删除项
+        $this->store_total($aCart);
+        $this->store_coupons($aCart);
+        $this->pagedata['aCart'] = $aCart;
+        if ($this->show_gotocart_button) $this->pagedata['show_gotocart_button'] = 'true';
+
+        if ($this->ajax_update === true) {
+            foreach (kernel::servicelist('b2c_cart_object_apps') as $object) {
+                if (!is_object($object)) continue;
+                //应该判断是否实现了接口
+                if (!method_exists($object, 'get_update_num')) continue;
+                if (!method_exists($object, 'get_type')) continue;
+                $this->pagedata['edit_ajax_data'] = $object->get_update_num($aCart['object'][$object->get_type()], $this->update_obj_ident);
+                if ($this->pagedata['edit_ajax_data']) {
+                    $this->pagedata['edit_ajax_data'] = json_encode($this->pagedata['edit_ajax_data']);
+                    if ($object->get_type() == 'goods') {
+                        $this->pagedata['update_cart_type_godos'] = true;
+                        if (!method_exists($object, 'get_error_html')) continue;
+                        $this->pagedata['error_msg'] = $object->get_error_html($aCart['object']['goods'], $this->update_obj_ident);
+                    }
+                    break;
+                }
+            }
+        }
+        // 购物车是否为空
+        $this->pagedata['is_empty'] = $this->mCart->is_empty($aCart);
+        //ajax_html 删除单个商品是触发
+        if ($this->ajax_html && $this->mCart->is_empty($aCart)) {
+            $arr_json_data = array(
+                'is_empty' => 'true',
+                'number' => array(
+                    'cart_number' => $this->pagedata['aCart']['_cookie']['CART_NUMBER'],
+                    'cart_count' => $this->pagedata['aCart']['_cookie']['CART_COUNT'],
+                ),
+            );
+            $this->pagedata = $arr_json_data;
+            $this->page('site/cart/cart_empty.html', true);
+            return;
+        }
+        // 购物车数据项的render
+        $this->pagedata['item_section'] = $this->mCart->get_item_render();
+        // 购物车数据项的render
+        $this->pagedata['item_goods_section'] = $this->mCart->get_item_goods_render();
+        // 优惠信息项render
+        $this->pagedata['solution_section'] = $this->mCart->get_solution_render();
+        //未享受的订单规则
+        $this->pagedata['unuse_rule'] = $this->mCart->get_unuse_solution_cart($aCart);
+        if ($this->member_status) {
+            /*
+            $arr_member = $this->get_current_member();
+            $aData = $this->app->model('member_goods')->get_favorite( $arr_member['member_id'], 0, 100);
+            $objProduct = $this->app->model('products');
+            $oGoodsLv = &$this->app->model('goods_lv_price');
+            $oMlv = &$this->app->model('member_lv');
+            $mlv = $oMlv->db_dump( $this->member['member_lv'],'dis_count' );
+
+            $aProduct = $aData['data'];
+            if($aProduct){
+                foreach ($aProduct as $key => &$val) {
+                    $temp = $objProduct->getList('product_id, spec_info, price, freez, store, goods_id',array('goods_id'=>$val['goods_id'],'goods_type'=>array('normal','gift')));
+                    if( $arr_member['member_lv'] ){
+                        $tmpGoods = array();
+                        foreach( $oGoodsLv->getList( 'product_id,price',array('goods_id'=>$val['goods_id'],'level_id'=> $arr_member['member_lv'] ) ) as $k => $v ){
+                            $tmpGoods[$v['product_id']] = $v['price'];
+                        }
+                        foreach( $temp as &$tv ){
+                            $tv['price'] = (isset( $tmpGoods[$tv['product_id']] )?$tmpGoods[$tv['product_id']]:( $mlv['dis_count']*$tv['price'] ));
+                        }
+                        $val['price'] = $tv['price'];
+                    }
+                    $val['spec_desc_info'] = $temp;
+                }
+            }
+
+            $this->pagedata['member_goods'] = $aProduct;
+            #$this->pagination($nPage,$aData['page'],'favorite');
+            $imageDefault = app::get('image')->getConf('image.set');
+            $this->pagedata['defaultImage'] = $imageDefault['S']['default_image'];
+            $setting['buytarget'] = $this->app->getConf('site.buy.target');
+            $this->pagedata['setting'] = $setting;
+            */
+        } else {
+            $this->pagedata['login'] = 'nologin';
+        }
+
+        $imageDefault = app::get('image')->getConf('image.set');
+        $this->pagedata['defaultImage'] = $imageDefault['S']['default_image'];
+    }
+
+    /*
+    *  购物车每个店铺的商品总金额
+    */
+    public function store_total(&$aCart)
+    {
+        foreach ((array)$aCart['object']['goods'] as $key => $value)
+        {
+            $adjunctTatole = 0;
+            if (!empty($value['adjunct']))
+            {
+                foreach ($value['adjunct'] as $adv)
+                {
+                    $adjunctTatole += $adv['subtotal'];
+                }
+            }
+            $total[$value['store_id']][$value['obj_ident']] = $value['subtotal_prefilter_after'] + $adjunctTatole;
+            if ($value['freight_bear'] == 'business') {
+                $store_free_shipping[$value['store_id']][] = 0;
+                $total_weight[$value['store_id']][] = '0';
+            } else {
+                $store_free_shipping[$value['store_id']][] = 1;
+                $total_weight[$value['store_id']][] = $value['subtotal_weight'];
+            }
+        }
+        foreach ((array)$aCart['object']['package'] as $key => $value) {
+            $total[$value['store_id']][$value['obj_ident']] = $value['subtotal_price'];
+            $store_free_shipping[$value['store_id']][] = 1;
+            $total_weight[$value['store_id']][] = $value['subtotal_weight'];
+        }
+
+        $arrMember = $this->get_current_member();
+        if ($total) {
+            foreach ($total as $key => $value) {
+                $total[$key] = array_sum($value);
+                $total_weight[$key] = array_sum($total_weight[$key]);
+                $store_free_shipping[$key] = array_sum($store_free_shipping[$key]);
+                $store_id = ',' . $key . ",";
+                $couInfo = app::get('b2c')->model('coupons')->getList('cpns_id', array('store_id|has' => $store_id));
+                $cId = array();
+                foreach ($couInfo as $k => $v) {
+                    $cId[] = $v['cpns_id'];
+                }
+                /*
+                取到店铺优惠券的信息
+               */
+                if ($arrMember['member_id']) {
+                    $oCoupon = app::get('b2c')->model('member_coupon');
+                    $filter = array('member_id' => $arrMember['member_id']);
+                    $filter['disabled'] = 'false';
+                    $filter['memc_isvalid'] = 'true';
+                    $filter['cpns_id|in'] = $cId;
+                    $aData[$key] = $oCoupon->_get_list('*', $filter);
+                    if (is_array($aData[$key])) {
+                        foreach ($aData[$key] as $_key => $_val) {
+                            if ($_val['memc_used_times']) unset($aData[$key][$_key]);
+                        }
+                    }
+
+                }
+                $this->pagedata['coupon_lists'] = $aData;
+                $shipping[$key] = $this->get_store_shipping($key, $total_weight, $total, $store_free_shipping, $aCart);
+                $shipmoney[$key] = $shipping[$key][0]['money'];
+                $subtotal[$key] = $total[$key] + $shipping[$key][0]['money'];
+            }
+        }
+        $this->pagedata['arr_shipp'] = $shipping;
+        $aCart['subtotal_weight_store'] = $total_weight;
+        $aCart['store_shipping_money'] = $shipmoney;
+        $aCart['subtotal_price_store'] = $subtotal;
+        $aCart['subtotal_store_good_price'] = $total;
+        $aCart['subtotal_goods'] = $aCart['subtotal'];
+        $aCart['subtotal_goods_price'] = $aCart['subtotal_price'];
+        $aCart['store_free_shipping'] = $store_free_shipping;
+        //	$aCart['subtotal'] += array_sum($shipmoney);
+        //	$aCart['subtotal_price'] += array_sum($shipmoney);
+    }
+    public function get_store_shipping($store_id, $total_weight, $total, $store_free_shipping, $aCart)
+    {
+        $object = kernel::single('b2c_order_dlytype');
+        $obj_member_addrs = $this->app->model('member_addrs');
+        $arrMember = $this->get_current_member();
+        $addrlist = $obj_member_addrs->getList('*', array('member_id' => $arrMember['member_id']));
+        if (!empty($addrlist))
+        {
+            $def_addr = array();
+            foreach ($addrlist as $v)
+            {
+                if ($v['def_addr'] == 1) {
+                    $def_addr = $v;
+                }
+            }
+            if (!$def_addr) {
+                $def_addr = $addrlist[0];
+            }
+            $area = explode(':', $def_addr['area']);
+            $def_area_id = $area[2];
+        } else {
+            $def_area_id = '';
+        }
+        return $object->get_store_dlytype($this, $def_area_id, '', $store_id, $total_weight, $total, $store_free_shipping, $aCart);
+    }
+
+
+    public function _commonOld($flag=0,$is_fastbuy=false) {
         // 购物车数据信息
         $aData = $this->_request->get_params(true);
         if($is_fastbuy){
@@ -1474,5 +2048,79 @@ class b2c_ctl_wap_cart extends wap_frontpage{
         header('Progma: no-cache');
         header('Content-Type:text/html; charset=utf-8');
     }
+
+    public function updateStoreTotal()
+    {
+        $this->_common(0);
+        $data = $this->_request->get_post();
+
+        $store_id = $data['store_id'];
+        $arr_cart = $this->pagedata['aCart'];
+        $shippings = $this->pagedata['arr_shipp'];
+
+        $object = kernel::single('b2c_order_dlytype');
+        $shippings = $object->get_store_dlytype($this, $data['area_id'], '', $store_id, $arr_cart['subtotal_weight_store'], $arr_cart['subtotal_store_good_price'], $arr_cart['store_free_shipping'], $arr_cart);
+        foreach ($shippings as $v) {
+            if ($data['shipping_id'] == $v['dt_id']) {
+                $shipping = $v;
+            }
+        }
+        if ($data['is_protect'] === 'true' || $data['is_protect'] === '1' || $data['is_protect'] === true) {
+            $objMath = kernel::single('ectools_math');
+            $cost_protect = $objMath->number_multiple(array($arr_cart['subtotal_store_good_price'][$data['store_id']], $shipping['protect_rate']));
+
+            $cost_protect = $cost_protect > $shipping['minprice'] ? $cost_protect : $shipping['minprice'];//保价费
+        } else {
+            $cost_protect = 0;
+        }//是否保价
+        if (isset($arr_cart['promotion']) && $arr_cart['promotion']) {
+            if ($arr_cart['is_free_shipping'][$store_id] == true) {
+                $this->pagedata['discount'][$store_id] = $shipping['money'];
+            }
+        }
+
+        $subtotal_price_store = $arr_cart['subtotal_price_store'];
+        $subtotal_price_store[$data['store_id']] = $arr_cart['subtotal_store_good_price'][$data['store_id']] + $shipping['money'] + $cost_protect;
+        $store_ship[$data['store_id']] = $shipping['money'];
+        $store_protect[$data['store_id']] = $cost_protect;
+        $this->pagedata['store_protect'] = $store_protect;
+        $this->pagedata['subtotal_price_store'] = $subtotal_price_store;
+        $app_id = app::get('business');
+        $this->pagedata['store_id'] = $data['store_id'];
+        $str_html = $this->fetch("site/cart/item/goods/business_total.html");
+        echo $str_html;
+        exit;
+    }
+
+    public function store_coupons(&$aCart)
+    {
+
+        if ($aCart['promotion_solution'])
+        {
+            $discount = array();
+            foreach ($aCart['promotion_solution'] as $value) {
+                foreach ($value['order'] as $k => $v)
+                {
+                    if (!empty($v['store_id']))
+                    {
+                        $discount[$v['store_id']] += $v['amount'];
+                    }
+
+                }
+            }
+            foreach ($aCart['object']['coupon'] as $value)
+            {
+                $coupons[$value['store_id']] = $value;
+            }
+            $aCart['store_count'] = $discount;
+            $this->pagedata['discount'] = $discount;
+            $this->pagedata['coupon'] = $coupons;
+        }
+    }
+
+
+
+
+
 }
 

@@ -10,6 +10,13 @@ $db['order_invoice']=array (
       'extra' => 'auto_increment',
       'editable' => false,
     ),
+   'invoice_id' =>
+      array (
+          'type' => 'table:member_invoice',
+          'default' => 0,
+          'required' => true,
+          'editable' => false,
+      ),
     'member_id' => 
     array (
         'type' => 'table:members',

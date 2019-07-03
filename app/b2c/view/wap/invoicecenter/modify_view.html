@@ -1,0 +1,83 @@
+<div class="full-screen">
+    <header>
+    <div class="a-bar">
+        <a href="javascript:history.back()" class="a-back">
+            <i class="arr left"></i>
+            返回
+        </a>
+        <div class="a-name">
+            <{if $addr_id}>编辑发票<{else}>添加发票<{/if}>
+        </div>
+        <div class="a-right">
+        </div>
+    </div>
+    </header>
+    <div class="address-form">
+        <form action='<{link app=b2c ctl="wap_invoicecenter" act="doSave"}>' class="form" method="post" data-type="ajax">
+            <input type="hidden" name="invoice_id" value="<{$data.invoice_id}>">
+            <div class="c-g" style="height:auto">
+                <label class="c-l">发票类型</label>
+                <div class="c">
+                    <select name="invoice_type">
+                        <option value="com" <{if $data.invoice_type eq "com"}>selected<{/if}> >普票</option>
+                        <option value="vat" <{if $data.invoice_type eq "vat"}>selected<{/if}> >增值税票</option>
+                    </select>
+                </div>
+            </div>
+            <div class="c-g">
+                <label class="c-l">发票抬头</label>
+                <div class="c">
+                    <input type="text" class="text" name="invoice_title" value="<{$data.invoice_title}>" required="required" data-caution="发票抬头不能为空" />
+                </div>
+            </div>
+            <div class="c-g">
+                <label class="c-l">单位名称</label>
+                <div class="c">
+                    <input type="text" class="text" name="company_name" value="<{$data.company_name}>" required="required" data-caution="单位名称不能为空" />
+                </div>
+            </div>
+
+            <div class="c-g">
+                <label class="c-l">纳税人识别号</label>
+                <div class="c">
+                    <input type="text" class="text" name="vat_number" value="<{$data.vat_number}>"  vtype="required" data-caution="单位名称不能为空" />
+                </div>
+            </div>
+            <div class="c-g">
+                <label class="c-l">注册地址</label>
+                <div class="c">
+                    <input type="text" class="text" name="vat_addr" value="<{$data.vat_addr}>" required="required" data-caution="注册地址不能为空" />
+                </div>
+            </div>
+            <div class="c-g">
+                <label class="c-l">注册号码</label>
+                <div class="c">
+                    <input type="text" class="text" name="vat_tel" value="<{$data.vat_tel}>" required="required" data-caution="注册号码不能为空" />
+                </div>
+            </div>
+
+            <div class="c-g">
+                <label class="c-l">开户银行</label>
+                <div class="c">
+                    <input type="text" class="text" name="vat_bank" value="<{$data.vat_bank}>" required="required" data-caution="开户银行不能为空" />
+                </div>
+            </div>
+            <div class="c-g">
+                <label class="c-l">银行账号</label>
+                <div class="c">
+                    <input type="text" class="text" name="bank_number" value="<{$data.bank_number}>" required="required"  data-caution="银行账号不能为空"  />
+                </div>
+            </div>
+            <div class="c-g-c">
+                <input type="checkbox" name="invoice_default" value="1" id="def_addr_check" <{if $data.invoice_default eq "1"}>checked=checked<{/if}>/>
+                <label for="def_addr_check">设为默认</label>
+            </div>
+            <div class="btn-bar">
+                <button type="submit" class="btn" rel="_request">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+

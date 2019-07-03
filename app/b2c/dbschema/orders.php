@@ -540,6 +540,23 @@ $db['orders'] = array(
             'type'    => 'varchar(50)',
             'default' => '',
         ),
+        'source' =>
+            array (
+                'type' => array(
+                    'pc' =>app::get('b2c')->_('标准平台'),
+                    'wap' => app::get('b2c')->_('手机触屏'),
+                    'weixin' => app::get('b2c')->_('微信商城'),
+                    'penker' => app::get('b2c')->_('朋客'),
+                ),
+                'label' => app::get('b2c')->_('平台来源'),
+                'width' => 110,
+                'editable' => false,
+                'default' =>'pc',
+                'in_list' => true,
+                'default_in_list' => false,
+                'filterdefault' => false,
+                'filtertype' => 'yes',
+            ),
     ),
     'index'   => array(
         'ind_ship_status'   => array(

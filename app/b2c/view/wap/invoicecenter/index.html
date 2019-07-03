@@ -1,0 +1,103 @@
+<div class="full-screen">
+    <header>
+    <div class="a-bar">
+        <a href="javascript:history.back()" class="a-back">
+            <i class="arr left"></i>
+            返回
+        </a>
+        <div class="a-name">
+            发票中心
+        </div>
+        <div class="a-right">
+            <a class="btn" href="<{link app=b2c ctl=wap_invoicecenter act=modify_view}>">添加新发票</a>
+        </div>
+    </div>
+    </header>
+    <div class="address">
+        <{if !$invoices}>
+            <div>暂无发票</div>
+        <{else if}>
+            <{foreach from=$invoices item=items key=key}>
+            <div class="item">
+                <p>
+                <div class="c-g" style="height:auto">
+                    <label class="c-l">发票类型：<{if $items.invoice_type eq "com"}>普票<{else}>增值税票<{/if}></label>
+                </div>
+                <div class="c-g">
+                    <label class="c-l">发票抬头：<{$items.invoice_title}></label>
+                </div>
+                <div class="c-g">
+                    <label class="c-l">单位名称：<{$items.company_name}></label>
+                </div>
+
+                <div class="c-g">
+                    <label class="c-l">纳税人识别号：<{$items.vat_number}></label>
+                </div>
+                <div class="c-g">
+                    <label class="c-l">注册地址：<{$items.vat_addr}></label>
+                </div>
+                <div class="c-g">
+                    <label class="c-l">注册号码：<{$items.vat_tel}></label>
+                </div>
+
+                <div class="c-g">
+                    <label class="c-l">开户银行：<{$items.vat_bank}></label>
+                </div>
+                <div class="c-g">
+                    <label class="c-l">银行账号：<{$items.bank_number}></label>
+                </div>
+                </p>
+
+                <a href="<{link app=b2c ctl=wap_invoicecenter act=modify_view arg0=$items.invoice_id}>">编辑发票</a>
+                <{if $items.invoice_default}>
+                <a onclick="setdefault('<{$items.invoice_id}>',1);"   >取消默认</a>
+                <{else}>
+                <a onclick="setdefault('<{$items.invoice_id}>',2);"  >设为默认</a>
+                <{/if}>
+                <a invoice_id="<{$items.invoice_id}>" class="del">删除</a>
+                <i class="arr right"></i>
+                <{if $items.invoice_default=='1'}><span>默认</span><{/if}>
+            </div>
+            <{/foreach}>
+        <{/if}>
+    </div>
+</div>
+<script type="text/javascript">
+
+    function setdefault(invoice_id,disabled)
+    {
+        var data = 'invoice_id='+invoice_id+'&disabled='+disabled;
+        $.post('<{link app=b2c ctl=wap_invoicecenter act=set_default}>',data,function(re){
+            var o = JSON.parse(re);
+            if(o.status == 'success')
+            {
+                msg = o.msg?o.msg:'设置成功';
+                popup(msg,1000);
+                setTimeout(function(){location.reload(true)},2000);
+            }else{
+                msg = o.msg?o.msg:'设置失败';
+                popup(msg,1000,"sm-pop");
+            }
+        });
+    }
+$('.del').bind('click',function(){
+    if(confirm('确定此发票？'))
+    {
+    	var data = 'invoice_id='+this.getAttribute('invoice_id');
+        $.post('<{link app=b2c ctl=wap_invoicecenter act=delInvoice}>',data,function(re){
+	        var o = JSON.parse(re);
+	        if(o.status == 'success'){
+                msg = o.msg?o.msg:'删除成功';
+                popup(msg,1000);
+	            setTimeout(function(){location.reload(true)},2000);
+	        }else{
+                msg = o.msg?o.msg:'删除失败';
+                popup(msg,1000,"sm-pop");
+	        }
+	    });
+        return false;
+    }
+});
+
+
+</script>

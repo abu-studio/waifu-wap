@@ -92,5 +92,9 @@
         <title>支付中心</title>
         <disable>false</disable>
     </module>
-    
+    <module id='b2c' controller='wap_invoicecenter' >
+        <name>invoicecenter</name>
+        <title>发票中心</title>
+        <disable>false</disable>
+    </module>
 </site>

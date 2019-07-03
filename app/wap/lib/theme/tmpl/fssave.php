@@ -287,6 +287,7 @@ class wap_theme_tmpl_fssave
             'couponlist'=>app::get('wap')->_('领券列表页'),
             'couponcenter'=>app::get('wap')->_('领券中心页'),
             'channel'=>app::get('wap')->_('频道页'),
+            'invoicecenter'=>app::get('wap')->_('发票中心页'),
             'brandcenter'=>app::get('wap')->_('品牌中心页'),
             'article'=>app::get('wap')->_('文章页'),
             'articlelist'=>app::get('wap')->_('文章列表页'),

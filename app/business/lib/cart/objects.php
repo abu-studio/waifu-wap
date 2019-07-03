@@ -41,11 +41,12 @@ class business_cart_objects {
 	public function check_isSeller(&$msg=''){
 		$obj_members = app::get('b2c')->model('members');
 		$member = $obj_members->get_current_member();
-		if($member){
+		if($member)
+		{
 			$member_id = $member['member_id'];
 			$seller = $obj_members->getList('member_id,seller',array('member_id'=>$member_id));
-			//echo '<pre>';print_r($seller);exit;
-			if($seller[0]['seller']&&$seller[0]['seller']=='seller'){
+			if($seller[0]['seller']&&$seller[0]['seller']=='seller')
+			{
 				$msg = '店家不能购买商品，请更换账号！';
 				return false;
 			}else{
